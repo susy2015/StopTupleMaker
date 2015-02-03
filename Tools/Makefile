@@ -21,7 +21,7 @@ LDFLAGS    =
 LIBS       = $(shell root-config --glibs)
 
 #OBJS       = $(patsubst %, $(ODIR)/%, $(OBJ))
-PROGRAMS = tupleTest makePlots baselineDef
+PROGRAMS = tupleTest makePlots baselineDef explore
 
 all: $(PROGRAMS)
 
@@ -38,6 +38,9 @@ makePlots: $(ODIR)/NTupleReader.o $(ODIR)/Plotter.o $(ODIR)/MakePlots.o
 	$(LD) $^ $(LIBS) -o $@
 
 baselineDef: $(ODIR)/NTupleReader.o $(ODIR)/baselineDef.o
+	$(LD) $^ $(LIBS) -L$(CMSSW_BASE)/lib/${SCRAM_ARCH}/ -lrecipeAUXOxbridgeMT2 -o $@
+
+explore: $(ODIR)/NTupleReader.o $(ODIR)/explore.o
 	$(LD) $^ $(LIBS) -L$(CMSSW_BASE)/lib/${SCRAM_ARCH}/ -lrecipeAUXOxbridgeMT2 -o $@
 
 clean:

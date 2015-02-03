@@ -180,6 +180,23 @@ namespace AnaFunctions{
       return cntNIsoTrks;
    }
 
+   double calcHT(const std::vector<TLorentzVector> &inputJets, const double *jetCutsArr){
+      const double minAbsEta = jetCutsArr[0], maxAbsEta = jetCutsArr[1], minPt = jetCutsArr[2], maxPt = jetCutsArr[3];
+
+      double ht = 0;
+      for(unsigned int ij=0; ij<inputJets.size(); ij++){
+         double perjetpt = inputJets[ij].Pt(), perjeteta = inputJets[ij].Eta();
+         if(   ( minAbsEta == -1 || fabs(perjeteta) >= minAbsEta )
+            && ( maxAbsEta == -1 || fabs(perjeteta) < maxAbsEta )
+            && (     minPt == -1 || perjetpt >= minPt )
+            && (     maxPt == -1 || perjetpt < maxPt ) ){
+
+            ht += perjetpt;
+         }
+      }
+      return ht; 
+   }
+
    void prepareJetsForTagger(const std::vector<TLorentzVector> &inijetsLVec, const std::vector<double> &inirecoJetsBtag, std::vector<TLorentzVector> &jetsLVec_forTagger, std::vector<double> &recoJetsBtag_forTagger){
 
       jetsLVec_forTagger.clear(); recoJetsBtag_forTagger.clear();
