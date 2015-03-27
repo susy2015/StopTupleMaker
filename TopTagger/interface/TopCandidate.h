@@ -5,6 +5,11 @@
 
 #include "TLorentzVector.h"
 
+enum Flavor
+{
+    MERGED_TOP, MERGED_W, TRIPLET_TOP, DOUBLET_TOP, DOUBLET_W
+};
+
 class TopCandidate
 {
 public:
@@ -19,6 +24,7 @@ private:
     std::vector<std::vector<int>>* doublets_;
     
     TLorentzVector* candVec_;
+    Flavor flavor;
 };
 
 #endif

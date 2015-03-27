@@ -402,12 +402,17 @@ namespace topTagger
             if(drCut == -1) return true;
 
             bool withinCone = true;
+            //Calculate centralLVec once and for all here
             TLorentzVector centralLVec = buildLVec(oriJetsVec, indexCombVec);
             for(unsigned int ic = 0; ic < indexCombVec.size(); ic++)
             {
-                int idx = indexCombVec[ic];
+                const int& idx = indexCombVec[ic];
                 double deltaR = centralLVec.DeltaR(oriJetsVec[idx]);
-                if(deltaR > drCut) withinCone = false;
+                if(deltaR > drCut) 
+                {
+                    withinCone = false;
+                    break;
+                }
             }
             return withinCone;
         }
@@ -547,6 +552,7 @@ namespace topTagger
 
         void ptOrderedfatJets(const vector<TLorentzVector> &oriJetsVec, vector<vector<int> > &tmpFinalCombfatJets, vector<vector<int> > &tmpFinalRemaining, vector<vector<vector<int> > > &tmpFinalCombJetSubStruc)
         {
+            //Consider deep rewrite
             const vector<vector<int> > cachedtmpFinalCombfatJets = tmpFinalCombfatJets;
             const vector<vector<int> > cachedtmpFinalRemaining = tmpFinalRemaining;
             const vector<vector<vector<int> > > cachedtmpFinalCombJetSubStruc = tmpFinalCombJetSubStruc;
@@ -584,12 +590,12 @@ namespace topTagger
 
             vector<int> tmpWjetIdx, tmpRemainIdx;
 
-            std::vector<TLorentzVector> forJetMassLVec = oriJetsVec;
+            std::vector<TLorentzVector>* forJetMassLVec = &oriJetsVec;
             if(!groomedJetsVec_.empty())
             {
                 if(groomedJetsVec_.size() == oriJetsVec.size())
                 {
-                    forJetMassLVec = groomedJetsVec_;
+                    forJetMassLVec = &groomedJetsVec_;
                 }
                 else
                 {
@@ -600,7 +606,7 @@ namespace topTagger
 
             for(unsigned int ij = 0; ij < oriJetsVec.size(); ij++)
             {
-                TLorentzVector perWjetLVec = forJetMassLVec[ij];
+                const TLorentzVector& perWjetLVec = (*forJetMassLVec)[ij];
                 //               if( perWjetLVec.M() <= highWjetMass_ && perWjetLVec.M() >= lowWjetMass_ && recoJetsBtagCSVS[ij] <= CSVS_ ){
                 if(perWjetLVec.M() <= highWjetMass_ && perWjetLVec.M() >= lowWjetMass_)
                 {
@@ -629,11 +635,7 @@ namespace topTagger
                     }
                     tmpFinalCombfatJets.push_back(perComb);
                     tmpFinalRemaining.push_back(perRemain);
-                    vector<vector<int> > perSubStruc;
-                    vector<int> WjetSubStruc;
-                    WjetSubStruc.push_back(tmpWjetIdx[iw]);
-                    perSubStruc.push_back(WjetSubStruc);
-                    tmpFinalCombJetSubStruc.push_back(perSubStruc);
+                    tmpFinalCombJetSubStruc.push_back({{tmpWjetIdx[iw]}});
                 }
             }
         }
@@ -646,12 +648,12 @@ namespace topTagger
 
             vector<int> tmpTopjetIdx, tmpRemainIdx;
 
-            std::vector<TLorentzVector> forJetMassLVec = oriJetsVec;
+            std::vector<TLorentzVector>* forJetMassLVec = &oriJetsVec;
             if(!groomedJetsVec_.empty())
             {
                 if(groomedJetsVec_.size() == oriJetsVec.size())
                 {
-                    forJetMassLVec = groomedJetsVec_;
+                    forJetMassLVec = &groomedJetsVec_;
                 }
                 else
                 {
@@ -662,7 +664,7 @@ namespace topTagger
 
             for(unsigned int ij = 0; ij < oriJetsVec.size(); ij++)
             {
-                TLorentzVector perTopjetLVec = forJetMassLVec[ij];
+                TLorentzVector perTopjetLVec = (*forJetMassLVec)[ij];
                 if(perTopjetLVec.M() <= highTopjetMass_ && perTopjetLVec.M() >= lowTopjetMass_)
                 {
                     tmpTopjetIdx.push_back(ij);
@@ -685,8 +687,7 @@ namespace topTagger
                 }
                 tmpFinalCombfatJets.push_back(perComb);
                 tmpFinalRemaining.push_back(perRemain);
-                vector<vector<int> > perSubStruc;
-                tmpFinalCombJetSubStruc.push_back(perSubStruc);
+                tmpFinalCombJetSubStruc.push_back(vector<vector<int> >());
             }
         }
 
@@ -705,6 +706,7 @@ namespace topTagger
 
             unsigned int tmpCombSize = tempCombfatJets.size();
 
+            //Integrate this into prepare.  Stop the need for recreating another vector.  
             for(unsigned int ic = 0; ic < tmpCombSize; ic++)
             {
                 if(filterfatJetWithDRcone(oriJetsVec, tempCombfatJets[ic], simuCAdeltaR_))
@@ -720,6 +722,7 @@ namespace topTagger
                 vector<vector<int> > tempWjetCombfatJets;
                 vector<vector<int> > tempWjetRemaining;
                 vector<vector<vector<int> > > tempWjetCombJetSubStruc;
+                //Remove clear from inside makeBLAHfatJets and feed tempFinal vectors in directly, this means moving filterfatJetWithDRcone into makeBLAHfatJets
                 makeWjetfatJets(oriJetsVec, recoJetsBtagCSVS, tempWjetCombfatJets, tempWjetRemaining, tempWjetCombJetSubStruc);
                 for(unsigned int ic = 0; ic < tempWjetCombfatJets.size(); ic++)
                 {
@@ -737,6 +740,7 @@ namespace topTagger
                 vector<vector<int> > tempTopjetCombfatJets;
                 vector<vector<int> > tempTopjetRemaining;
                 vector<vector<vector<int> > > tempTopjetCombJetSubStruc;
+                //Remove clear from inside makeBLAHfatJets and feed tempFinal vectors in directly, this means moving filterfatJetWithDRcone into makeBLAHfatJets
                 makeTopjetfatJets(oriJetsVec, recoJetsBtagCSVS, tempTopjetCombfatJets, tempTopjetRemaining, tempTopjetCombJetSubStruc);
                 for(unsigned int ic = 0; ic < tempTopjetCombfatJets.size(); ic++)
                 {
@@ -849,46 +853,32 @@ namespace topTagger
                 {
                     int adjustedmaxJetIdx = -1;
                     double adjustedmaxCSVS = -1;
-                    for(size ij = 0; ij < oriJetsVec.size(); ij++)
-                    {
-                        if(fabs(oriJetsVec[ij].Eta()) < maxEtaForbJets_)
-                        {
-                            if(adjustedmaxJetIdx == -1)
-                            {
-                                adjustedmaxCSVS = recoJetsBtagCSVS[ij];
-                                adjustedmaxJetIdx = ij;
-                            }
-                            else if(adjustedmaxCSVS < recoJetsBtagCSVS[ij])
-                            {
-                                adjustedmaxCSVS = recoJetsBtagCSVS[ij];
-                                adjustedmaxJetIdx = ij;
-                            }
-                        }
-                    }
                     int adjustedsecJetIdx = -1; // second CSVS in order 
                     double adjustedsecCSVS = -1;
+                    
                     for(size ij = 0; ij < oriJetsVec.size(); ij++)
                     {
                         if(fabs(oriJetsVec[ij].Eta()) < maxEtaForbJets_)
                         {
-                            if(recoJetsBtagCSVS[ij] == adjustedmaxCSVS) continue;
-                            if(adjustedsecJetIdx == -1)
+                            if(adjustedmaxCSVS < recoJetsBtagCSVS[ij])
                             {
-                                adjustedsecCSVS = recoJetsBtagCSVS[ij];
-                                adjustedsecJetIdx = ij;
-                            }
-                            else if(adjustedsecCSVS < recoJetsBtagCSVS[ij])
-                            {
-                                adjustedsecCSVS = recoJetsBtagCSVS[ij];
-                                adjustedsecJetIdx = ij;
+                                // Set second CSV val as previous first
+                                adjustedsecCSVS = adjustedmaxCSVS;
+                                adjustedsecJetIdx = adjustedmaxJetIdx;
+                                
+                                // Set new first CSV val
+                                adjustedmaxCSVS = recoJetsBtagCSVS[ij];
+                                adjustedmaxJetIdx = ij;
                             }
                         }
                     }
+                    
                     if(adjustedmaxJetIdx != -1)
                     {
-                        CSVS_ = adjustedmaxCSVS - 1e10;
+                        CSVS_ = adjustedmaxCSVS - 1e-5;
                         if(adjustedsecJetIdx != -1) CSVS_ = 0.5 * (adjustedmaxCSVS + adjustedsecCSVS);
                     }
+                    
                     for(size ij = 0; ij < oriJetsVec.size(); ij++)
                     {
                         if(recoJetsBtagCSVS[ij] > CSVS_ && fabs(oriJetsVec[ij].Eta()) < maxEtaForbJets_) cntnbJetsCSVS++;
@@ -1429,7 +1419,7 @@ namespace topTagger
                             }
                         }
                         else if(orderingOptArr_[1] == "hybrid")
-                        {
+                        { 
                             if(cntbTaggedIndex <= maxIndexForOrderingArr_[1])
                             {
                                 if(pickedRemainingCombfatJetIdx == -1)
@@ -2480,11 +2470,10 @@ namespace topTagger
         // pt     : pt ordering --> pick the one with larger pt (for the first two fat jets)
         // hybrid : pt ordering + mass ordering --> if both of the first two fat jets
         //          satisfying criteria, pick the one closer to the norminal mass
-        std::vector<std::string> defaultOrderingOptVec;
+        
         //                                                     best   remaining
         std::vector<std::string> orderingOptArr_; // (mass, mass) is the best?
 
-        std::vector<int> defaultMaxIndexForOrderingVec;
         std::vector<int> maxIndexForOrderingArr_;
 
         // The max DR for jet matching between ak5 jets and subjets from HEPTopTagger
