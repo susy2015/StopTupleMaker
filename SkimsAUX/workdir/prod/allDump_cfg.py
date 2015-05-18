@@ -39,6 +39,39 @@ process.ak4GenJets = cms.EDProducer("FastjetJetProducer",
 )
 
 
+process.ak4PFJetsCHSJoe = cms.EDProducer("FastjetJetProducer",
+    Active_Area_Repeats = cms.int32(1),
+    doAreaFastjet = cms.bool(True),
+    voronoiRfact = cms.double(-0.9),
+    maxBadHcalCells = cms.uint32(9999999),
+    doAreaDiskApprox = cms.bool(False),
+    maxRecoveredEcalCells = cms.uint32(9999999),
+    jetType = cms.string('PFJet'),
+    minSeed = cms.uint32(14327),
+    Ghost_EtaMax = cms.double(5.0),
+    doRhoFastjet = cms.bool(False),
+    jetAlgorithm = cms.string('AntiKt'),
+    nSigmaPU = cms.double(1.0),
+    GhostArea = cms.double(0.01),
+    Rho_EtaMax = cms.double(4.4),
+    maxBadEcalCells = cms.uint32(9999999),
+    useDeterministicSeed = cms.bool(True),
+    doPVCorrection = cms.bool(False),
+    maxRecoveredHcalCells = cms.uint32(9999999),
+    rParam = cms.double(0.4),
+    maxProblematicHcalCells = cms.uint32(9999999),
+    doOutputJets = cms.bool(True),
+    src = cms.InputTag("pfNoMuonCHSJoe"),
+    inputEtMin = cms.double(0.0),
+    srcPVs = cms.InputTag(""),
+    jetPtMin = cms.double(3.0),
+    radiusPU = cms.double(0.5),
+    maxProblematicEcalCells = cms.uint32(9999999),
+    doPUOffsetCorr = cms.bool(False),
+    inputEMin = cms.double(0.0)
+)
+
+
 process.ak4PFJetschsL1FastL2L3 = cms.EDProducer("PFJetCorrectionProducer",
     src = cms.InputTag("slimmedJets"),
     correctors = cms.vstring('ak4PFL1FastL2L3'),
@@ -2085,6 +2118,12 @@ process.pfNoMuonCHS = cms.EDProducer("CandPtrProjector",
 )
 
 
+process.pfNoMuonCHSJoe = cms.EDProducer("CandPtrProjector",
+    veto = cms.InputTag("mu2Clean"),
+    src = cms.InputTag("pfCHS")
+)
+
+
 process.pfNoPileUp = cms.EDProducer("TPPFCandidatesOnPFCandidates",
     bottomCollection = cms.InputTag("particleFlowPtrs"),
     enable = cms.bool(True),
@@ -2422,7 +2461,7 @@ process.stopTreeMaker = cms.EDProducer("stopTreeMaker",
     vectorStringNamesInTree = cms.vstring(),
     varsTLorentzVectorNamesInTree = cms.vstring(),
     vectorBool = cms.VInputTag(cms.InputTag("prodElectronsNoIso","elesisEB")),
-    debug = cms.bool(True),
+    debug = cms.bool(False),
     varsInt = cms.VInputTag(cms.InputTag("prodMuons","nMuons"), cms.InputTag("prodMuonsNoIso","nMuons"), cms.InputTag("prodElectrons","nElectrons"), cms.InputTag("prodElectronsNoIso","nElectrons"), cms.InputTag("prodJets","nJets"), 
         cms.InputTag("prodIsoTrks","loosenIsoTrks"), cms.InputTag("prodIsoTrks","nIsoTrksForVeto"), cms.InputTag("ak4nJetsForSkimsStop","nJets"), cms.InputTag("prodEventInfo","vtxSize"), cms.InputTag("prodEventInfo","npv"), 
         cms.InputTag("prodEventInfo","nm1"), cms.InputTag("prodEventInfo","n0"), cms.InputTag("prodEventInfo","np1"), cms.InputTag("type3topTagger","bestTopJetIdx"), cms.InputTag("type3topTagger","pickedRemainingCombfatJetIdx"))
@@ -2581,7 +2620,7 @@ process.ak4nJetsForSkimsStop = cms.EDFilter("nJetsForSkimsRA2",
 
 
 process.ak4patJetsPFchsPt10 = cms.EDFilter("simpleJetSelector",
-    jetSrc = cms.InputTag("slimmedJets"),
+    jetSrc = cms.InputTag("ak4PFJetsCHSJoe"),
     pfJetCut = cms.string('pt > 10')
 )
 
@@ -2911,6 +2950,12 @@ process.pfCHS = cms.EDFilter("CandPtrSelector",
 )
 
 
+process.pfCHSJoe = cms.EDFilter("CandPtrSelector",
+    src = cms.InputTag("packedPFCandidates"),
+    cut = cms.string('fromPV')
+)
+
+
 process.pfPileUpAllChargedParticles = cms.EDFilter("PFCandidateFwdPtrCollectionPdgIdFilter",
     pdgId = cms.vint32(211, -211, 321, -321, 999211, 
         2212, -2212, 11, -11, 13, 
@@ -2927,7 +2972,7 @@ process.printDecay = cms.EDFilter("genDecayStringMaker",
         '~chi_1+', 
         '~chi_1-'),
     src = cms.InputTag("prunedGenParticles"),
-    printDecay = cms.untracked.bool(True)
+    printDecay = cms.untracked.bool(False)
 )
 
 
@@ -2938,7 +2983,7 @@ process.printDecayPythia8 = cms.EDFilter("genDecayStringMakerPythia8",
         '~chi_1+', 
         '~chi_1-'),
     src = cms.InputTag("prunedGenParticles"),
-    printDecay = cms.untracked.bool(True)
+    printDecay = cms.untracked.bool(False)
 )
 
 
@@ -3035,9 +3080,10 @@ process.prodMuons = cms.EDFilter("prodMuons",
     VertexSource = cms.InputTag("goodVertices"),
     MaxMuD0 = cms.double(0.2),
     Debug = cms.bool(False),
-    MuonSource = cms.InputTag("slimmedMuons"),
+    MaxMuMiniIso = cms.double(0.2),
     MaxMuRelIso = cms.double(0.2),
     MaxMuDz = cms.double(0.5),
+    MuonSource = cms.InputTag("slimmedMuons"),
     MinMuPt = cms.double(5)
 )
 
@@ -3054,9 +3100,10 @@ process.prodMuonsNoIso = cms.EDFilter("prodMuons",
     MaxMuDz = cms.double(0.5),
     PFCandSource = cms.InputTag("packedPFCandidates"),
     Debug = cms.bool(False),
-    MuonSource = cms.InputTag("slimmedMuons"),
+    MaxMuMiniIso = cms.double(0.2),
     MaxMuRelIso = cms.double(0.2),
     VertexSource = cms.InputTag("goodVertices"),
+    MuonSource = cms.InputTag("slimmedMuons"),
     MinMuPt = cms.double(5)
 )
 
@@ -3108,7 +3155,7 @@ process.simpleJetSelector = cms.EDFilter("simpleJetSelector",
 
 
 process.smsModelFilter = cms.EDFilter("SMSModelFilter",
-    Debug = cms.bool(True),
+    Debug = cms.bool(False),
     SusyScanTopology = cms.string('T1tttt'),
     SusyScanFracLSP = cms.double(0.0),
     SusyScanMotherMass = cms.double(-1),
@@ -3430,7 +3477,7 @@ process.MessageLogger = cms.Service("MessageLogger",
         ),
         noTimeStamps = cms.untracked.bool(False),
         FwkReport = cms.untracked.PSet(
-            reportEvery = cms.untracked.int32(1),
+            reportEvery = cms.untracked.int32(100),
             optionalPSet = cms.untracked.bool(True),
             limit = cms.untracked.int32(10000000)
         ),
@@ -17301,7 +17348,7 @@ process.fieldScaling = cms.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(-1)
 )
 
 process.options = cms.untracked.PSet(
