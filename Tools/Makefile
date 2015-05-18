@@ -22,7 +22,7 @@ LIBS       = $(shell root-config --glibs)
 MT2LIB     = -L$(CMSSW_BASE)/lib/${SCRAM_ARCH}/ -lrecipeAUXOxbridgeMT2
 
 #OBJS       = $(patsubst %, $(ODIR)/%, $(OBJ))
-PROGRAMS = tupleTest baselineDef
+PROGRAMS = tupleTest # baselineDef
 
 all: $(PROGRAMS)
 

@@ -164,6 +164,12 @@ process.pfNoElectronsCHS = cms.EDProducer("CandPtrProjector", src = cms.InputTag
 process.pfNoMuon =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("packedPFCandidates"), veto = cms.InputTag("selectedMuons"))
 process.pfNoElectrons = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuon"), veto =  cms.InputTag("selectedElectrons"))
 
+process.pfCHSJoe = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCandidates"), cut = cms.string("fromPV"))
+
+process.pfNoMuonCHSJoe =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("mu2Clean"))
+
+process.ak4PFJetsCHSJoe = ak4PFJets.clone(src = 'pfNoMuonCHSJoe', doAreaFastjet = True) # no idea while doArea is false by default, but it's True in RECO so we have to set it
+
 process.ak4GenJets = ak4GenJets.clone(src = 'packedGenParticles', rParam = 0.4)
 
 process.pfMet = pfMet.clone(src = "packedPFCandidates")
@@ -296,7 +302,7 @@ process.cleanpatseq = cms.Sequence(
                       process.postStdCleaningCounter  *
                       process.ra2Objects
                       )
-############################# EDN SUSYPAT specifics ####################################
+############################# END SUSYPAT specifics ####################################
 
 process.dummyCounter = cms.EDProducer("EventCountProducer")
 
