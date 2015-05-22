@@ -4,6 +4,8 @@ import FWCore.ParameterSet.Config as cms
 prodJets = cms.EDFilter(
   "prodJets",
   jetSrc = cms.InputTag('slimmedJets'),
+#  jetSrc = cms.InputTag('patJetsAK4PFCHSJOE'),
+#  jetSrc = cms.InputTag('patJetsAK4PFCHS'),
   jetOtherSrc = cms.InputTag('patJetsAK4PFCHS'),
   vtxSrc = cms.InputTag('goodVertices'),
   metSrc = cms.InputTag('slimmedMETs'),
