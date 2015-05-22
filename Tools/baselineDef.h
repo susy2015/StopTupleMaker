@@ -291,7 +291,7 @@ namespace stopFunctions
             std::vector<TLorentzVector>* cleanJetpt30ArrVec = new std::vector<TLorentzVector>();
             std::vector<double>* cleanJetpt30ArrBTag        = new std::vector<double>;
 
-            const double jldRMax = 0.15;
+            const double jldRMax = -0.15;
 
             const double HT_jetPtMin = 50;
             const double HT_jetEtaMax = 2.4;
