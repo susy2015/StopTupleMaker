@@ -76,7 +76,7 @@ namespace AnaConsts{
    const IsoAccRec   isoTrksArr =    {   -1,        -1,      10,     -1,       0.1,    100 };
 
 //                                    minAbsEta, maxAbsEta, minPt, maxPt, maxIsoEB, maxIsoEE,  maxMtw
-   const ElecIsoAccRec  elesArr =    {   -1,       2.5,      5,     -1,  0.164369, 0.1212604,    -1  };
+   const ElecIsoAccRec  elesArr =    {   -1,       2.5,      5,     -1,  0.164369, 0.212604,    -1  };
 
 
 //                                  minAbsEta, maxAbsEta, minPt, maxPt,   mindR,   maxdR
