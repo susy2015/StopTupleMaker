@@ -46,7 +46,7 @@ for key, value in jobslist.items():
     if len(value) > 0:
         tempconfig.JobType.psetName = value[0]
     if len(value) > 1:
-        tempconfig.Data.inputDataset = value[1]
+        tempconfig.Data.inputDataset = value[1].strip()
     if len(value) > 2:
         tempconfig.Data.unitsPerJob = value[2]
     if len(value) > 3:
