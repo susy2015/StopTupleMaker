@@ -501,9 +501,12 @@ std::vector<TLorentzVector> prodFatTops::prodPatJet( edm::Handle<std::vector<pat
   for(unsigned int i=0; i < patjets->size(); ++i)
   {
     pat::Jet jet = patjets->at(i);
-    TLorentzVector perJetLVec;
-    perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
-    temp.push_back(perJetLVec);
+    if (jet.pt() > 20)
+    {
+      TLorentzVector perJetLVec;
+      perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+      temp.push_back(perJetLVec);
+    }
   }
 
   return temp;
@@ -519,7 +522,10 @@ std::vector<double> prodFatTops::prodAK4Btag() const
   for(unsigned int i=0; i < AK4jets->size(); ++i)
   {
     pat::Jet jet = AK4jets->at(i);
-    temp.push_back(jet.bDiscriminator(bTagKeyString_.c_str()));
+    if (jet.pt() > 20)
+    {
+      temp.push_back(jet.bDiscriminator(bTagKeyString_.c_str()));
+    }
   }
 
   return temp;
@@ -535,9 +541,12 @@ std::vector<TLorentzVector> prodFatTops::prodGenJets(edm::Handle<std::vector<rec
   for(unsigned int i=0; i < Genjets->size(); ++i)
   {
     reco::GenJet jet = Genjets->at(i);
-    TLorentzVector perJetLVec;
-    perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
-    temp.push_back(perJetLVec);
+    if (jet.pt() > 10)
+    {
+      TLorentzVector perJetLVec;
+      perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+      temp.push_back(perJetLVec);
+    }
   }
 
   return temp;

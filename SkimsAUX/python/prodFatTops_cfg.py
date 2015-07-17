@@ -13,7 +13,7 @@ process.load("FWCore.MessageService.MessageLogger_cfi")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-process.GlobalTag.globaltag = 'MCRUN2_73_V4'
+process.GlobalTag.globaltag = 'PHYS14_25_V1'
 
 process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
@@ -112,6 +112,34 @@ process.load("SusyAnaTools.SignalScan.genDecayStringMakerPythia8_cfi")
 process.printDecayPythia8.src = cms.InputTag("prunedGenParticles")
 process.printDecayPythia8.keyDecayStrs = cms.vstring("t", "tbar", "~chi_1+", "~chi_1-")
 process.load("SusyAnaTools.SkimsAUX.prodGenInfo_cfi")
+process.load("SusyAnaTools.SkimsAUX.prodMET_cfi")
+
+process.load("SusyAnaTools.Skims.vertex_cfi")
+
+process.goodVertices = cms.EDFilter(
+  "VertexSelector",
+  filter = cms.bool(False),
+  src = cms.InputTag("offlineSlimmedPrimaryVertices"),
+  cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.rho < 2")
+)
+
+#### Muon
+process.load("SusyAnaTools.SkimsAUX.prodMuons_cfi")
+process.prodMuonsNoIso = process.prodMuons.clone()
+process.prodMuonsNoIso.DoMuonIsolation = cms.bool(False)
+### Ele
+process.load("SusyAnaTools.SkimsAUX.prodElectrons_cfi")
+process.prodElectronsNoIso = process.prodElectrons.clone()
+process.prodElectronsNoIso.DoElectronIsolation = cms.bool(False)
+
+#### Iso
+process.load("SusyAnaTools.Skims.trackIsolationMaker_cfi")
+process.trackIsolation = process.trackIsolationFilter.clone()
+process.trackIsolation.pfCandidatesTag = cms.InputTag("packedPFCandidates")
+process.trackIsolation.doTrkIsoVeto = cms.bool(False)
+
+process.load("SusyAnaTools.SkimsAUX.prodIsoTrks_cfi")
+
 
 process.HEPTagger = cms.Sequence (process.chs * process.HTT )
 
@@ -119,16 +147,17 @@ process.p = cms.Path(process.HEPTagger * process.prodFatTops)
 
 process.out.fileName = cms.untracked.string('myOutputFile.root')
 process.out.outputCommands = cms.untracked.vstring(
-    'keep *_ak8PFJetsCHSSoftDropLinks_*_*',
-    'keep *_selectedPatJet*_*_*',
-    'keep *_Njet*_*_*',
-    'keep *_ak8PFJetsCHS_*_*',
-    'keep *_prodFatTops_*_*',
-    'keep *_prodGenInfo_*_*',
-    'keep *_ShowerDecon*_*_*',
-    'keep *_slimmed*_*_*',
-    'keep *_HTT_*_*'
+    #'keep *_ak8PFJetsCHSSoftDropLinks_*_*',
+    #'keep *_selectedPatJet*_*_*',
+    #'keep *_Njet*_*_*',
+    #'keep *_ak8PFJetsCHS_*_*',
+    #'keep *_prodFatTops_*_*',
+    #'keep *_prodGenInfo_*_*',
+    #'keep *_ShowerDecon*_*_*',
+    #'keep *_slimmed*_*_*',
+    #'keep *_HTT_*_*'
 
+    'drop *'
     #'keep *_prod*_*_*',
 )
 
@@ -146,8 +175,26 @@ process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenInfo", "g
 
 process.stopTreeMaker.vectorDouble.extend([cms.InputTag("prodFatTops", "recoJetsBtag"), cms.InputTag("prodFatTops", "AK8SD2Chi"), cms.InputTag("prodFatTops", "AK8SD3Chi"),
                                            cms.InputTag("prodFatTops", "AK8SoftDropTau32"), cms.InputTag("prodFatTops", "CA15SoftDropTau32")])
+process.stopTreeMaker.varsDouble.extend([cms.InputTag("prodMET:met"), cms.InputTag("prodMET:metphi")])
 #process.stopTreeMaker.vectorDoubleNamesInTree.extend(["prodFatTops:AK8SD2Chi|AK8SD2Chi_0", "prodFatTops:recoJetsBtag|recoJetsBtag_0", "prodFatTops:AK8SD3Chi|AK8SD3Chi_0"])
 
+### Muons
+process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuonsNoIso", "nMuons"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "muonsLVec"))
+process.stopTreeMaker.vectorDouble.extend([cms.InputTag("prodMuonsNoIso", "muonsCharge"), cms.InputTag("prodMuonsNoIso", "muonsMtw"), cms.InputTag("prodMuonsNoIso", "muonsRelIso"), cms.InputTag("prodMuonsNoIso", "muonsMiniIso")])
+
+process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectronsNoIso", "nElectrons"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodElectronsNoIso", "elesLVec"))
+process.stopTreeMaker.vectorDouble.extend([cms.InputTag("prodElectronsNoIso", "elesCharge"), cms.InputTag("prodElectronsNoIso", "elesMtw"), cms.InputTag("prodElectronsNoIso", "elesRelIso"), cms.InputTag("prodElectronsNoIso", "elesMiniIso")])
+process.stopTreeMaker.vectorBool.extend([cms.InputTag("prodElectronsNoIso", "elesisEB")])
+
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodIsoTrks:looseisoTrksLVec"))
+process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodIsoTrks:looseisoTrksLVec|loose_isoTrksLVec")
+process.stopTreeMaker.vectorDouble.extend([cms.InputTag("prodIsoTrks:looseisoTrksiso"), cms.InputTag("prodIsoTrks:looseisoTrksmtw")])
+process.stopTreeMaker.vectorDoubleNamesInTree.extend(["prodIsoTrks:looseisoTrksiso|loose_isoTrks_iso", "prodIsoTrks:looseisoTrksmtw|loose_isoTrks_mtw"])
+
+process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodIsoTrks:looseisoTrkspdgId")])
+process.stopTreeMaker.vectorIntNamesInTree.extend(["prodIsoTrks:looseisoTrkspdgId|loose_isoTrks_pdgId"])
 
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodFatTops", "jetsLVec"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodFatTops", "Gen4LVec"))
