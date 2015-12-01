@@ -49,11 +49,14 @@ triggerProducer = cms.EDProducer('prodTriggerResults',
 
             'HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT250_v',
             'HLT_DoubleMu8_Mass8_PFHT250_v',
-            'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2',
-            'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2',
+            'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v',
+            'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v',
             'HLT_PFHT750_4JetPt50_v',
             'HLT_PFHT450_SixJet40_PFBTagCSV0p72_v',
             'HLT_PFHT400_SixJet30_BTagCSV0p55_2PFBTagCSV0p72_v',
+
+            'HLT_PFHT350_PFMET100_v',
+
 # Additional to RA2/b triggers
             'HLT_PFMET100_PFMHT100_IDTight_v',
             'HLT_PFMET110_PFMHT110_IDTight_v',
