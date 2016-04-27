@@ -42,12 +42,17 @@ namespace AnaSamples
         const std::vector<std::string>& getFilelist() const {return filelist_;}
         template<class T> void addFilesToChain(T* chain,  int startfile =0, int filerun= -1) const
         {
-	  if(filerun<0)filerun=filelist_.size();
-	  for(int fn = startfile; fn < startfile+filerun && fn<filelist_.size(); fn++){
-	      chain->Add(filelist_[fn].c_str());
+            if(filelist_.size() <= 0)
+            {
+                readFileList();
+            }
+
+            if(filerun<0)filerun=filelist_.size();
+            for(int fn = startfile; fn < startfile+filerun && fn<filelist_.size(); fn++){
+                chain->Add(filelist_[fn].c_str());
 	    }
         }
-        std::vector<std::string> filelist_;
+        mutable std::vector<std::string> filelist_;
 
         void addCollection(std::string);
         const std::set<std::string>& getCollections() const
@@ -55,7 +60,7 @@ namespace AnaSamples
             return collections_;
         }
         
-        void readFileList();
+        void readFileList() const;
 
     private:
         double weight_;
