@@ -126,6 +126,7 @@ namespace topTagger{
          std::map<double, std::vector<int> > had_brJetIdxMap;
          std::map<double, TLorentzVector> lept_brJetLVecMap, had_brJetLVecMap;
          std::vector<double> cached_MT2Vec;
+         std::vector<TLorentzVector> rSysConstituentLVecs;
 // End of internal and/or intermediate variables
 
 /* 
@@ -1624,6 +1625,7 @@ namespace topTagger{
             }
 
             int cntbJet = 0;
+            std::map<double, std::vector<TLorentzVector>> rSysJets;
             for(unsigned int ib=0; ib<remainbJetsLVec.size(); ib++){
                cntbJet++;
                TLorentzVector bJet = remainbJetsLVec.at(ib);
@@ -1643,6 +1645,7 @@ namespace topTagger{
                   if( brJet.M() > 50 && brJet.M() < mTop_ ){
                      had_brJetIdxMap[dR_brJet] = brIdxVec;
                      had_brJetLVecMap[dR_brJet] = brJet;
+                     rSysJets[dR_brJet] = {bJet, rJet};
                   }
                }
             }
@@ -1669,7 +1672,10 @@ namespace topTagger{
                   }
                }
                had_brJetLVecMap[0] = pickedbLVec;
+               rSysJets[0] = {pickedbLVec};
             }
+            //save Rsys jets
+            rSysConstituentLVecs = rSysJets.begin()->second;
 
             if( !lept_brJetLVecMap.empty() ){
                TLorentzVector best_lept_brJet = lept_brJetLVecMap.begin()->second;
