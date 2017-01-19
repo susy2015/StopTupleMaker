@@ -18,7 +18,8 @@ from crab3Config import config as config
 from multiprocessing import Process
 
 workArea = 'crabProdv11p0'
-outDir = '/store/group/lpcsusyhad/Stop_production/Spring16_80X_Nov_2016_Ntp_v11X_new_IDs'
+#outDir = '/store/group/lpcsusyhad/Stop_production/Spring16_80X_Nov_2016_Ntp_v11X_new_IDs'
+outDir = '/store/user/aabreuna/Gamma/'
 Pubname = 'Spring16_80X_Nov_2016_Ntp_v11p0_new_IDs'
 json_25ns = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
 # Use the common keyword to select the samples you'd like to submit
@@ -28,7 +29,7 @@ json_25ns = 'Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt'
 #selSubmitKey = 'TEST STATUS TTJets' # 'TEST STATUS': no submission of jobs but rather checking crab job status related to the TTJets. If jobs failed, automatically resubmit them.
 #selSubmitKey = 'TTJets_SingleLeptFrom HTMHT'
 #selSubmitKey = 'TTJets_SingleLeptFrom TTJets_DiLept'
-selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
+#selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
 #selSubmitKey = 'TEST STATUS TTJets_SingleLeptFrom HTMHT'
 #selSubmitKey = 'TEST STATUS TTJets_SingleLeptFrom HTMHT SingleMuon'
 #selSubmitKey = 'TEST STATUS SMS-T2tt_FastSim'
@@ -37,10 +38,16 @@ selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
 #selSubmitKey = 'TEST ALL'
 #selSubmitKey = 'TEST TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept ZJetsToNuNu_HT'
 #selSubmitKey = 'TEST STATUS TTJets_SingleLeptFrom HTMHT SingleMuon SMS-T2tt_FastSim SMS-T1tttt_FastSim'
+selSubmitKey = 'GJets_HT-200To400 GJets_HT-400To600 GJets_HT-600ToInf'
 doAutoMonitor = False
 
 ## Format: keyword : IsData, fulldatasetname, unitperjob
 jobslist = {
+    #Photons Andres
+    'GJets_HT-200To400'                      : [False, '/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM', 1],
+    'GJets_HT-400To600'                      : [False, '/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/MINIAODSIM', 1],
+    'GJets_HT-600ToInf'                      : [False, '/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM', 1],
+
     # TTbar
     'TTJets_Inc'                             : [False, '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromT'                 : [False, '/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM', 1],

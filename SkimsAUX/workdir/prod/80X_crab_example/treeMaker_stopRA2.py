@@ -144,7 +144,12 @@ elif options.fileslist:
    process.source.fileNames = inputfiles
 else:
    process.source.fileNames = [
-        '/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',
+#Andres
+      '/store/mc/RunIISpring16MiniAODv1/GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/06B3C34E-8904-E611-AED6-0CC47A6C06C6.root',
+      '/store/mc/RunIISpring16MiniAODv1/GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/30000/1CA7BED2-7408-E611-9C5B-00266CF9AEA4.root',
+      '/store/mc/RunIISpring16MiniAODv2/GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/7481FFE2-521A-E611-A18F-0025904C7B48.root',
+
+#        '/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',
 #       '/store/mc/RunIISpring16MiniAODv2/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/041F3A63-431E-E611-9E1E-008CFA1112CC.root',
 #       '/store/mc/RunIISpring16MiniAODv2/SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/004A27F0-5132-E611-A936-02163E016171.root',
 #       '/store/mc/RunIISpring16MiniAODv2/SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/00775AA9-5132-E611-A4FE-001E675049F5.root',
@@ -628,6 +633,9 @@ process.load("SusyAnaTools.SkimsAUX.prodIsoTrks_cfi")
 process.load("SusyAnaTools.SkimsAUX.prodEventInfo_cfi")
 process.load("SusyAnaTools.SkimsAUX.ISRJetProducer_cfi")
 
+#new cfi ANDRES                                                                                                                                                                                                
+process.load("SusyAnaTools.SkimsAUX.PhotonIDisoProducer_cfi")
+
 #Addition of Filter Decision Bits and Trigger Results
 process.load("SusyAnaTools.SkimsAUX.prodTriggerResults_cfi")
 process.load("SusyAnaTools.SkimsAUX.prodFilterFlags_cfi")
@@ -713,6 +721,29 @@ process.stopTreeMaker.varsInt.append(cms.InputTag("eeBadScFilter"))
 process.stopTreeMaker.varsInt.append(cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"))
 process.stopTreeMaker.varsBool.append(cms.InputTag("BadChargedCandidateFilter"))
 process.stopTreeMaker.varsBool.append(cms.InputTag("BadPFMuonFilter"))
+
+#NEW ADD ANDRES Gamma Var                                                                                                                                                                                      
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "isEB"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "genMatched"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hadTowOverEM"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "sigmaIetaIeta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hasPixelSeed"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "passElectronVeto"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "hadronization"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "nonPrompt"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "fullID"))
+
+#Andres adding phtoon pt, eta and phi                                                                                                                                                                          
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPt"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonEta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPhi"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVec"))
 
 if options.fastsim == False:
    process.stopTreeMaker.varsBool.append(cms.InputTag("HBHENoiseFilterResultProducer", "HBHENoiseFilterResult"))
