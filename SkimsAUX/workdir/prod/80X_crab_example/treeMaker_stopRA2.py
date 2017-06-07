@@ -874,6 +874,8 @@ if options.mcInfo == True:
    process.stopTreeMaker.vectorDoubleNamesInTree.extend(["prodGenInfo:WemupfActivityVec|W_emu_pfActivityVec", "prodGenInfo:WtauemupfActivityVec|W_tau_emu_pfActivityVec", "prodGenInfo:WtauprongspfActivityVec|W_tau_prongs_pfActivityVec"])
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenInfo", "genDecayLVec"))
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenInfo", "selGenParticle"))
+   process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenInfo", "NuFromBLVec"))
+   process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenInfo", "NuOtherLVec"))
 
    #isrJets
    process.ISRJetProducer.debug = cms.bool(options.debug)
