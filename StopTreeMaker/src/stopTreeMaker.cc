@@ -67,6 +67,9 @@ stopTreeMaker::stopTreeMaker(const edm::ParameterSet& iConfig)
 
   vectorVectorTLorentzVectorTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("vectorVectorTLorentzVector");
   vectorVectorTLorentzVectorNames_= iConfig.getParameter< std::vector<std::string> >  ("vectorVectorTLorentzVectorNamesInTree");
+
+  vectorVectorDoubleTags_ = iConfig.getParameter< std::vector<edm::InputTag> >("vectorVectorDouble");
+  vectorVectorDoubleNames_= iConfig.getParameter< std::vector<std::string> >  ("vectorVectorDoubleNamesInTree");
 /*
   for(const auto& tag : varsDoubleTags_){
  VarsDoubleTok_ .push_back(consumes<std::vector<double>>(varsDoubleTags_));
@@ -106,6 +109,9 @@ VectorTLorentzVectorTags_.push_back(consumes<std::vector<TLorentzVector> >(tag))
 for(const auto& tag : vectorVectorTLorentzVectorTags_){
     VectorVectorTLorentzVectorTags_.push_back(consumes<std::vector<std::vector<TLorentzVector> > >(tag));
 }
+for(const auto& tag : vectorVectorDoubleTags_){
+    VectorVectorDoubleTags_.push_back(consumes<std::vector<std::vector<double> > >(tag));
+}
   cachedNames_.clear();
 
   varsDouble_.clear();
@@ -133,6 +139,7 @@ for(const auto& tag : vectorVectorTLorentzVectorTags_){
   vectorStringNamesCached_.clear();
   vectorTLorentzVectorNamesCached_.clear();
   vectorVectorTLorentzVectorNamesCached_.clear();
+  vectorVectorDoubleNamesCached_.clear();
 
 // Initially at beginJob, Move all the declaration here to avoid job-dependent problems
   edm::Service<TFileService> fs;
@@ -269,6 +276,19 @@ for(const auto& tag : vectorVectorTLorentzVectorTags_){
     vectorVectorTLorentzVectorNamesCached_.push_back(nameT);
     if( debug_ ) std::cout<<"vectorVectorTLorentzVectorTags :  i : "<<i<<"  nameT : "<<nameT<<std::endl;
     tree_->Branch(nameT, "std::vector<std::vector<TLorentzVector>>", &(vectorVectorTLorentzVector_.at(i)), 32000, 0);
+  }
+  if( debug_ ) std::cout<<std::endl;
+//
+  for(unsigned int i=0; i< vectorVectorDoubleTags_.size();i++)
+  {
+      vectorVectorDouble_.emplace_back();
+  }
+  for(unsigned int i=0; i< vectorVectorDoubleTags_.size();i++)
+  {
+    TString nameT = formBranchName(vectorVectorDoubleTags_.at(i), vectorVectorDoubleNames_);
+    vectorVectorDoubleNamesCached_.push_back(nameT);
+    if( debug_ ) std::cout<<"vectorVectorDoubleTags :  i : "<<i<<"  nameT : "<<nameT<<std::endl;
+    tree_->Branch(nameT, "std::vector<std::vector<double>>", &(vectorVectorDouble_.at(i)), 32000, 0);
   }
   if( debug_ ) std::cout<<std::endl;
 
@@ -428,6 +448,23 @@ stopTreeMaker::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
   }
 
+  for(unsigned int i = 0; i < vectorVectorDoubleTags_.size(); ++i) 
+  {
+      edm::Handle<std::vector<std::vector<double> > > var;
+      iEvent.getByToken(VectorVectorDoubleTags_.at(i),var);
+      if( var.isValid() ) 
+      {
+          for(unsigned int j=0; j< var->size();j++)
+          {
+              vectorVectorDouble_.at(i).push_back(var->at(j));
+          }
+      }
+      else
+      {
+          std::cout<<"WARNING ... "<<i<<"th  variable : "<<vectorVectorDoubleNamesCached_[i]<<"  is NOT valid?!"<<std::endl;
+      }
+  }
+
   tree_->Fill();
 }
 
@@ -499,6 +536,10 @@ stopTreeMaker::setBranchVariablesToDefault()
   for(unsigned int i=0; i < vectorVectorTLorentzVector_.size();i++)
   {
     vectorVectorTLorentzVector_.at(i).clear();
+  }
+  for(unsigned int i=0; i < vectorVectorDouble_.size();i++)
+  {
+    vectorVectorDouble_.at(i).clear();
   }
 }
 

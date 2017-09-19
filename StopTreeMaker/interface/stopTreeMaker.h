@@ -134,6 +134,14 @@ private:
 
   std::vector<edm::EDGetTokenT<std::vector<std::vector<TLorentzVector>> >>VectorVectorTLorentzVectorTags_;
 
+  // any vector<double> precision variables
+  std::vector<edm::InputTag> vectorVectorDoubleTags_;
+  std::vector<std::string> vectorVectorDoubleNames_;
+  std::vector<std::vector<std::vector<double> > > vectorVectorDouble_;
+  std::vector<TString> vectorVectorDoubleNamesCached_;
+
+  std::vector<edm::EDGetTokenT<std::vector<std::vector<double>> >>VectorVectorDoubleTags_;
+
   TString formBranchName(const edm::InputTag & varTag, const std::vector<std::string> & vectorNames);
 
   std::vector<TString> cachedNames_;

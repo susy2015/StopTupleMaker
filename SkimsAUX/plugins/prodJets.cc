@@ -433,6 +433,14 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   produces<std::vector<std::vector<TLorentzVector> > >("chargedPFCandLV");
   produces<std::vector<std::vector<TLorentzVector> > >("neutralPFCandLV");
+
+  produces<std::vector<std::vector<double> > > ("chargedPFDxy");
+  produces<std::vector<std::vector<double> > > ("chargedPFDz");
+  produces<std::vector<std::vector<double> > > ("chargedPFFromPV");
+  produces<std::vector<std::vector<double> > > ("chargedPFVertexChi2");
+  produces<std::vector<std::vector<double> > > ("chargedPFVertexNdof");
+  produces<std::vector<std::vector<double> > > ("chargedPFVertexMass");
+  produces<std::vector<std::vector<double> > > ("neutralPFHCALFrac");
   
 }
 
@@ -610,6 +618,14 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::auto_ptr<std::vector<std::vector<TLorentzVector> > > chargedPFCandLV(new std::vector<std::vector<TLorentzVector> >());
   std::auto_ptr<std::vector<std::vector<TLorentzVector> > > neutralPFCandLV(new std::vector<std::vector<TLorentzVector> >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFDxy(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFDz(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFFromPV(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFVertexChi2(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFVertexNdof(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > chargedPFVertexMass(new std::vector<std::vector<double > >());
+  std::auto_ptr<std::vector<std::vector<double> > > neutralPFHCALFrac(new std::vector<std::vector<double > >());
+
 
   int cntJetLowPt = 0;
   for(unsigned int ij=0; ij < extJets.size(); ij++)
@@ -968,8 +984,15 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     std::vector<TLorentzVector> pfCandChargedLV;
     std::vector<TLorentzVector> pfCandNeutralLV;
-    int chargedCand = 2;
-    int neutralCand = 2;
+    std::vector<double> pfCandChargedDxy;
+    std::vector<double> pfCandChargedDz;
+    std::vector<double> pfCandChargedFromPV;
+    std::vector<double> pfCandChargedVertexChi2;
+    std::vector<double> pfCandChargedVertexNdof;
+    std::vector<double> pfCandChargedVertexMass;
+    std::vector<double> pfCandNeutralHCALFrac;
+    int chargedCand = 25;
+    int neutralCand = 25;
     //create collection first, to be able to do some sorting
     for (unsigned int i = 0; i < jet.numberOfDaughters() && (chargedCand || neutralCand); i++)
     {
@@ -984,25 +1007,25 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 TLorentzVector tmpVec;
                 tmpVec.SetPtEtaPhiE(packedCand->pt(), packedCand->eta(), packedCand->phi(), packedCand->energy());
                 pfCandChargedLV.push_back(tmpVec);
-                packedCand->dxy();
+                pfCandChargedDxy.push_back(packedCand->dxy());
                 packedCand->dxyError();
-                packedCand->dz();
+                pfCandChargedDz.push_back(packedCand->dz());
                 packedCand->pvAssociationQuality();
 
-                packedCand->fromPV();
+                pfCandChargedFromPV.push_back(packedCand->fromPV());
 
-                packedCand->vertexChi2();
-                packedCand->vertexNdof();
+                pfCandChargedVertexChi2.push_back(packedCand->vertexChi2());
+                pfCandChargedVertexNdof.push_back(packedCand->vertexNdof());
                 //divided
                 packedCand->vertexNormalizedChi2();
                 packedCand->vertex().rho();
                 packedCand->vertex().phi();
-                packedCand->vertexRef()->p4().M();
+                pfCandChargedVertexMass.push_back(packedCand->vertexRef()->p4().M());
                 packedCand->puppiWeight();
                  
                 packedCand->charge();
                 packedCand->lostInnerHits();
-                 
+                
             }
             else // neutral candidates
             {
@@ -1013,13 +1036,21 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 pfCandNeutralLV.push_back(tmpVec);
                 packedCand->puppiWeight();
                 packedCand->pdgId();
-                packedCand->hcalFraction();
+                pfCandNeutralHCALFrac.push_back(packedCand->hcalFraction());
             }
         }
     }
     //DO NOT try to use the origional vectors after the move!
     chargedPFCandLV->emplace_back(std::move(pfCandChargedLV));
     neutralPFCandLV->emplace_back(std::move(pfCandNeutralLV));
+    chargedPFDxy->emplace_back(std::move(pfCandChargedDxy));
+    chargedPFDz->emplace_back(std::move(pfCandChargedDz));
+    chargedPFFromPV->emplace_back(std::move(pfCandChargedFromPV));
+    chargedPFVertexChi2->emplace_back(std::move(pfCandChargedVertexChi2));
+    chargedPFVertexNdof->emplace_back(std::move(pfCandChargedVertexNdof));
+    chargedPFVertexMass->emplace_back(std::move(pfCandChargedVertexMass));
+    neutralPFHCALFrac->emplace_back(std::move(pfCandNeutralHCALFrac));
+
   }
 
   //const->push_back(}
@@ -1165,6 +1196,14 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iEvent.put(chargedPFCandLV, "chargedPFCandLV");
   iEvent.put(neutralPFCandLV, "neutralPFCandLV");
+
+  iEvent.put(chargedPFDxy, "chargedPFDxy");
+  iEvent.put(chargedPFDz, "chargedPFDz");
+  iEvent.put(chargedPFFromPV, "chargedPFFromPV");
+  iEvent.put(chargedPFVertexChi2, "chargedPFVertexChi2");
+  iEvent.put(chargedPFVertexNdof, "chargedPFVertexNdof");
+  iEvent.put(chargedPFVertexMass, "chargedPFVertexMass");
+  iEvent.put(neutralPFHCALFrac, "neutralPFHCALFrac");
 
   return true;
 }
