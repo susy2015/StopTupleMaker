@@ -145,8 +145,7 @@ elif options.fileslist:
 else:
    process.source.fileNames = [
 #        '/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/00B2B39D-5D4D-E611-8BD4-002590D9D8B6.root',
-      '/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',
-#        '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/00D97021-CFBE-E611-AD3F-0025901D08B8.root',
+        '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/00D97021-CFBE-E611-AD3F-0025901D08B8.root',
 #        '/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',
 #       '/store/mc/RunIISpring16MiniAODv2/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/50000/041F3A63-431E-E611-9E1E-008CFA1112CC.root',
 #       '/store/mc/RunIISpring16MiniAODv2/SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/004A27F0-5132-E611-A936-02163E016171.root',
@@ -685,17 +684,6 @@ process.badMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = c
 process.duplicateMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = cms.string("Flag_duplicateMuons") )
 
 process.prodJets.bTagKeyString = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags')
-process.prodJets.jetPBJetTags = cms.string('pfJetBProbabilityBJetTags')
-process.prodJets.jetPNegBJetTags= cms.string('pfNegativeOnlyJetBProbabilityBJetTags')
-process.prodJets.jetPPosBJetTags= cms.string('pfPositiveOnlyJetBProbabilityBJetTags')
-##
-process.prodJets.jetBPBJetTags= cms.string('jetBPBJetTags')
-process.prodJets.jetBPNegBJetTags= cms.string('jetBPNegBJetTags')
-process.prodJets.jetBPPosBJetTags= cms.string('jetBPPosBJetTags')
-##
-#process.prodJets.deepCSVBJetTags= cms.string('deepFlavourJetTags')
-#process.prodJets.deepCSVNegBJetTags= cms.string('negativeDeepFlavourJetTags')
-#process.prodJets.deepCSVPosBJetTags= cms.string('positiveDeepFlavourJetTags')
 
 process.prodJets.debug = cms.bool(options.debug)
 process.prodJets.jetSrc = cms.InputTag('QGAK4PFCHS')
@@ -808,61 +796,6 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetschar
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetschargedEmEnergyFraction"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetsneutralEmEnergyFraction"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetsmuonEnergyFraction"))
-
-#process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenJets", "genjetsLVec"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetsneutralEnergyFraction"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "PhotonEnergyFraction"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ElectronEnergyFraction"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ChargedHadronMultiplicity"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "NeutralHadronMultiplicity"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "PhotonMultiplicity"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ElectronMultiplicity"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "MuonMultiplicity"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVb"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbb"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcc"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbN"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcN"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlN"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbN"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccN"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbP"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcP"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlP"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbP"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccP"))
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtx"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtxN"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtxP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","Svtx"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxN"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxHP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxNHP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftM"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftMN"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftMP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftE"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftEN"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftEP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","DoubleSV"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVA"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2Neg"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2Pos"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetProba"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProba|JetProba_0")
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetProbaN"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProbaN|JetProbaN_0")
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetProbaP"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProbaP|JetProbaP_0")
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetBprob"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProb|JetProb_0")
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetBprobN"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProbN|JetProbN_0")
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetBprobP"))
-process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProbP|JetProbP_0")
 
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "recoJetsBtag"))
 process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:recoJetsBtag|recoJetsBtag_0")

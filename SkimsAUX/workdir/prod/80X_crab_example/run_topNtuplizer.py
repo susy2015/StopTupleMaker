@@ -33,7 +33,7 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
@@ -46,7 +46,8 @@ process.options = cms.untracked.PSet(
 from PhysicsTools.PatAlgos.patInputFiles_cff import filesRelValTTbarPileUpMINIAODSIM
 
 process.source = cms.Source('PoolSource',
-    fileNames=cms.untracked.vstring (['/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',]),
+    fileNames=cms.untracked.vstring (["/store/mc/RunIISummer16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/423685A0-BFE6-E611-B2B5-001E67DBE36D.root"]),
+#'/store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/90000/109B7DBF-0C91-E611-A5EC-0CC47A4D7690.root',]),
 )
 
 #if options.inputScript != '' and options.inputScript != 'DeepNTuples.DeepNtuplizer.samples.TEST':
@@ -237,6 +238,54 @@ process.load("SusyAnaTools.SkimsAUX.prodIsoTrks_cfi")
 
 ###############################################################################################################################
 
+#Addition of Filter Decision Bits and Trigger Results
+process.load("SusyAnaTools.SkimsAUX.prodTriggerResults_cfi")
+process.load("SusyAnaTools.SkimsAUX.prodFilterFlags_cfi")
+
+#rerun HBHE noise filter manually
+process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
+process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False)
+process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
+
+#New met filters for 2016
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadChargedCandidateFilter.taggingMode = cms.bool(True)
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.taggingMode = cms.bool(True)
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+#Bad muon filger for Moriond 2017 https://hypernews.cern.ch/HyperNews/CMS/get/physics-validation/2786.html
+process.load('RecoMET.METFilters.badGlobalMuonTaggersMiniAOD_cff')
+process.badGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+process.cloneGlobalMuonTaggerMAOD.taggingMode = cms.bool(True)
+
+process.triggerProducer.trigTagSrc = cms.InputTag("TriggerResults","","HLT")
+#process.METFilters = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_METFilters") )
+process.CSCTightHaloFilter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_CSCTightHaloFilter") )
+process.globalTightHalo2016Filter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_globalTightHalo2016Filter") )
+process.goodVerticesFilter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_goodVertices") )
+process.eeBadScFilter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_eeBadScFilter") )
+#process.HBHENoiseFilter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_HBHENoiseFilter") )
+process.EcalDeadCellTriggerPrimitiveFilter = process.filterDecisionProducer.clone( filterName  =   cms.string("Flag_EcalDeadCellTriggerPrimitiveFilter") )
+
+process.filterDecisionProducerPAT = process.filterDecisionProducer.clone()
+process.filterDecisionProducerPAT.trigTagSrc = cms.InputTag("TriggerResults","","PAT")
+process.noBadMuonsFilter = process.filterDecisionProducerPAT.clone( filterName  =   cms.string("Flag_noBadMuons") )
+process.badMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = cms.string("Flag_badMuons") )
+process.duplicateMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = cms.string("Flag_duplicateMuons") )
+
+process.load('SusyAnaTools.SkimsAUX.prodJetIDEventFilter_cfi')
+process.prodJetIDEventFilter.JetSource = cms.InputTag("slimmedJets")
+process.prodJetIDEventFilter.MinJetPt  = cms.double(30.0)
+process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
+
+
+###############################################################################################################################
+
 process.load("SusyAnaTools.StopTreeMaker.stopTreeMaker_cfi")
 process.stopTreeMaker.debug = cms.bool(False)
 process.stopTreeMaker.TreeName = cms.string("AUX")
@@ -286,23 +335,23 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "CvsB"));
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtx"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtxN"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","CombinedSvtxP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","Svtx"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","Svtx"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxN"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxHP"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SvtxNHP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftM"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftM"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftMN"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftMP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftE"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftE"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftEN"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","SoftEP"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","DoubleSV"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVA"));
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","DoubleSV"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVA"));
+#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2Neg"));
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets","cMVAv2Pos"));
-process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets","nTracks"));
-process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets","nSVs"));
+#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets","nTracks"));
+#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets","nSVs"));
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetProba"))
 process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:JetProba|JetProba_0")
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "JetProbaN"))
@@ -360,6 +409,15 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "CTagVertexLe
 process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "chargedPFCandLV"))
 process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "neutralPFCandLV"))
 
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDxy"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDz"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFFromPV"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexChi2"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexNdof"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexMass"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
+
+
 process.stopTreeMaker.vectorString.append(cms.InputTag("prodGenInfo", "genDecayStrVec"))
 process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodGenInfo", "genDecayIdxVec"), cms.InputTag("prodGenInfo", "genDecayPdgIdVec"), cms.InputTag("prodGenInfo", "genDecayMomIdxVec"), cms.InputTag("prodGenInfo", "genDecayMomRefVec"), cms.InputTag("prodGenInfo", "WemuVec"), cms.InputTag("prodGenInfo", "WtauVec"), cms.InputTag("prodGenInfo", "WtauemuVec"), cms.InputTag("prodGenInfo", "WtauprongsVec"), cms.InputTag("prodGenInfo", "WtaunuVec"),  cms.InputTag("prodGenInfo","selPDGid")])
 process.stopTreeMaker.vectorIntNamesInTree.extend(["prodGenInfo:WemuVec|W_emuVec", "prodGenInfo:WtauVec|W_tauVec", "prodGenInfo:WtauemuVec|W_tau_emuVec", "prodGenInfo:WtauprongsVec|W_tau_prongsVec", "prodGenInfo:WtaunuVec|W_tau_nuVec"])
@@ -398,6 +456,36 @@ process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodIsoTrks:loos
 process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodIsoTrks:looseisoTrksLVec|loose_isoTrksLVec")
 process.stopTreeMaker.varsInt.extend([cms.InputTag("prodIsoTrks:loosenIsoTrks"), cms.InputTag("prodIsoTrks:nIsoTrksForVeto")])
 process.stopTreeMaker.varsIntNamesInTree.extend(["prodIsoTrks:loosenIsoTrks|loose_nIsoTrks", "prodIsoTrks:nIsoTrksForVeto|nIsoTrks_CUT"])
+
+process.stopTreeMaker.vectorInt.append(cms.InputTag("triggerProducer", "PassTrigger"))
+process.stopTreeMaker.vectorInt.append(cms.InputTag("triggerProducer", "TriggerPrescales"))
+process.stopTreeMaker.vectorString.append(cms.InputTag("triggerProducer", "TriggerNames"))
+
+# prodGoodVertices has the same as vtxSize in prodEventInfo...
+#process.stopTreeMaker.varsInt.append(cms.InputTag("prodGoodVertices"))
+#process.stopTreeMaker.varsInt.append(cms.InputTag("prodFilterOutScraping"))
+process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "looseJetID"))
+process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "tightJetID"))
+process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "tightlepvetoJetID"))
+#process.stopTreeMaker.varsInt.append(cms.InputTag("METFilters"))
+#process.stopTreeMaker.varsInt.append(cms.InputTag("CSCTightHaloFilter")) # 74X txt files are ready for the 2015 working point, use this and not the flag in miniAOD 
+process.stopTreeMaker.varsInt.append(cms.InputTag("globalTightHalo2016Filter"))
+process.stopTreeMaker.varsInt.append(cms.InputTag("goodVerticesFilter"))
+process.stopTreeMaker.varsInt.append(cms.InputTag("eeBadScFilter"))
+process.stopTreeMaker.varsInt.append(cms.InputTag("EcalDeadCellTriggerPrimitiveFilter"))
+process.stopTreeMaker.varsBool.append(cms.InputTag("BadChargedCandidateFilter"))
+process.stopTreeMaker.varsBool.append(cms.InputTag("BadPFMuonFilter"))
+
+process.stopTreeMaker.varsInt.append(cms.InputTag("noBadMuonsFilter"))
+process.stopTreeMaker.varsInt.append(cms.InputTag("badMuonsFilter"))
+process.stopTreeMaker.varsInt.append(cms.InputTag("duplicateMuonsFilter"))
+
+process.stopTreeMaker.varsBool.append(cms.InputTag("HBHENoiseFilterResultProducer", "HBHENoiseFilterResult"))
+process.stopTreeMaker.varsBoolNamesInTree.append("HBHENoiseFilterResultProducer:HBHENoiseFilterResult|HBHENoiseFilter")
+
+process.stopTreeMaker.varsBool.append(cms.InputTag("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult"))
+process.stopTreeMaker.varsBoolNamesInTree.append("HBHENoiseFilterResultProducer:HBHEIsoNoiseFilterResult|HBHEIsoNoiseFilter")
+
 
 ###############################################################################################################################
 
