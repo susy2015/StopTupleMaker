@@ -1,4 +1,4 @@
-from SusyAnaTools.Skims.trackIsolationMaker_cfi import *
+from StopTupleMaker.Skims.trackIsolationMaker_cfi import *
 
 # make collection of isolated tracks
 isolatedTracks              = trackIsolationFilter.clone()

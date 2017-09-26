@@ -15,7 +15,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include "SusyAnaTools/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h"
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Common/interface/Handle.h"

@@ -1,6 +1,6 @@
 
-#from SusyAnaTools.Skims.basicJetSelector_drt_from_AOD_cfi import *
-from SusyAnaTools.SkimsAUX.simpleJetSelector_cfi import *
+#from StopTupleMaker.Skims.basicJetSelector_drt_from_AOD_cfi import *
+from StopTupleMaker.SkimsAUX.simpleJetSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 # PFJets (with CHS)

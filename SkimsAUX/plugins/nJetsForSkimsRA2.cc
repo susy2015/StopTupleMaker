@@ -11,7 +11,7 @@
 #include "DataFormats/Math/interface/deltaPhi.h"
 
 #include "DataFormats/Common/interface/Handle.h"
-#include "SusyAnaTools/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "TLorentzVector.h"
 

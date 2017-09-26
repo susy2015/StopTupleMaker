@@ -20,14 +20,14 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
 //#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
-#include "SusyAnaTools/Skims/plugins/ElectronEffectiveArea.h"
+#include "StopTupleMaker/Skims/plugins/ElectronEffectiveArea.h"
 #include "DataFormats/TrackReco/interface/HitPattern.h"
 
 #include "DataFormats/METReco/interface/MET.h"
 
 #include "TLorentzVector.h"
 
-#include "SusyAnaTools/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h"
 
 typedef std::vector< edm::Handle< edm::ValueMap<reco::IsoDeposit> > >   IsoDepositMaps;
 typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepositVals;

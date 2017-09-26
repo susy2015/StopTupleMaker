@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.htProducer_cfi import *
+from StopTupleMaker.Skims.htProducer_cfi import *
 
 # HT using PFJets
 htPF = ht.clone()
@@ -10,7 +10,7 @@ htPFchs = ht.clone()
 htPFchs.JetCollection = cms.InputTag("patJetsPFchsPt50Eta25")
 
 
-from SusyAnaTools.Skims.htFilter_cfi import *
+from StopTupleMaker.Skims.htFilter_cfi import *
 
 # filter on PFHT
 htPFFilter = htFilter.clone()

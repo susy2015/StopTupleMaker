@@ -1,4 +1,4 @@
-<library   name="SusyAnaToolsSkims_plugins" file="*.cc">
+<library   name="StopTupleMakerSkims_plugins" file="*.cc">
   <use   name="FWCore/Framework"/>
   <use   name="FWCore/PluginManager"/>
   <use   name="FWCore/ParameterSet"/>
@@ -16,7 +16,7 @@
   <use   name="JetMETCorrections/Objects"/>
   <use   name="CondFormats/JetMETObjects"/>
   <use   name="PhysicsTools/Utilities"/>
-  <use   name="SusyAnaTools/DataFormats"/>
+  <use   name="StopTupleMaker/DataFormats"/>
   <use   name="DataFormats/HLTReco"/>
   <use   name="HLTrigger/HLTcore"/>
   <use   name="RecoEgamma/EgammaTools"/>

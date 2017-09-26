@@ -20,7 +20,7 @@
 
 #include "TLorentzVector.h"
 
-#include "SusyAnaTools/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h"
 
 class prodMuons : public edm::EDFilter
 {

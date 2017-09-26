@@ -24,7 +24,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
-#include "SusyAnaTools/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h"
 
 #include "TLorentzVector.h"
 

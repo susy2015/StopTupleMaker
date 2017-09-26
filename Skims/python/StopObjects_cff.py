@@ -1,11 +1,11 @@
 
-from SusyAnaTools.Skims.RA2Cleaning_cff       import *
-from SusyAnaTools.Skims.StopJets_cff           import *
-from SusyAnaTools.Skims.StopLeptons_cff        import *
-#from SusyAnaTools.Skims.StopPhotons_cff       import *
-from SusyAnaTools.Skims.StopTrackIsolation_cff import *
-from SusyAnaTools.Skims.StopTauJets_cff        import *
-from SusyAnaTools.Skims.StopBTagJets_cff       import *
+from StopTupleMaker.Skims.RA2Cleaning_cff       import *
+from StopTupleMaker.Skims.StopJets_cff           import *
+from StopTupleMaker.Skims.StopLeptons_cff        import *
+#from StopTupleMaker.Skims.StopPhotons_cff       import *
+from StopTupleMaker.Skims.StopTrackIsolation_cff import *
+from StopTupleMaker.Skims.StopTauJets_cff        import *
+from StopTupleMaker.Skims.StopBTagJets_cff       import *
 
 stopObjects = cms.Sequence(  
   stopPFJets *
