@@ -7,7 +7,7 @@ from PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi import *
 from UserCode.SkimsRA2.goldenMuonSelector_cfi import goldenMuonSelector
 from UserCode.SkimsRA2.goldenElectronSelector_cfi import goldenElectronSelector
 
-from SusyAnaTools.Skims.electronSelector_cfi import *
+from StopTupleMaker.Skims.electronSelector_cfi import *
 
 # Standard veto leptons re-defined by the golden selectors
 # They have to work on PATtuples!
@@ -122,7 +122,7 @@ count2MyPatMuonsPFIDIsoFilter.minNumber = cms.uint32(2)
 count2MyPatMuonsPFIDIsoFilter.maxNumber = cms.uint32(2)
 
 #Jet Filter
-#from SusyAnaTools.Skims.RA2Jets_cff import * 
+#from StopTupleMaker.Skims.RA2Jets_cff import * 
 from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
@@ -229,7 +229,7 @@ myFilterEvtNonIsoMuonMatchToGenMuon.maxMuRelIso = cms.double(0.20)
 myFilterEvtNonIsoMuonMatchToGenMuon.doFilter    = cms.bool(False)
 
 #Calculate MHT
-from SusyAnaTools.Skims.RA2MHT_cff import *
+from StopTupleMaker.Skims.RA2MHT_cff import *
 mymhtPF = mhtPF.clone()
 mymhtPFFilter = mhtPFFilter.clone()
 mymhtPFFilter.MHTSource = cms.InputTag("mymhtPF")
@@ -240,7 +240,7 @@ mymhtPFchsFilter = mhtPFchsFilter.clone()
 mymhtPFchsFilter.MHTSource = cms.InputTag("mymhtPFchs")
 
 #Calculate HT
-from SusyAnaTools.Skims.RA2HT_cff import *
+from StopTupleMaker.Skims.RA2HT_cff import *
 myhtPF = htPF.clone()
 myhtPFFilter = htPFFilter.clone()
 myhtPFFilter.HTSource = cms.InputTag("myhtPF")
@@ -251,7 +251,7 @@ myhtPFchsFilter = htPFchsFilter.clone()
 myhtPFchsFilter.HTSource = cms.InputTag("myhtPFchs")
 
 #Load Dphi filter
-from SusyAnaTools.Skims.jetMHTDPhiFilter_cfi import *
+from StopTupleMaker.Skims.jetMHTDPhiFilter_cfi import *
 myjetMHTDPhiFilter = jetMHTDPhiFilter.clone()
 myjetMHTDPhiFilter.MHTSource = cms.InputTag("mymhtPF")
 myjetMHTDPhiFilter.JetSource = cms.InputTag("patJetsAK5PFPt30")

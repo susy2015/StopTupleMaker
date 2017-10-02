@@ -2,8 +2,8 @@
 // Simply copy the standard PATJetSelector and comment out the GenJets, CaloTowers and PFCandidate info
 //
 
-#ifndef SusyAnaTools_Skims_RA2BasicJetSelector_h
-#define SusyAnaTools_Skims_RA2BasicJetSelector_h
+#ifndef StopTupleMaker_Skims_RA2BasicJetSelector_h
+#define StopTupleMaker_Skims_RA2BasicJetSelector_h
 
 #include "FWCore/Framework/interface/EDFilter.h"
 

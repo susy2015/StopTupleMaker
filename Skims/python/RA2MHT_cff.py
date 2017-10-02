@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.mhtProducer_cfi import *
+from StopTupleMaker.Skims.mhtProducer_cfi import *
 
 # MHT using PF Jets
 mhtPF = mht.clone()
@@ -8,7 +8,7 @@ mhtPF.JetCollection = cms.InputTag('patJetsAK4PFPt30')
 mhtPFchs = mht.clone()
 mhtPFchs.JetCollection = cms.InputTag('patJetsPFchsPt30')
 
-from SusyAnaTools.Skims.mhtFilter_cfi import *
+from StopTupleMaker.Skims.mhtFilter_cfi import *
 
 # filter on PFJet MHT 
 mhtPFFilter = mhtFilter.clone()

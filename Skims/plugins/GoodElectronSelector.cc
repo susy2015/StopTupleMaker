@@ -21,7 +21,7 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
 //#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
-#include "SusyAnaTools/Skims/plugins/ElectronEffectiveArea.h"
+#include "StopTupleMaker/Skims/plugins/ElectronEffectiveArea.h"
 #include "DataFormats/TrackReco/interface/HitPattern.h"
 
 typedef std::vector< edm::Handle< edm::ValueMap<reco::IsoDeposit> > >   IsoDepositMaps;

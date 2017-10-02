@@ -1,11 +1,11 @@
-from SusyAnaTools.Skims.muonSelector_cfi import *
+from StopTupleMaker.Skims.muonSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
 
-from SusyAnaTools.Skims.electronSelector_cfi import *
+from StopTupleMaker.Skims.electronSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi import *
 
-from SusyAnaTools.Skims.sakLooseMuonSelector_cfi import *
-from SusyAnaTools.Skims.sakLooseElectronSelector_cfi import *
+from StopTupleMaker.Skims.sakLooseMuonSelector_cfi import *
+from StopTupleMaker.Skims.sakLooseElectronSelector_cfi import *
 
 stoppatMuonsPFID = muonSelector.clone()
 stoppatMuonsPFID.MuonSource = cms.InputTag("patMuonsPF")

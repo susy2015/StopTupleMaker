@@ -1,10 +1,10 @@
 
-#from SusyAnaTools.Skims.StopJets_cff import *
-#from SusyAnaTools.Skims.StopTrackIsolation_cff import *
-##from SusyAnaTools.Skims.RA2Leptons_cff import *
-#from SusyAnaTools.Skims.StopTauJets_cff        import *
-from SusyAnaTools.Skims.StopObjects_cff        import *
-from SusyAnaTools.Skims.StopDPhiSelection_cff  import *
+#from StopTupleMaker.Skims.StopJets_cff import *
+#from StopTupleMaker.Skims.StopTrackIsolation_cff import *
+##from StopTupleMaker.Skims.RA2Leptons_cff import *
+#from StopTupleMaker.Skims.StopTauJets_cff        import *
+from StopTupleMaker.Skims.StopObjects_cff        import *
+from StopTupleMaker.Skims.StopDPhiSelection_cff  import *
 
 stopFullPFchsSelectionNoMET = cms.Sequence(
   stopCountPFchsJetsPt30 *

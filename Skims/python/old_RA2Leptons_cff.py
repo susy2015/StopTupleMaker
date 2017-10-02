@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.muonSelector_cfi import *
+from StopTupleMaker.Skims.muonSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi import *
 
 # muons selectors
@@ -56,7 +56,7 @@ ra2PFMuonVeto = cms.Sequence(
   ~countPFMuonsIDIso
 )
 
-from SusyAnaTools.Skims.electronSelector_cfi import *
+from StopTupleMaker.Skims.electronSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi import *
 
 from RecoJets.JetProducers.kt4PFJets_cfi import *

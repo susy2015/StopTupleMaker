@@ -1,11 +1,11 @@
 
-from SusyAnaTools.Skims.RA2Jets_drt_from_AOD_cff import *
-from SusyAnaTools.Skims.RA2HT_cff import *
-from SusyAnaTools.Skims.RA2MHT_cff import *
-from SusyAnaTools.Skims.RA2Leptons_cff import *
-#from SusyAnaTools.Skims.RA2Photons_cff import *
-#from SusyAnaTools.Skims.maskedECALTowers_cff import *
-#from SusyAnaTools.Skims.RA2Cleaning_cff import *
+from StopTupleMaker.Skims.RA2Jets_drt_from_AOD_cff import *
+from StopTupleMaker.Skims.RA2HT_cff import *
+from StopTupleMaker.Skims.RA2MHT_cff import *
+from StopTupleMaker.Skims.RA2Leptons_cff import *
+#from StopTupleMaker.Skims.RA2Photons_cff import *
+#from StopTupleMaker.Skims.maskedECALTowers_cff import *
+#from StopTupleMaker.Skims.RA2Cleaning_cff import *
 
 ra2Objects = cms.Sequence(  
   ra2PFJets *

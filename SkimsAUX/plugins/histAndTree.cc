@@ -41,10 +41,10 @@
 #include "recipeAUX/OxbridgeMT2/interface/Basic_Mt2_332_Calculator.h"
 #include "recipeAUX/OxbridgeMT2/interface/ChengHanBisect_Mt2_332_Calculator.h"
 
-#include "SusyAnaTools/TopTagger/interface/Type3TopTagger.h"
+#include "StopTupleMaker/TopTagger/interface/Type3TopTagger.h"
 
-#include "SusyAnaTools/TopTagger/interface/combination.h"
-#include "SusyAnaTools/TopTagger/interface/indexSort.h"
+#include "StopTupleMaker/TopTagger/interface/combination.h"
+#include "StopTupleMaker/TopTagger/interface/indexSort.h"
 
 #include "TFile.h"
 #include "TTree.h"

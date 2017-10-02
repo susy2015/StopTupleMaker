@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.basicJetSelector_drt_from_AOD_cfi import *
+from StopTupleMaker.Skims.basicJetSelector_drt_from_AOD_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 # PFJets (default)

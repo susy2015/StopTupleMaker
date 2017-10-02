@@ -16,10 +16,10 @@ parser.add_option ('-o', dest='outputdir', type='string', default = '', help="ou
 options, args = parser.parse_args()
 
 submitFile = """universe = vanilla
-Executable = $ENV(CMSSW_BASE)/src/SusyAnaTools/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/prodNtp.sh
+Executable = $ENV(CMSSW_BASE)/src/StopTupleMaker/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/prodNtp.sh
 Requirements = OpSys == "LINUX"&& (Arch != "DUMMY" )
 Should_Transfer_Files = if_needed
-Transfer_Input_Files = $ENV(CMSSW_BASE)/src/SusyAnaTools/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/prodNtp.sh, $ENV(CMSSW_BASE)/src/SusyAnaTools/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/treeMaker_stopRA2.py, $ENV(CMSSW_BASE)/src/SusyAnaTools/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/""" + options.filelist + """
+Transfer_Input_Files = $ENV(CMSSW_BASE)/src/StopTupleMaker/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/prodNtp.sh, $ENV(CMSSW_BASE)/src/StopTupleMaker/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/treeMaker_stopRA2.py, $ENV(CMSSW_BASE)/src/StopTupleMaker/SkimsAUX/workdir/prod/80X_crab_example/condor_prod_fastsim/""" + options.filelist + """
 Transfer_Output_Files = "" 
 notify_user = ${LOGNAME}@FNAL.GOV
 x509userproxy = $ENV(X509_USER_PROXY)

@@ -2,8 +2,8 @@
 // $Id: RA2ObjectSelector.h,v 1.1 2012/09/27 10:02:29 sturdy Exp $
 //
 
-#ifndef SusyAnaTools_Skims_RA2ObjectSelector_h
-#define SusyAnaTools_Skims_RA2ObjectSelector_h
+#ifndef StopTupleMaker_Skims_RA2ObjectSelector_h
+#define StopTupleMaker_Skims_RA2ObjectSelector_h
 
 #include "DataFormats/Common/interface/RefVector.h"
 
@@ -23,7 +23,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 
-#include "SusyAnaTools/Skims/plugins/RA2BasicJetSelector.h"
+#include "StopTupleMaker/Skims/plugins/RA2BasicJetSelector.h"
 
 #include <vector>
 

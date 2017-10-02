@@ -1,9 +1,9 @@
 # $Id: RA2Cleaning_cff.py,v 1.16 2012/12/19 14:19:01 seema Exp $
 
 # Standard Event cleaning 
-from SusyAnaTools.Skims.noscraping_cfi      import *
-from SusyAnaTools.Skims.vertex_cfi          import *
-from SusyAnaTools.Skims.HBHENoiseFilter_cff import *
+from StopTupleMaker.Skims.noscraping_cfi      import *
+from StopTupleMaker.Skims.vertex_cfi          import *
+from StopTupleMaker.Skims.HBHENoiseFilter_cff import *
 
 ra2StdCleaning = cms.Sequence(
                  noscraping    
@@ -12,8 +12,8 @@ ra2StdCleaning = cms.Sequence(
 
 # RA2 detector noise cleaning
 from RecoMET.METFilters.eeNoiseFilter_cfi         import *
-from SusyAnaTools.Skims.beamHaloFilter_cfi             import *
-from SusyAnaTools.Skims.HBHENoiseFilter_cff            import *
+from StopTupleMaker.Skims.beamHaloFilter_cfi             import *
+from StopTupleMaker.Skims.HBHENoiseFilter_cff            import *
 from RecoMET.METFilters.hcalLaserEventFilter_cfi  import *
 from RecoMET.METFilters.eeBadScFilter_cfi         import *
 from RecoMET.METFilters.trackingFailureFilter_cfi import *
@@ -34,7 +34,7 @@ ra2NoiseCleaning = cms.Sequence(
 
 ## RA2 post reconstruction cleaning
 # badly reconstructed muons
-from SusyAnaTools.Skims.muonPFCandidateProducer_cfi                import *
+from StopTupleMaker.Skims.muonPFCandidateProducer_cfi                import *
 
 from RecoMET.METFilters.greedyMuonPFCandidateFilter_cfi       import *
 greedyMuons              = greedyMuonPFCandidateFilter.clone()
@@ -80,7 +80,7 @@ logErrorTooManyClusters.forcedValue = cms.untracked.bool(False)
 trackingPOGCleaning = cms.Sequence(manystripclus53X * toomanystripclus53X * logErrorTooManyClusters)
 
 # after all MET POG recommeded filters, also check JetID
-from  SusyAnaTools.Skims.RA2JetIDFailureFilter_cfi import *
+from  StopTupleMaker.Skims.RA2JetIDFailureFilter_cfi import *
 
 ra2PostCleaning = cms.Sequence(
                   ra2NoiseCleaning

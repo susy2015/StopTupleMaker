@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.btagJetSelector_cfi import *
+from StopTupleMaker.Skims.btagJetSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 #select b-tag jets

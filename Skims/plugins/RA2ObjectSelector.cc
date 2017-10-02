@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "SusyAnaTools/Skims/plugins/RA2ObjectSelector.h"
+#include "StopTupleMaker/Skims/plugins/RA2ObjectSelector.h"
 
 using namespace pat;
 

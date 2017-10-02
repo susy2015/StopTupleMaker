@@ -11,7 +11,7 @@
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "SusyAnaTools/Skims/plugins/SAKLooseLepton.h"
+#include "StopTupleMaker/Skims/plugins/SAKLooseLepton.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
 
