@@ -16,7 +16,7 @@
 //           Created:  Fri, 03 Dec 2014 13:48:35 GMT
 //
 //
-#include "SusyAnaTools/StopTreeMaker/interface/stopTreeMaker.h"
+#include "StopTupleMaker/StopTreeMaker/interface/stopTreeMaker.h"
 #include "DataFormats/METReco/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include <memory>

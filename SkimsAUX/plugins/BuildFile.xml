@@ -28,7 +28,6 @@
   <use   name="RecoBTag/BTagTools"/>
   <use   name="RecoBTau/JetTagComputer"/>
   <use   name="TrackingTools/IPTools"/>
-  <use   name="DeepNTuples/DeepNtuplizer"/>
   <use   name="lhapdf"/>
   <use   name="fastjet"/>
   <use   name="PhysicsTools/Heppy"/>
