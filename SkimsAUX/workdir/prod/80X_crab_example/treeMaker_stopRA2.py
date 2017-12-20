@@ -145,7 +145,9 @@ elif options.fileslist:
 else:
    process.source.fileNames = [
 #        '/store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/00B2B39D-5D4D-E611-8BD4-002590D9D8B6.root',
-	'/store/data/Run2017C/MET/MINIAOD/PromptReco-v2/000/300/310/00000/FCAD0182-5B79-E711-8218-02163E011A36.root',#2017
+	#'/store/data/Run2017C/MET/MINIAOD/PromptReco-v2/000/300/310/00000/FCAD0182-5B79-E711-8218-02163E011A36.root',#2017
+       '/store/data/Run2017B/MET/MINIAOD/PromptReco-v1/000/297/722/00000/0EF38132-C65E-E711-98A6-02163E0126D0.root'
+ #'/store/mc/RunIISummer17MiniAOD/QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/MINIAODSIM/92X_upgrade2017_realistic_v10-v3/10000/10B03ECD-3E98-E711-A471-24BE05BD4F81.root',
         #'/store/data/Run2017C/MET/MINIAOD/PromptReco-v3/000/301/142/00000/C8F89B96-9A83-E711-AA35-02163E01366D.root',
 #        '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/00D97021-CFBE-E611-AD3F-0025901D08B8.root',
 #        '/store/mc/RunIISpring16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/10000/7CE5EA6A-F132-E611-9E20-008CFA1660A8.root',
@@ -513,16 +515,16 @@ process.ak4PFJetschsL1FastL2L3 = ak4PFJetsL1FastL2L3.clone( algorithm = cms.stri
 # Default is dR = 0.3, dz < 0.05, pt > 10, reliso < 0.1
 process.load("StopTupleMaker.Skims.trackIsolationMaker_cfi")
 process.trackIsolation = process.trackIsolationFilter.clone()
-process.trackIsolation.pfCandidatesTag = cms.InputTag("packedPFCandidates")
+#process.trackIsolation.pfCandidatesTag = cms.InputTag("packedPFCandidates")
 process.trackIsolation.doTrkIsoVeto = cms.bool(False)
 
 process.loosetrackIsolation = process.trackIsolation.clone()
-process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
+#process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
 process.loosetrackIsolation.isoCut            = cms.double(0.5)
 
-process.refalltrackIsolation = process.trackIsolation.clone()
-process.refalltrackIsolation.mintPt_PFCandidate = cms.double (-1.0)
-process.refalltrackIsolation.isoCut           = cms.double(9999.0)
+#process.refalltrackIsolation = process.trackIsolation.clone()
+#process.refalltrackIsolation.mintPt_PFCandidate = cms.double (-1.0)
+#process.refalltrackIsolation.isoCut           = cms.double(9999.0)
 
 process.load('StopTupleMaker.Skims.StopJets_drt_from_AOD_cff')
 process.load("StopTupleMaker.SkimsAUX.nJetsForSkimsRA2_cfi")
@@ -930,13 +932,13 @@ if options.mcInfo == True:
 
       process.prodJets.jetOtherSrc = cms.InputTag('slimmedJets')
 
-process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"))
+#process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"))
 
 process.stopTreeMaker.vectorDouble.extend([cms.InputTag("prodIsoTrks:trksForIsoVetocharge"), cms.InputTag("prodIsoTrks:trksForIsoVetodz"), cms.InputTag("prodIsoTrks:trksForIsoVetoiso"), cms.InputTag("prodIsoTrks:trksForIsoVetopfActivity"), cms.InputTag("prodIsoTrks:looseisoTrkscharge"), cms.InputTag("prodIsoTrks:looseisoTrksdz"), cms.InputTag("prodIsoTrks:looseisoTrksiso"), cms.InputTag("prodIsoTrks:looseisoTrksmtw"), cms.InputTag("prodIsoTrks:looseisoTrkspfActivity")])
-process.stopTreeMaker.vectorDoubleNamesInTree.extend(["prodIsoTrks:trksForIsoVetocharge|trksForIsoVeto_charge", "prodIsoTrks:trksForIsoVetodz|trksForIsoVeto_dz", "prodIsoTrks:trksForIsoVetoiso|trksForIsoVeto_iso", "prodIsoTrks:trksForIsoVetopfActivity|trksForIsoVeto_pfActivity", "prodIsoTrks:looseisoTrkscharge|loose_isoTrks_charge", "prodIsoTrks:looseisoTrksdz|loose_isoTrks_dz", "prodIsoTrks:looseisoTrksiso|loose_isoTrks_iso", "prodIsoTrks:looseisoTrksmtw|loose_isoTrks_mtw", "prodIsoTrks:looseisoTrkspfActivity|loose_isoTrks_pfActivity"])
+process.stopTreeMaker.vectorDoubleNamesInTree.extend([  "prodIsoTrks:looseisoTrkscharge|loose_isoTrks_charge", "prodIsoTrks:looseisoTrksdz|loose_isoTrks_dz", "prodIsoTrks:looseisoTrksiso|loose_isoTrks_iso", "prodIsoTrks:looseisoTrksmtw|loose_isoTrks_mtw", "prodIsoTrks:looseisoTrkspfActivity|loose_isoTrks_pfActivity"])
 
 process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodIsoTrks:trksForIsoVetopdgId"), cms.InputTag("prodIsoTrks:trksForIsoVetoidx"), cms.InputTag("prodIsoTrks:looseisoTrkspdgId"), cms.InputTag("prodIsoTrks:looseisoTrksidx"), cms.InputTag("prodIsoTrks:forVetoIsoTrksidx")])
-process.stopTreeMaker.vectorIntNamesInTree.extend(["prodIsoTrks:trksForIsoVetopdgId|trksForIsoVeto_pdgId", "prodIsoTrks:trksForIsoVetoidx|trksForIsoVeto_idx", "prodIsoTrks:looseisoTrkspdgId|loose_isoTrks_pdgId", "prodIsoTrks:looseisoTrksidx|loose_isoTrks_idx"])
+process.stopTreeMaker.vectorIntNamesInTree.extend([ "prodIsoTrks:looseisoTrkspdgId|loose_isoTrks_pdgId", "prodIsoTrks:looseisoTrksidx|loose_isoTrks_idx"])
 
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodIsoTrks:looseisoTrksLVec"))
 process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodIsoTrks:looseisoTrksLVec|loose_isoTrksLVec")
@@ -1028,7 +1030,18 @@ if options.selSMSpts == True:
 process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
 
 
-process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.prodElectrons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.refalltrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task,
+#my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff']
+#if process.stopTreeMaker.prodElectrons.isFilled:
+#    for idmod in my_id_modules:
+#        setupAllVIDIdsInModule(process, idmod, setupVIDElectronSelection)
+#SetIS
+#process.stopTreeMaker.prodElectrons.vetoId = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto")
+#process.stopTreeMaker.prodElectrons.looseId = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose")
+#process.stopTreeMaker.prodElectrons.mediumId = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium")
+#process.stopTreeMaker.prodElectrons.tightId = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight")
+
+
+process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.prodElectrons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task,
 ) #process.hltFilte process.QGAK4PFCHSr process.stopPFJets
 
 # Other sequence
