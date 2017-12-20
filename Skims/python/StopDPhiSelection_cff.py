@@ -1,5 +1,5 @@
 
-from SusyAnaTools.Skims.dPhiFilter_cfi import *
+from StopTupleMaker.Skims.dPhiFilter_cfi import *
 
 jetsMETDPhiFilter = dPhiFilter.clone()
 jetsMETDPhiFilter.jetSrc = cms.InputTag("patJetsPF")

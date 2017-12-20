@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    SusyAnaTools/TreeMaker
+// Package:    StopTupleMaker/TreeMaker
 // Class:      stopTreeMaker
 // 
-/**\class stopTreeMaker stopTreeMaker.cc SusyAnaTools/TreeMaker/plugins/stopTreeMaker.cc
+/**\class stopTreeMaker stopTreeMaker.cc StopTupleMaker/TreeMaker/plugins/stopTreeMaker.cc
  * 
  * Description: [one line class summary]
  * 
@@ -16,7 +16,7 @@
 //           Created:  Fri, 03 Dec 2014 13:48:35 GMT
 //
 //
-#include "SusyAnaTools/StopTreeMaker/interface/stopTreeMaker.h"
+#include "StopTupleMaker/StopTreeMaker/interface/stopTreeMaker.h"
 #include "DataFormats/METReco/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include <memory>

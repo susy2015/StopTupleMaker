@@ -33,7 +33,7 @@ newJetsMETData          = jesChange.clone()
 newJetsMETData.JECLevel = cms.string('ak5PFchsL1FastL2L3Residual')
 
 # make default RA2Jet collections
-from SusyAnaTools.Skims.basicJetSelector_cfi import *
+from StopTupleMaker.Skims.basicJetSelector_cfi import *
 from PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi import *
 
 newpatJetsPFchsPt30     = selectedPatJets.clone()

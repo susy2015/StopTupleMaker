@@ -1,4 +1,4 @@
-from SusyAnaTools.Skims.tauJetsSelector_cfi import *
+from StopTupleMaker.Skims.tauJetsSelector_cfi import *
 
 tauJets = tauJetsSelector.clone()
 tauJets.MetSrc    = cms.InputTag("patMETsPF")

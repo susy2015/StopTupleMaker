@@ -173,8 +173,8 @@ process.pfCHS = cms.EDFilter("CandPtrSelector", src = cms.InputTag("packedPFCand
 process.myak4PFJetsCHS = ak4PFJets.clone(src = 'pfCHS', doAreaFastjet = True) # no idea while doArea is false by default, but it's True in RECO so we have to set it
 process.myak4GenJets = ak4GenJets.clone(src = 'packedGenParticles', rParam = 0.4)
 
-process.load("SusyAnaTools.SkimsAUX.prodMuons_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodElectrons_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodMuons_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodElectrons_cfi")
 process.pfNoMuonCHSNoMu =  cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfCHS"), veto = cms.InputTag("prodMuons", "mu2Clean"))
 process.pfNoElectronCHSNoEle = cms.EDProducer("CandPtrProjector", src = cms.InputTag("pfNoMuonCHSNoMu"), veto = cms.InputTag("prodElectrons", "ele2Clean"))
 process.ak4PFJetsCHSNoLep = ak4PFJets.clone(src = 'pfNoElectronCHSNoEle', doAreaFastjet = True) # no idea while doArea is false by default, but it's True in RECO so we have to set it
@@ -261,7 +261,7 @@ if options.specialFix == "JEC" and options.cmsswVersion == "74X":
    print "\nApplying fix to JEC issues in 74X ...\n"
 #JEC can be downloaded from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
 
-#   inputDB = "sqlite_file:" + os.environ['CMSSW_BASE'] + "/src/SusyAnaTools/SkimsAUX/data/PY8_RunIISpring15DR74_bx25_MC.db"
+#   inputDB = "sqlite_file:" + os.environ['CMSSW_BASE'] + "/src/StopTupleMaker/SkimsAUX/data/PY8_RunIISpring15DR74_bx25_MC.db"
 #   print inputDB
 
    process.load("CondCore.DBCommon.CondDBCommon_cfi")
@@ -345,7 +345,7 @@ if options.hltSelection:
       andOr = True
    )
 
-process.load("SusyAnaTools.SkimsAUX.simpleJetSelector_cfi")
+process.load("StopTupleMaker.SkimsAUX.simpleJetSelector_cfi")
 process.selectedPatJetsRA2 = process.simpleJetSelector.clone()
 
 process.load("PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi")
@@ -378,8 +378,8 @@ process.countak4JetsPFchsPt50Eta25.minNumber = cms.uint32(3)
 process.ra2PFchsJets = cms.Sequence( process.ak4patJetsPFchsPt10 * process.ak4patJetsPFchsPt30 * process.ak4patJetsPFchsPt50Eta25 )
 
 # HT 
-process.load("SusyAnaTools.Skims.htProducer_cfi")
-process.load("SusyAnaTools.Skims.htFilter_cfi")
+process.load("StopTupleMaker.Skims.htProducer_cfi")
+process.load("StopTupleMaker.Skims.htFilter_cfi")
 process.htPFchs = process.ht.clone()
 process.htPFchs.JetCollection = cms.InputTag("ak4patJetsPFchsPt50Eta25")
 
@@ -387,8 +387,8 @@ process.htPFchsFilter = process.htFilter.clone()
 process.htPFchsFilter.HTSource = cms.InputTag("htPFchs")
 
 # MHT
-process.load("SusyAnaTools.Skims.mhtProducer_cfi")
-process.load("SusyAnaTools.Skims.mhtFilter_cfi")
+process.load("StopTupleMaker.Skims.mhtProducer_cfi")
+process.load("StopTupleMaker.Skims.mhtFilter_cfi")
 process.mhtPFchs = process.mht.clone()
 process.mhtPFchs.JetCollection = cms.InputTag("ak4patJetsPFchsPt30")
 
@@ -396,15 +396,15 @@ process.mhtPFchsFilter = process.mhtFilter.clone()
 process.mhtPFchsFilter.MHTSource = cms.InputTag("mhtPFchs")
 
 #MT2
-process.load("SusyAnaTools.SkimsAUX.mt2Producer_cfi")
-#process.load("SusyAnaTools.SkimsAUX.mt2Filter_cfi")
+process.load("StopTupleMaker.SkimsAUX.mt2Producer_cfi")
+#process.load("StopTupleMaker.SkimsAUX.mt2Filter_cfi")
 process.mt2PFchs = process.mt2.clone()
 process.mt2PFchs.JetTag = cms.InputTag("ak4patJetsPFchsPt30")
 process.mt2PFchs.METTag = cms.InputTag("slimmedMETs")
 
 
 # Delta Phi
-process.load("SusyAnaTools.Skims.jetMHTDPhiFilter_cfi")
+process.load("StopTupleMaker.Skims.jetMHTDPhiFilter_cfi")
 
 process.ak4jetMHTPFchsDPhiFilter = process.jetMHTDPhiFilter.clone()
 process.ak4jetMHTPFchsDPhiFilter.JetSource = cms.InputTag("ak4patJetsPFchsPt30")
@@ -424,8 +424,8 @@ process.prefilterCounter        = cms.EDProducer("EventCountProducer")
 process.postStdCleaningCounter  = cms.EDProducer("EventCountProducer")
 
 # Standard Event cleaning 
-process.load("SusyAnaTools.SkimsAUX.prodFilterOutScraping_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodGoodVertices_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodFilterOutScraping_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodGoodVertices_cfi")
 
 # an example sequence to create skimmed susypat-tuples
 process.cleanpatseq = cms.Sequence(
@@ -436,7 +436,7 @@ process.cleanpatseq = cms.Sequence(
 
 process.dummyCounter = cms.EDProducer("EventCountProducer")
 
-process.load('SusyAnaTools.SkimsAUX.prodJetIDEventFilter_cfi')
+process.load('StopTupleMaker.SkimsAUX.prodJetIDEventFilter_cfi')
 process.prodJetIDEventFilter.JetSource = cms.InputTag("slimmedJets")
 process.prodJetIDEventFilter.MinJetPt  = cms.double(30.0)
 process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
@@ -444,7 +444,7 @@ process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
 process.prodJetIDEventFilterNoLep = process.prodJetIDEventFilter.clone()
 process.prodJetIDEventFilterNoLep.JetSource = cms.InputTag("patJetsAK4PFCHSPt10NoLep")
 
-process.load('SusyAnaTools.SkimsAUX.weightProducer_cfi')
+process.load('StopTupleMaker.SkimsAUX.weightProducer_cfi')
 process.weightProducer.inputPUfileMC   = cms.untracked.string("")
 process.weightProducer.inputPUfileData = cms.untracked.string("")
 if options.doPtHatWeighting:
@@ -460,7 +460,7 @@ process.ak4PFJetschsL1FastL2L3Residual = ak4PFJetsL1FastL2L3Residual.clone( algo
 process.ak4PFJetschsL1FastL2L3 = ak4PFJetsL1FastL2L3.clone( algorithm = cms.string('AK4PFchs'), src = 'slimmedJets' )
 
 # Default is dR = 0.3, dz < 0.05, pt > 10, reliso < 0.1
-process.load("SusyAnaTools.Skims.trackIsolationMaker_cfi")
+process.load("StopTupleMaker.Skims.trackIsolationMaker_cfi")
 process.trackIsolation = process.trackIsolationFilter.clone()
 process.trackIsolation.pfCandidatesTag = cms.InputTag("packedPFCandidates")
 process.trackIsolation.doTrkIsoVeto = cms.bool(False)
@@ -473,10 +473,10 @@ process.refalltrackIsolation = process.trackIsolation.clone()
 process.refalltrackIsolation.mintPt_PFCandidate = cms.double (-1.0)
 process.refalltrackIsolation.isoCut           = cms.double(9999.0)
 
-process.load('SusyAnaTools.Skims.StopJets_drt_from_AOD_cff')
+process.load('StopTupleMaker.Skims.StopJets_drt_from_AOD_cff')
 
-process.load("SusyAnaTools.SkimsAUX.nJetsForSkimsRA2_cfi")
-process.load("SusyAnaTools.SkimsAUX.jetMHTDPhiForSkimsRA2_cfi")
+process.load("StopTupleMaker.SkimsAUX.nJetsForSkimsRA2_cfi")
+process.load("StopTupleMaker.SkimsAUX.jetMHTDPhiForSkimsRA2_cfi")
 
 # ak4 jets
 process.ak4stopJetsPFchsPt30 = process.stopJetsPFchsPt30.clone(jetSrc = "slimmedJets")
@@ -497,7 +497,7 @@ process.ak4stopmhtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt30")
 
 process.prepareCutvars_seq = cms.Sequence( process.ak4stopJetsPFchsPt30 * process.ak4stopJetsPFchsPt50Eta24 * process.ak4nJetsForSkimsStop * process.ak4jetMHTDPhiForSkimsStop * process.ak4stophtPFchs * process.ak4stopmhtPFchs )
 
-process.load("SusyAnaTools.Skims.StopBTagJets_cff")
+process.load("StopTupleMaker.Skims.StopBTagJets_cff")
 process.stopBJets.JetSrc = cms.InputTag("stopJetsPFchsPt30")
 
 # Other sequence
@@ -514,7 +514,7 @@ process.comb_seq = cms.Sequence(
    process.prepareCutvars_seq
 )
 
-process.load("SusyAnaTools.Skims.StopDPhiSelection_cff")
+process.load("StopTupleMaker.Skims.StopDPhiSelection_cff")
 process.jetsMETDPhiFilter.jetSrc = cms.InputTag("stopJetsPFchsPt30")
 if options.usePhiCorrMET == True:
    process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETs")
@@ -528,7 +528,7 @@ process.stopCount1BJets.minNumber = cms.uint32(1)
 process.stopCount2BJets = process.stopCountBJets.clone()
 process.stopCount2BJets.minNumber = cms.uint32(2)
 
-process.load("SusyAnaTools.Skims.StopType3TopTagger_cff")
+process.load("StopTupleMaker.Skims.StopType3TopTagger_cff")
 if options.usePhiCorrMET == True:
    process.type3topTagger.metSrc = cms.InputTag("slimmedMETs")
 else:
@@ -557,39 +557,39 @@ process.TFileService = cms.Service("TFileService",
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
-process.load("SusyAnaTools.SignalScan.genDecayStringMaker_cfi")
+process.load("StopTupleMaker.SignalScan.genDecayStringMaker_cfi")
 process.printDecay.src = cms.InputTag("prunedGenParticles")
 process.printDecay.keyDecayStrs = cms.vstring("t", "tbar", "~chi_1+", "~chi_1-")
 process.printDecay.printDecay = cms.untracked.bool(options.debug)
 
-process.load("SusyAnaTools.SignalScan.genDecayStringMakerPythia8_cfi")
+process.load("StopTupleMaker.SignalScan.genDecayStringMakerPythia8_cfi")
 process.printDecayPythia8.src = cms.InputTag("prunedGenParticles")
 process.printDecayPythia8.keyDecayStrs = cms.vstring("t", "tbar", "~chi_1+", "~chi_1-")
 process.printDecayPythia8.printDecay = cms.untracked.bool(options.debug)
 
-process.load("SusyAnaTools.SignalScan.smsModelFilter_cfi")
+process.load("StopTupleMaker.SignalScan.smsModelFilter_cfi")
 process.smsModelFilter.SusyScanTopology   = cms.string(options.smsModel)
 process.smsModelFilter.SusyScanMotherMass = cms.double(options.smsMotherMass)
 process.smsModelFilter.SusyScanLSPMass    = cms.double(options.smsDaughterMass)
 process.smsModelFilter.SusyScanFracLSP    = cms.double(0.0)
 process.smsModelFilter.Debug              = cms.bool(options.debug)
 
-process.load("SusyAnaTools.TopTagger.groomProd_cfi")
+process.load("StopTupleMaker.TopTagger.groomProd_cfi")
 process.groomProdak4 = process.groomProd.clone()
 process.groomProdak4.jetSrc = cms.InputTag("ak4patJetsPFchsPt10")
 process.groomProdak4.groomingOpt = cms.untracked.int32(1)
 #process.groomProdak4.debug = cms.untracked.bool(options.debug)
 
-process.load("SusyAnaTools.SkimsAUX.prodJets_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodGenJets_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodMET_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodGenInfo_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodIsoTrks_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodEventInfo_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodJets_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodGenJets_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodMET_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodEventInfo_cfi")
 
 #Addition of Filter Decision Bits and Trigger Results
-process.load("SusyAnaTools.SkimsAUX.prodTriggerResults_cfi")
-process.load("SusyAnaTools.SkimsAUX.prodFilterFlags_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodTriggerResults_cfi")
+process.load("StopTupleMaker.SkimsAUX.prodFilterFlags_cfi")
 
 #rerun HBHE noise filter manually
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
@@ -625,7 +625,7 @@ process.prodMuonsNoIso.DoMuonIsolation = cms.int32(0)
 process.prodElectronsNoIso = process.prodElectrons.clone()
 process.prodElectronsNoIso.DoElectronIsolation = cms.int32(0)
 
-process.load("SusyAnaTools.StopTreeMaker.stopTreeMaker_cfi")
+process.load("StopTupleMaker.StopTreeMaker.stopTreeMaker_cfi")
 process.stopTreeMaker.debug = cms.bool(options.debug)
 process.stopTreeMaker.TreeName = cms.string("AUX")
 
@@ -748,7 +748,7 @@ if options.mcInfo == True:
       process.stopTreeMaker.vectorInt.append(cms.InputTag("PDFWeights", "PDFidsMiniAOD"))
 
    if options.fastsim == True:
-      process.load("SusyAnaTools.SkimsAUX.susyscan_cfi")
+      process.load("StopTupleMaker.SkimsAUX.susyscan_cfi")
       process.SusyScanProducer.shouldScan = cms.bool(options.fastsim)
       process.stopTreeMaker.varsDouble.extend([cms.InputTag("SusyScanProducer", "SusyMotherMass"), cms.InputTag("SusyScanProducer", "SusyLSPMass")])
 
@@ -804,7 +804,7 @@ else:
    process.trig_filter_seq = cms.Sequence( process.triggerProducer * process.CSCTightHaloFilter * process.goodVerticesFilter * process.eeBadScFilter * process.EcalDeadCellTriggerPrimitiveFilter ) 
 
 if options.externalFilterList:
-   process.load("SusyAnaTools.SkimsAUX.EventListFilter_cfi")
+   process.load("StopTupleMaker.SkimsAUX.EventListFilter_cfi")
    for flist in options.externalFilterList:
       tfile = tarfile.open(flist, 'r:gz')
       tfile.extractall('.')

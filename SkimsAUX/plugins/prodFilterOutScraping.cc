@@ -22,7 +22,7 @@
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-#include "SusyAnaTools/SkimsAUX/plugins/prodFilterOutScraping.h"
+#include "StopTupleMaker/SkimsAUX/plugins/prodFilterOutScraping.h"
 
 
 using namespace edm;
@@ -86,8 +86,8 @@ bool prodFilterOutScraping::filter( edm::Event& iEvent, const edm::EventSetup& i
 
   int prod = (accepted ? 1 : 0);
 
-  std::auto_ptr<int> prodPtr(new int(prod));
-  iEvent.put(prodPtr);
+  std::unique_ptr<int> prodPtr(new int(prod));
+  iEvent.put(std::move(prodPtr));
  
   if (applyfilter)
     return accepted;

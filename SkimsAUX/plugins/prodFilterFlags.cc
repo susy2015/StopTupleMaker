@@ -111,8 +111,8 @@ prodFilterFlags::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(trigNames.triggerIndex(filterName_) < trigResults->size())
     passesTrigger=trigResults->accept(trigNames.triggerIndex(filterName_));
 
-  std::auto_ptr<int> htp(new int(passesTrigger));
-  iEvent.put(htp);
+  std::unique_ptr<int> htp(new int(passesTrigger));
+  iEvent.put(std::move(htp));
 }
 
 // ------------ method called once each job just before starting event loop  ------------

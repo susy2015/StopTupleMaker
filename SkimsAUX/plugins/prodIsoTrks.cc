@@ -50,24 +50,24 @@ class prodIsoTrks : public edm::EDFilter {
     edm::InputTag pfCandSrc_, loose_isoTrkSrc_, loose_isotrk_isoVecSrc_, loose_isotrk_dzpvVecSrc_;
     edm::Handle<pat::PackedCandidateCollection> pfCandHandle_, loose_isoTrksHandle_;
 
-    edm::InputTag ref_all_isoTrkSrc_, ref_all_isoTrk_isoVecSrc_;
-    edm::Handle<pat::PackedCandidateCollection> ref_all_isoTrksHandle_;
-    edm::Handle<std::vector<double> > ref_all_isoTrks_isoVecHandle_;
+    //edm::InputTag ref_all_isoTrkSrc_, ref_all_isoTrk_isoVecSrc_;
+    //edm::Handle<pat::PackedCandidateCollection> ref_all_isoTrksHandle_;
+    //edm::Handle<std::vector<double> > ref_all_isoTrks_isoVecHandle_;
 
-    edm::InputTag W_emuVec_Src_, W_tau_emuVec_Src_, W_tau_prongsVec_Src_;
-    edm::Handle<std::vector<int> > W_emuVec_, W_tau_emuVec_, W_tau_prongsVec_;
+    //edm::InputTag W_emuVec_Src_, W_tau_emuVec_Src_, W_tau_prongsVec_Src_;
+    //edm::Handle<std::vector<int> > W_emuVec_, W_tau_emuVec_, W_tau_prongsVec_;
 
-    edm::InputTag genDecayLVec_Src_;
-    edm::Handle<std::vector<TLorentzVector> > genDecayLVec_;
+    //edm::InputTag genDecayLVec_Src_;
+    //edm::Handle<std::vector<TLorentzVector> > genDecayLVec_;
 
-    edm::EDGetTokenT<std::vector<int> >W_EmVec_Tok_;
-    edm::EDGetTokenT<std::vector<int> >W_Tau_EmuVec_Tok_;
-    edm::EDGetTokenT<std::vector<int> >W_Tau_ProngsVec_Tok_;
-    edm::EDGetTokenT<std::vector<TLorentzVector> >GenDecayLVec_Tok_;
+    //edm::EDGetTokenT<std::vector<int> >W_EmVec_Tok_;
+    //edm::EDGetTokenT<std::vector<int> >W_Tau_EmuVec_Tok_;
+    //edm::EDGetTokenT<std::vector<int> >W_Tau_ProngsVec_Tok_;
+    //edm::EDGetTokenT<std::vector<TLorentzVector> >GenDecayLVec_Tok_;
     edm::EDGetTokenT<pat::PackedCandidateCollection>PfCandTok_;
     edm::EDGetTokenT<pat::PackedCandidateCollection> Loose_IsoTrksHandle_Tok_;
-    edm::EDGetTokenT<pat::PackedCandidateCollection> Ref_All_IsoTrksHandle_Tok_;
-    edm::EDGetTokenT<std::vector<double> > Ref_All_IsoTrks_IsoVecHandle_Tok_;
+    //edm::EDGetTokenT<pat::PackedCandidateCollection> Ref_All_IsoTrksHandle_Tok_;
+    //edm::EDGetTokenT<std::vector<double> > Ref_All_IsoTrks_IsoVecHandle_Tok_;
     edm::EDGetTokenT< std::vector<reco::Vertex> >VtxTok_;
     edm::EDGetTokenT<edm::View<reco::MET> >MetTok_;
     edm::EDGetTokenT<std::vector<double> >  Loose_Isotrk_IsoVecHandle_Tok_;
@@ -106,25 +106,25 @@ prodIsoTrks::prodIsoTrks(const edm::ParameterSet & iConfig) {
   loose_isotrk_isoVecSrc_ = iConfig.getParameter<edm::InputTag>("loose_isotrk_isoVecSrc");
   loose_isotrk_dzpvVecSrc_ = iConfig.getParameter<edm::InputTag>("loose_isotrk_dzpvVecSrc");
 
-  ref_all_isoTrkSrc_ = iConfig.getParameter<edm::InputTag>("ref_all_isoTrkSrc");
-  ref_all_isoTrk_isoVecSrc_ = iConfig.getParameter<edm::InputTag>("ref_all_isoTrk_isoVecSrc");
+  //ref_all_isoTrkSrc_ = iConfig.getParameter<edm::InputTag>("ref_all_isoTrkSrc");
+  //ref_all_isoTrk_isoVecSrc_ = iConfig.getParameter<edm::InputTag>("ref_all_isoTrk_isoVecSrc");
 
-  W_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_emuVec");
-  W_tau_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_emuVec");
-  W_tau_prongsVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_prongsVec");
+  //W_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_emuVec");
+  //W_tau_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_emuVec");
+  //W_tau_prongsVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_prongsVec");
 
-  genDecayLVec_Src_ = iConfig.getParameter<edm::InputTag>("genDecayLVec");
+  //genDecayLVec_Src_ = iConfig.getParameter<edm::InputTag>("genDecayLVec");
 
   debug_       = iConfig.getParameter<bool>("debug");
 
-  W_EmVec_Tok_=consumes<std::vector<int> > (W_emuVec_Src_);
-  W_Tau_EmuVec_Tok_=consumes<std::vector<int> >  (W_tau_emuVec_Src_);
-  W_Tau_ProngsVec_Tok_=consumes<std::vector<int> >(W_tau_prongsVec_Src_);
-  GenDecayLVec_Tok_=consumes<std::vector<TLorentzVector> > (genDecayLVec_Src_);
+  //W_EmVec_Tok_=consumes<std::vector<int> > (W_emuVec_Src_);
+  //W_Tau_EmuVec_Tok_=consumes<std::vector<int> >  (W_tau_emuVec_Src_);
+  //W_Tau_ProngsVec_Tok_=consumes<std::vector<int> >(W_tau_prongsVec_Src_);
+  //GenDecayLVec_Tok_=consumes<std::vector<TLorentzVector> > (genDecayLVec_Src_);
   PfCandTok_=consumes<pat::PackedCandidateCollection> (pfCandSrc_);
   Loose_IsoTrksHandle_Tok_=consumes<pat::PackedCandidateCollection> (loose_isoTrkSrc_);
-  Ref_All_IsoTrksHandle_Tok_=consumes<pat::PackedCandidateCollection> (ref_all_isoTrkSrc_);
-  Ref_All_IsoTrks_IsoVecHandle_Tok_=consumes<std::vector<double> > (ref_all_isoTrk_isoVecSrc_);
+  //Ref_All_IsoTrksHandle_Tok_=consumes<pat::PackedCandidateCollection> (ref_all_isoTrkSrc_);
+  //Ref_All_IsoTrks_IsoVecHandle_Tok_=consumes<std::vector<double> > (ref_all_isoTrk_isoVecSrc_);
   VtxTok_=consumes< std::vector<reco::Vertex> >(vtxSrc_);
   MetTok_=consumes<edm::View<reco::MET> >(metSrc_);
   Loose_Isotrk_IsoVecHandle_Tok_=consumes<std::vector<double> >  (loose_isotrk_isoVecSrc_),
@@ -163,32 +163,32 @@ bool prodIsoTrks::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
   if( !iEvent.isRealData() ) isData_ = false;
 
-  std::auto_ptr<std::vector<TLorentzVector> > trksForIsoVetoLVec(new std::vector<TLorentzVector>());
-  std::auto_ptr<std::vector<double> > trksForIsoVeto_charge(new std::vector<double>());
-  std::auto_ptr<std::vector<double> > trksForIsoVeto_dz(new std::vector<double>());
-  std::auto_ptr<std::vector<int> > trksForIsoVeto_pdgId(new std::vector<int>());
-  std::auto_ptr<std::vector<int> > trksForIsoVeto_idx(new std::vector<int>());
-  std::auto_ptr<std::vector<double> > trksForIsoVeto_iso(new std::vector<double>());
-  std::auto_ptr<std::vector<double> > trksForIsoVeto_pfActivity(new std::vector<double>());
+  std::unique_ptr<std::vector<TLorentzVector> > trksForIsoVetoLVec(new std::vector<TLorentzVector>());
+  std::unique_ptr<std::vector<double> > trksForIsoVeto_charge(new std::vector<double>());
+  std::unique_ptr<std::vector<double> > trksForIsoVeto_dz(new std::vector<double>());
+  std::unique_ptr<std::vector<int> > trksForIsoVeto_pdgId(new std::vector<int>());
+  std::unique_ptr<std::vector<int> > trksForIsoVeto_idx(new std::vector<int>());
+  std::unique_ptr<std::vector<double> > trksForIsoVeto_iso(new std::vector<double>());
+  std::unique_ptr<std::vector<double> > trksForIsoVeto_pfActivity(new std::vector<double>());
 
-  std::auto_ptr<std::vector<TLorentzVector> > loose_isoTrksLVec(new std::vector<TLorentzVector>());
-  std::auto_ptr<std::vector<double> > loose_isoTrks_charge(new std::vector<double>());
-  std::auto_ptr<std::vector<double> > loose_isoTrks_dz(new std::vector<double>());
-  std::auto_ptr<std::vector<int> > loose_isoTrks_pdgId(new std::vector<int>());
-  std::auto_ptr<std::vector<int> > loose_isoTrks_idx(new std::vector<int>());
-  std::auto_ptr<std::vector<double> > loose_isoTrks_iso(new std::vector<double>());
-  std::auto_ptr<std::vector<double> > loose_isoTrks_mtw(new std::vector<double>());
-  std::auto_ptr<std::vector<double> > loose_isoTrks_pfActivity(new std::vector<double>());
+  std::unique_ptr<std::vector<TLorentzVector> > loose_isoTrksLVec(new std::vector<TLorentzVector>());
+  std::unique_ptr<std::vector<double> > loose_isoTrks_charge(new std::vector<double>());
+  std::unique_ptr<std::vector<double> > loose_isoTrks_dz(new std::vector<double>());
+  std::unique_ptr<std::vector<int> > loose_isoTrks_pdgId(new std::vector<int>());
+  std::unique_ptr<std::vector<int> > loose_isoTrks_idx(new std::vector<int>());
+  std::unique_ptr<std::vector<double> > loose_isoTrks_iso(new std::vector<double>());
+  std::unique_ptr<std::vector<double> > loose_isoTrks_mtw(new std::vector<double>());
+  std::unique_ptr<std::vector<double> > loose_isoTrks_pfActivity(new std::vector<double>());
 
-  std::auto_ptr<std::vector<int> > forVetoIsoTrks_idx(new std::vector<int>());
-
+  std::unique_ptr<std::vector<int> > forVetoIsoTrks_idx(new std::vector<int>());
+/*
   if( !isData_ ){
      iEvent.getByToken(W_EmVec_Tok_, W_emuVec_);
      iEvent.getByToken(W_Tau_EmuVec_Tok_, W_tau_emuVec_);
      iEvent.getByToken(W_Tau_ProngsVec_Tok_, W_tau_prongsVec_);
      iEvent.getByToken(GenDecayLVec_Tok_, genDecayLVec_);
   }
-
+*/
   edm::Handle< std::vector<reco::Vertex> > vertices;
   iEvent.getByToken(VtxTok_, vertices);
 //  reco::Vertex::Point vtxpos = (vertices->size() > 0 ? (*vertices)[0].position() : reco::Vertex::Point());
@@ -201,8 +201,8 @@ bool prodIsoTrks::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   iEvent.getByToken(ForVetoIsoTrks_Tok_, forVetoIsoTrks_); 
   if( forVetoIsoTrks_.isValid() ) nIsoTrksForVeto = forVetoIsoTrks_->size(); else nIsoTrksForVeto =0;
 
-  iEvent.getByToken(Ref_All_IsoTrksHandle_Tok_, ref_all_isoTrksHandle_); 
-  iEvent.getByToken(Ref_All_IsoTrks_IsoVecHandle_Tok_, ref_all_isoTrks_isoVecHandle_); 
+  ///iEvent.getByToken(Ref_All_IsoTrksHandle_Tok_, ref_all_isoTrksHandle_); 
+  //iEvent.getByToken(Ref_All_IsoTrks_IsoVecHandle_Tok_, ref_all_isoTrks_isoVecHandle_); 
 
   edm::Handle<std::vector<double> >  loose_isotrk_isoVecHandle, loose_isotrk_dzpvVecHandle;
   iEvent.getByToken(Loose_Isotrk_IsoVecHandle_Tok_, loose_isotrk_isoVecHandle);
@@ -238,7 +238,8 @@ bool prodIsoTrks::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   if( debug_ ) std::cout<<std::endl;
 
   iEvent.getByToken(PfCandTok_, pfCandHandle_);
-  if( pfCandHandle_.isValid() ){
+/* 
+ if( pfCandHandle_.isValid() ){
      for(unsigned int ip=0; ip<pfCandHandle_->size(); ip++){
 
         if( std::isnan((*pfCandHandle_)[ip].pt()) || std::isinf((*pfCandHandle_)[ip].pt()) ) continue;
@@ -323,36 +324,36 @@ bool prodIsoTrks::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
      }
      std::cout<<std::endl;
   }
-
+*/
   // store in the event
 
-  std::auto_ptr<int>  loose_nIsoTrksPtr(new int);
+  std::unique_ptr<int>  loose_nIsoTrksPtr(new int);
   *loose_nIsoTrksPtr = loose_nIsoTrks;
 
-  std::auto_ptr<int> nIsoTrksForVetoPtr(new int);
+  std::unique_ptr<int> nIsoTrksForVetoPtr(new int);
   *nIsoTrksForVetoPtr = nIsoTrksForVeto;
    
-  iEvent.put(trksForIsoVetoLVec, "trksForIsoVetoLVec");
-  iEvent.put(trksForIsoVeto_charge, "trksForIsoVetocharge");
-  iEvent.put(trksForIsoVeto_dz, "trksForIsoVetodz");
-  iEvent.put(trksForIsoVeto_pdgId, "trksForIsoVetopdgId");
-  iEvent.put(trksForIsoVeto_idx, "trksForIsoVetoidx");
-  iEvent.put(trksForIsoVeto_iso, "trksForIsoVetoiso");
-  iEvent.put(trksForIsoVeto_pfActivity, "trksForIsoVetopfActivity");
+  iEvent.put(std::move(trksForIsoVetoLVec), "trksForIsoVetoLVec");
+  iEvent.put(std::move(trksForIsoVeto_charge), "trksForIsoVetocharge");
+  iEvent.put(std::move(trksForIsoVeto_dz), "trksForIsoVetodz");
+  iEvent.put(std::move(trksForIsoVeto_pdgId), "trksForIsoVetopdgId");
+  iEvent.put(std::move(trksForIsoVeto_idx), "trksForIsoVetoidx");
+  iEvent.put(std::move(trksForIsoVeto_iso), "trksForIsoVetoiso");
+  iEvent.put(std::move(trksForIsoVeto_pfActivity), "trksForIsoVetopfActivity");
 
-  iEvent.put(loose_isoTrksLVec, "looseisoTrksLVec");
-  iEvent.put(loose_isoTrks_charge, "looseisoTrkscharge");
-  iEvent.put(loose_isoTrks_dz, "looseisoTrksdz");
-  iEvent.put(loose_isoTrks_pdgId, "looseisoTrkspdgId");
-  iEvent.put(loose_isoTrks_idx, "looseisoTrksidx");
-  iEvent.put(loose_isoTrks_iso, "looseisoTrksiso");
-  iEvent.put(loose_isoTrks_mtw, "looseisoTrksmtw");
-  iEvent.put(loose_isoTrks_pfActivity, "looseisoTrkspfActivity");
+  iEvent.put(std::move(loose_isoTrksLVec), "looseisoTrksLVec");
+  iEvent.put(std::move(loose_isoTrks_charge), "looseisoTrkscharge");
+  iEvent.put(std::move(loose_isoTrks_dz), "looseisoTrksdz");
+  iEvent.put(std::move(loose_isoTrks_pdgId), "looseisoTrkspdgId");
+  iEvent.put(std::move(loose_isoTrks_idx), "looseisoTrksidx");
+  iEvent.put(std::move(loose_isoTrks_iso), "looseisoTrksiso");
+  iEvent.put(std::move(loose_isoTrks_mtw), "looseisoTrksmtw");
+  iEvent.put(std::move(loose_isoTrks_pfActivity), "looseisoTrkspfActivity");
 
-  iEvent.put(forVetoIsoTrks_idx, "forVetoIsoTrksidx");
+  iEvent.put(std::move(forVetoIsoTrks_idx), "forVetoIsoTrksidx");
 
-  iEvent.put(loose_nIsoTrksPtr, "loosenIsoTrks");
-  iEvent.put(nIsoTrksForVetoPtr, "nIsoTrksForVeto");
+  iEvent.put(std::move(loose_nIsoTrksPtr), "loosenIsoTrks");
+  iEvent.put(std::move(nIsoTrksForVetoPtr), "nIsoTrksForVeto");
 
   return true;
 }

@@ -1,6 +1,6 @@
 # Sequence to clean events based on boolean filter results stored on pattuples
 
-from SusyAnaTools.Skims.filterBoolean_cfi import *
+from StopTupleMaker.Skims.filterBoolean_cfi import *
 
 RA2_HBHENoiseFilterRA2    = booleanFilter.clone()
 RA2_HBHENoiseFilterRA2.ResultSource = cms.InputTag("HBHENoiseFilterRA2","HBHENoiseFilterResult","PAT")

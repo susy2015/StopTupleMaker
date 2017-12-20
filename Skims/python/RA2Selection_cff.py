@@ -1,11 +1,11 @@
 
-from SusyAnaTools.Skims.RA2Jets_cff import *
-from SusyAnaTools.Skims.RA2HT_cff import *
-from SusyAnaTools.Skims.RA2MHT_cff import *
-from SusyAnaTools.Skims.RA2DeltaR_cff import *
-from SusyAnaTools.Skims.RA2Leptons_cff import *
-#from SusyAnaTools.Skims.RA2LeptonVeto_cff import *
-#from SusyAnaTools.Skims.RA2Cleaning_cff import *
+from StopTupleMaker.Skims.RA2Jets_cff import *
+from StopTupleMaker.Skims.RA2HT_cff import *
+from StopTupleMaker.Skims.RA2MHT_cff import *
+from StopTupleMaker.Skims.RA2DeltaR_cff import *
+from StopTupleMaker.Skims.RA2Leptons_cff import *
+#from StopTupleMaker.Skims.RA2LeptonVeto_cff import *
+#from StopTupleMaker.Skims.RA2Cleaning_cff import *
 
 ra2FullPFSelectionNoMHT = cms.Sequence(
   countJetsAK4PFPt50Eta25 *

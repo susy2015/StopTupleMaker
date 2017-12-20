@@ -1,11 +1,11 @@
-from SusyAnaTools.TopTagger.topTagger_cfi import *
+from StopTupleMaker.TopTagger.topTagger_cfi import *
 
 type3topTagger = topTagger.clone()
 type3topTagger.taggingMode = cms.untracked.bool(True)
 
 stopType3TopTagger = cms.Sequence( type3topTagger )
 
-from SusyAnaTools.Skims.filterDoubles_cfi import *
+from StopTupleMaker.Skims.filterDoubles_cfi import *
 
 topMassCuttype3topTagger = doublesFilter.clone()
 topMassCuttype3topTagger.ResultSource = cms.InputTag("stopType3TopTagger:bestTopJetMass")
