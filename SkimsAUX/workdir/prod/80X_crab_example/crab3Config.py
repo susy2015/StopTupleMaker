@@ -8,7 +8,8 @@ config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = 'run_topNtuplizer.py'
 config.JobType.allowUndistributedCMSSW = False
-config.JobType.inputFiles = ["QGL_cmssw8020_v2.db",]
+config.JobType.inputFiles = ["QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml"]
+config.JobType.scriptExe = 'userScript.sh'
 #config.JobType.pyCfgParams = ['GlobalTag=GR_P_V56', 'mcInfo=0']
 
 config.section_("Data")
