@@ -147,6 +147,45 @@ process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 
 ###############################################################################################################################
 
+###### -- Add AK8 PUPPI jet collection using Jet Toolbox --
+####
+####from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+####
+##### Keep this behind the cleaned version for now, otherwise everything will be lepton cleaned
+####jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', 
+####            runOnMC = not options.isData, 
+####            PUMethod='Puppi', 
+####            addSoftDropSubjets = True, 
+####            addSoftDrop = True, 
+####            addNsub = True, 
+####            bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'], 
+####            addCMSTopTagger = False)
+
+###############################################################################################################################
+
+#ANDRES Gamma Var  
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+
+switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+
+# Define which IDs we want to produce
+my_photon_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff']
+
+# Add them to the VID producer
+#if process.PhotonIDisoProducer.isFilled:
+for idmod in my_photon_id_modules:
+   setupAllVIDIdsInModule(process, idmod, setupVIDPhotonSelection)
+
+process.load("StopTupleMaker.SkimsAUX.PhotonIDisoProducer_cfi")
+
+# Set ID tags
+process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")
+process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
+process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
+            
+
+###############################################################################################################################
+
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
 
@@ -357,6 +396,13 @@ updateJetCollection(
    jetSource = jetTag,
    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
    btagDiscriminators = [
+      'softPFMuonBJetTags',
+      'softPFElectronBJetTags',
+      'pfJetBProbabilityBJetTags',
+      'pfJetProbabilityBJetTags',
+      'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+      'pfCombinedCvsLJetTags',     
+      'pfCombinedCvsBJetTags',     
       'pfCombinedSecondaryVertexV2BJetTags',
       'pfDeepCSVJetTags:probudsg', 
       'pfDeepCSVJetTags:probb', 
@@ -602,6 +648,19 @@ process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "charge
 #process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexMass"))
 process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
 
+####process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8LVec"))
+####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau1"))
+####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau2"))
+####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau3"))
+####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8SoftDropMass"))
+####
+####process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8SubjetLVec"))
+####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetMult"))
+####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetPtD"))
+####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis1"))
+####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis2"))
+####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetBDisc"))
+
 
 if not options.isData:
     process.stopTreeMaker.vectorString.append(cms.InputTag("prodGenInfo", "genDecayStrVec"))
@@ -683,6 +742,31 @@ process.stopTreeMaker.varsInt.extend([cms.InputTag("prodEventInfo:vtxSize"), cms
 process.stopTreeMaker.varsDouble.extend([cms.InputTag("prodEventInfo:trunpv"), cms.InputTag("prodEventInfo:avgnpv"), cms.InputTag("prodEventInfo:storedWeight")])
 process.stopTreeMaker.varsDoubleNamesInTree.extend(["prodEventInfo:trunpv|tru_npv", "prodEventInfo:avgnpv|avg_npv", "prodEventInfo:storedWeight|stored_weight"])
 
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "loosePhotonID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "mediumPhotonID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "tightPhotonID"))
+                                                  
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "isEB"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "genMatched"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hadTowOverEM"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "sigmaIetaIeta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hasPixelSeed"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "passElectronVeto"))
+#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "hadronization"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "nonPrompt"))
+#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "fullID"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPt"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonEta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPhi"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVec"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVecGen"))
+
 
 ###############################################################################################################################
 
@@ -699,4 +783,3 @@ process.stopTreeMaker.varsDoubleNamesInTree.extend(["prodEventInfo:trunpv|tru_np
 process.p = cms.Path(process.stopTreeMaker)
 #process.p = cms.Path(process.pfDeepFlavourJetTags*process.stopTreeMaker*process.dump)
 
-#  LocalWords:  cms

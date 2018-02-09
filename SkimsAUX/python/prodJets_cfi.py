@@ -82,4 +82,7 @@ prodJets = cms.EDFilter(
                             ,'deepFlavourJetTags:probcc'
                             ),
   bDiscriminators = cms.vstring(), 
+  ak8JetSrc = cms.InputTag("selectedPatJetsAK8PFPuppi"),
+  ak8ptCut = cms.double(200.0),
+
 )

@@ -73,6 +73,8 @@ public:
 private:
 
     virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
+
+    void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
     
     edm::EDGetTokenT<std::vector<pat::Jet> >JetTok_;
     edm::EDGetTokenT<std::vector<pat::Jet> >OtherJetsTok_;
@@ -90,8 +92,7 @@ private:
     edm::EDGetTokenT< std::vector<reco::Vertex> >VtxTok_;
     edm::EDGetTokenT<std::vector<pat::Jet>> PuppiJetsSrc_Tok_;
     edm::EDGetTokenT<std::vector<pat::Jet>> PuppiSubJetsSrc_Tok_;
-    edm::EDGetTokenT<std::vector<pat::Jet>> Ak8Jets_Tok_;
-    edm::EDGetTokenT<std::vector<pat::Jet>> Ak8SubJets_Tok_;
+    edm::EDGetTokenT<std::vector<pat::Jet> > AK8JetTok_;
 
     edm::InputTag W_emuVec_Src_, W_tauVec_Src_, W_tau_emuVec_Src_, W_tau_prongsVec_Src_, W_tau_nuVec_Src_;
     edm::Handle<std::vector<int> > W_emuVec_, W_tauVec_, W_tau_emuVec_, W_tau_prongsVec_, W_tau_nuVec_;
@@ -116,9 +117,11 @@ private:
     edm::Handle<std::vector<pat::Jet> > puppiSubJets; 
  
     //AK8 Jets
-    edm::InputTag ak8JetsSrc_, ak8SubJetsSrc_;
-    edm::Handle<std::vector<pat::Jet> > ak8Jets;
-    edm::Handle<std::vector<pat::Jet> > ak8SubJets;
+    edm::InputTag AK8JetSrc_;
+    //edm::InputTag ak8JetsSrc_, ak8SubJetsSrc_;
+    //edm::Handle<std::vector<pat::Jet> > ak8Jets;
+    //edm::Handle<std::vector<pat::Jet> > ak8SubJets;
+    double ak8ptCut_;
 
     std::string qgTaggerKey_;
 
@@ -127,6 +130,9 @@ private:
   edm::InputTag jetSrc_, jetOtherSrc_;
   // All have to be pat::Jet, otherwise cannot get b-tagging information!
   edm::Handle<std::vector<pat::Jet> > jets, otherjets; 
+
+    std::string NjettinessAK8Puppi_label_, ak8PFJetsPuppi_label_;
+
   std::string bTagKeyString_;
 
   std::string jetPBJetTags_;
@@ -204,6 +210,92 @@ private:
   float trackJetPt_;
 };
 
+void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
+{
+
+    totalMult_ = 0;
+    ptD_       = 0;
+    axis1_     = 0;
+    axis2_     = 0;
+    
+    if(jet->numberOfDaughters() == 0) return;
+
+    float sum_weight    = 0.0;
+    float sum_dEta      = 0.0;
+    float sum_dPhi      = 0.0;
+    float sum_dEta2     = 0.0;
+    float sum_dPhi2     = 0.0;
+    float sum_dEta_dPhi = 0.0;
+    float sum_pt        = 0.0;
+    bool useQC          = false; // useQualityCuts; hard-coded for now to mimic what jetMet does in 731
+
+    // loop over the jet constituents
+    // (packed candidate situation)
+    for(auto part : jet->getJetConstituentsQuick()) {
+        if(part->charge()){ // charged particles
+            if(isReco) {
+                auto p = dynamic_cast<const pat::PackedCandidate*>(part);
+                if(!p){
+                    try { throw; }
+                    catch(...) {
+                        std::cout << "ERROR: QGTagging variables cannot be computed for these jets!" << std::endl
+                                  << "       See QuauarGluonTaggingVaiables::compute()"              << std::endl;
+                    } // catch(...)
+                } // !p
+                if(!( p->fromPV() > 1 && p->trackHighPurity() )) continue;
+                if(useQC) {
+                    // currently hard-coded to false above
+                    // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
+                    if( p->dzError()==0 || p->dxyError()==0 ) continue;
+                    if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
+                    if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only applies to multiplicity
+                } else ++totalMult_;
+            } else ++totalMult_;
+        } else { // neutral particles
+            if(part->pt() < 1.0) continue;
+            ++totalMult_;
+        } // charged, neutral particles
+
+        float dEta   = part->eta() - jet->eta();
+        float dPhi   = reco::deltaPhi(part->phi(), jet->phi());
+        float partPt = part->pt();
+        float weight = partPt*partPt;
+
+        sum_weight    += weight;
+        sum_pt        += partPt;
+        sum_dEta      += dEta      * weight;
+        sum_dPhi      += dPhi      * weight;
+        sum_dEta2     += dEta*dEta * weight;
+        sum_dEta_dPhi += dEta*dPhi * weight;
+        sum_dPhi2     += dPhi*dPhi * weight;
+    } // jet->getJetConstituentsQuick()
+
+    // calculate axis2 and ptD
+    float a = 0.0;
+    float b = 0.0;
+    float c = 0.0;
+    float ave_dEta  = 0.0;
+    float ave_dPhi  = 0.0;
+    float ave_dEta2 = 0.0;
+    float ave_dPhi2 = 0.0;
+
+    if(sum_weight > 0){
+        ptD_ = sqrt(sum_weight)/sum_pt;
+        ave_dEta  = sum_dEta  / sum_weight;
+        ave_dPhi  = sum_dPhi  / sum_weight;
+        ave_dEta2 = sum_dEta2 / sum_weight;
+        ave_dPhi2 = sum_dPhi2 / sum_weight;
+        a = ave_dEta2 - ave_dEta*ave_dEta;
+        b = ave_dPhi2 - ave_dPhi*ave_dPhi;
+        c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
+    } else ptD_ = 0;
+
+    float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
+    if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
+    else              axis2_ = 0.0;
+    if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
+    else              axis1_ = 0.0;
+}
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
@@ -296,6 +388,13 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   computer_ = nullptr;
   slcomputer_ = nullptr;
+  
+  AK8JetSrc_ = iConfig.getParameter<edm::InputTag>("ak8JetSrc");
+  ak8ptCut_ = iConfig.getParameter<double>("ak8ptCut");
+  AK8JetTok_ = consumes<std::vector<pat::Jet> >(AK8JetSrc_);
+
+  NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
+  ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
   //produces<std::vector<pat::Jet> >("");
   produces<std::vector<TLorentzVector> >("jetsLVec");
@@ -449,6 +548,19 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<std::vector<double> > > ("chargedPFVertexNdof");
   produces<std::vector<std::vector<double> > > ("chargedPFVertexMass");
   produces<std::vector<std::vector<double> > > ("neutralPFHCALFrac");
+
+  ////produces<std::vector<TLorentzVector> > ("puppiAK8LVec");
+  ////produces<std::vector<double> > ("puppiAK8Tau1");
+  ////produces<std::vector<double> > ("puppiAK8Tau2");
+  ////produces<std::vector<double> > ("puppiAK8Tau3");
+  ////produces<std::vector<double> > ("puppiAK8SoftDropMass");
+  ////
+  ////produces<std::vector<std::vector<TLorentzVector> > > ("puppiAK8SubjetLVec");
+  ////produces<std::vector<std::vector<double> > > ("puppiAK8SubjetMult");
+  ////produces<std::vector<std::vector<double> > > ("puppiAK8SubjetPtD");
+  ////produces<std::vector<std::vector<double> > > ("puppiAK8SubjetAxis1");
+  ////produces<std::vector<std::vector<double> > > ("puppiAK8SubjetAxis2");
+  ////produces<std::vector<std::vector<double> > > ("puppiAK8SubjetBDisc");
   
 }
 
@@ -469,7 +581,9 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
   //JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   //std::auto_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
-
+  
+  edm::Handle<std::vector<pat::Jet> > ak8Jets;
+  iEvent.getByToken(AK8JetTok_, ak8Jets);
 
   //read in the objects
   edm::Handle< std::vector<reco::Vertex> > vertices;
@@ -1098,6 +1212,84 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     neutralPFHCALFrac->emplace_back(std::move(pfCandNeutralHCALFrac));
 
   }
+
+  //AK8 jets
+  ////std::auto_ptr<std::vector<TLorentzVector> > puppiAK8LVec(new std::vector<TLorentzVector>());
+  ////std::auto_ptr<std::vector<double> > puppiAK8Tau1(new std::vector<double>());
+  ////std::auto_ptr<std::vector<double> > puppiAK8Tau2(new std::vector<double>());
+  ////std::auto_ptr<std::vector<double> > puppiAK8Tau3(new std::vector<double>());
+  ////std::auto_ptr<std::vector<double> > puppiAK8SoftDropMass(new std::vector<double>());
+  ////
+  ////std::auto_ptr<std::vector<std::vector<TLorentzVector> > > puppiAK8SubjetLVec(new std::vector<std::vector<TLorentzVector> >());
+  ////std::auto_ptr<std::vector<std::vector<double> > > puppiAK8SubjetMult(new std::vector<std::vector<double > >());
+  ////std::auto_ptr<std::vector<std::vector<double> > > puppiAK8SubjetPtD(new std::vector<std::vector<double > >());
+  ////std::auto_ptr<std::vector<std::vector<double> > > puppiAK8SubjetAxis1(new std::vector<std::vector<double > >());
+  ////std::auto_ptr<std::vector<std::vector<double> > > puppiAK8SubjetAxis2(new std::vector<std::vector<double > >());
+  ////std::auto_ptr<std::vector<std::vector<double> > > puppiAK8SubjetBDisc(new std::vector<std::vector<double > >());
+  ////
+  ////for(const pat::Jet& jet : *ak8Jets)
+  ////{
+  ////    if(jet.pt() < ak8ptCut_) continue;
+  ////
+  ////    TLorentzVector perJetLVec;
+  ////    perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+  ////
+  ////    double puppi_tau1_uf         = jet.userFloat(NjettinessAK8Puppi_label_+":tau1");
+  ////    double puppi_tau2_uf         = jet.userFloat(NjettinessAK8Puppi_label_+":tau2");
+  ////    double puppi_tau3_uf         = jet.userFloat(NjettinessAK8Puppi_label_+":tau3");
+  ////    double puppisoftDropMass_uf  = jet.userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
+  ////
+  ////    puppiAK8LVec->push_back(perJetLVec);
+  ////    puppiAK8Tau1->push_back(puppi_tau1_uf);
+  ////    puppiAK8Tau2->push_back(puppi_tau2_uf);
+  ////    puppiAK8Tau3->push_back(puppi_tau3_uf);
+  ////    puppiAK8Tau3->push_back(puppisoftDropMass_uf);
+  ////
+  ////
+  ////    puppiAK8SubjetLVec->push_back(std::vector<TLorentzVector>());
+  ////    puppiAK8SubjetMult->push_back(std::vector<double>());
+  ////    puppiAK8SubjetPtD->push_back(std::vector<double>());
+  ////    puppiAK8SubjetAxis1->push_back(std::vector<double>());
+  ////    puppiAK8SubjetAxis2->push_back(std::vector<double>());
+  ////    puppiAK8SubjetBDisc->push_back(std::vector<double>());
+  ////
+  ////    auto const & subjets = jet.subjets("SoftDrop");
+  ////    for( auto const & it : subjets)
+  ////    {
+  ////        TLorentzVector perSubJetLVec;
+  ////        perSubJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+  ////
+  ////        // btag info
+  ////        double subjetBDiscriminator = it->bDiscriminator(bTagKeyString_.c_str());
+  ////
+  ////        //compute the qg input variables for the subjet
+  ////        double totalMult = 0;
+  ////        double ptD       = 0;
+  ////        double axis1     = 0;
+  ////        double axis2     = 0;
+  ////        compute(dynamic_cast<const pat::Jet *>(&(*it)), true, totalMult, ptD, axis1, axis2);
+  ////
+  ////        puppiAK8SubjetLVec->back().push_back(perSubJetLVec);
+  ////        puppiAK8SubjetMult->back().push_back(totalMult);
+  ////        puppiAK8SubjetPtD->back().push_back(ptD);
+  ////        puppiAK8SubjetAxis1->back().push_back(axis1);
+  ////        puppiAK8SubjetAxis2->back().push_back(axis2);
+  ////        puppiAK8SubjetBDisc->back().push_back(subjetBDiscriminator);
+  ////    }
+  ////}
+
+  ////iEvent.put(puppiAK8LVec, "puppiAK8LVec");
+  ////iEvent.put(puppiAK8Tau1, "puppiAK8Tau1");
+  ////iEvent.put(puppiAK8Tau2, "puppiAK8Tau2");
+  ////iEvent.put(puppiAK8Tau3, "puppiAK8Tau3");
+  ////iEvent.put(puppiAK8SoftDropMass, "puppiAK8SoftDropMass");
+  ////
+  ////iEvent.put(puppiAK8SubjetLVec, "puppiAK8SubjetLVec");
+  ////iEvent.put(puppiAK8SubjetMult, "puppiAK8SubjetMult");
+  ////iEvent.put(puppiAK8SubjetPtD, "puppiAK8SubjetPtD");
+  ////iEvent.put(puppiAK8SubjetAxis1, "puppiAK8SubjetAxis1");
+  ////iEvent.put(puppiAK8SubjetAxis2, "puppiAK8SubjetAxis2");
+  ////iEvent.put(puppiAK8SubjetBDisc, "puppiAK8SubjetBDisc");
 
   //const->push_back(}
 
