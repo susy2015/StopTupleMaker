@@ -579,6 +579,11 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<TLorentzVector> > ("deepAK8LVec");
   produces<std::vector<double> > ("deepAK8btop");
   produces<std::vector<double> > ("deepAK8bW");
+  produces<std::vector<double> > ("deepAK8bZ");
+  produces<std::vector<double> > ("deepAK8bZbb");
+  produces<std::vector<double> > ("deepAK8bHbb");
+  produces<std::vector<double> > ("deepAK8bH4q");
+  produces<std::vector<std::vector<double>> > ("deepAK8raw");
   
 }
 
@@ -1316,23 +1321,42 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::auto_ptr<std::vector<TLorentzVector> > deepAK8LVec(new std::vector<TLorentzVector>());
   std::auto_ptr<std::vector<double> > deepAK8btop(new std::vector<double>());
   std::auto_ptr<std::vector<double> > deepAK8bW(new std::vector<double>());
+  std::auto_ptr<std::vector<double> > deepAK8bZ(new std::vector<double>());
+  std::auto_ptr<std::vector<double> > deepAK8bZbb(new std::vector<double>());
+  std::auto_ptr<std::vector<double> > deepAK8bHbb(new std::vector<double>());
+  std::auto_ptr<std::vector<double> > deepAK8bH4q(new std::vector<double>());
 
+  std::auto_ptr<std::vector<std::vector<double>> > deepAK8raw(new std::vector<std::vector<double>>());
+  
   //deepNN AK8
   for (const pat::Jet &fatjet : *jetDeepAK8) 
   {
       deepAK8LVec->emplace_back(fatjet.p4().X(), fatjet.p4().Y(), fatjet.p4().Z(), fatjet.p4().T());
 
       // run the NN predictions
-      fatjetNN_->predict(fatjet);
+      auto nnpred = fatjetNN_->predict(fatjet);
 
       // get the scores
       deepAK8btop->push_back(fatjetNN_->get_binarized_score_top());
       deepAK8bW->push_back(fatjetNN_->get_binarized_score_w());
+      deepAK8bZ->push_back(fatjetNN_->get_binarized_score_z());
+      deepAK8bZbb->push_back(fatjetNN_->get_binarized_score_zbb());
+      deepAK8bHbb->push_back(fatjetNN_->get_binarized_score_hbb());
+      deepAK8bH4q->push_back(fatjetNN_->get_binarized_score_h4q());
+
+      deepAK8raw->push_back(std::vector<double>());
+      for(const auto& pred : nnpred) deepAK8raw->back().push_back(pred);
   }
 
   iEvent.put(deepAK8LVec, "deepAK8LVec");
   iEvent.put(deepAK8btop, "deepAK8btop");
   iEvent.put(deepAK8bW, "deepAK8bW");
+  iEvent.put(deepAK8bZ, "deepAK8bZ");
+  iEvent.put(deepAK8bZbb, "deepAK8bZbb");
+  iEvent.put(deepAK8bHbb, "deepAK8bHbb");
+  iEvent.put(deepAK8bH4q, "deepAK8bH4q");
+
+  iEvent.put(deepAK8raw, "deepAK8raw");
 
   //const->push_back(}
 

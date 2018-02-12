@@ -673,6 +673,11 @@ process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiA
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "deepAK8LVec"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8btop"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bW"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bZ"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bZbb"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bHbb"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bH4q"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "deepAK8raw"))
 
 
 if not options.isData:
