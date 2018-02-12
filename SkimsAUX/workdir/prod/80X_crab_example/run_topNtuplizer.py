@@ -147,19 +147,19 @@ process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 
 ###############################################################################################################################
 
-###### -- Add AK8 PUPPI jet collection using Jet Toolbox --
-####
-####from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-####
-##### Keep this behind the cleaned version for now, otherwise everything will be lepton cleaned
-####jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', 
-####            runOnMC = not options.isData, 
-####            PUMethod='Puppi', 
-####            addSoftDropSubjets = True, 
-####            addSoftDrop = True, 
-####            addNsub = True, 
-####            bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'], 
-####            addCMSTopTagger = False)
+## -- Add AK8 PUPPI jet collection using Jet Toolbox --
+
+from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+
+# Keep this behind the cleaned version for now, otherwise everything will be lepton cleaned
+jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', 
+            runOnMC = not options.isData, 
+            PUMethod='Puppi', 
+            addSoftDropSubjets = True, 
+            addSoftDrop = True, 
+            addNsub = True, 
+            bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags'], 
+            addCMSTopTagger = False)
 
 ###############################################################################################################################
 
@@ -444,8 +444,17 @@ process.prodJets.jetBPNegBJetTags= cms.string('jetBPNegBJetTags')
 process.prodJets.jetBPPosBJetTags= cms.string('jetBPPosBJetTags')
 process.prodJets.debug = cms.bool(False)
 process.prodJets.jetSrc = jetTag
-process.prodJets. ak4ptCut = cms.double(20.0)
+process.prodJets.ak4ptCut = cms.double(20.0)
+process.prodJets.ak8JetSrc = cms.InputTag("packedPatJetsAK8PFPuppiSoftDrop")
+process.prodJets.ak8ptCut = cms.double(200.0)
+
 #process.prodJets.jetOtherSrc = cms.InputTag('selectedUpdatedPatJetsDeepFlavour')
+
+###############################################################################################################################
+
+process.TransientTrackBuilderESProducer = cms.ESProducer("TransientTrackBuilderESProducer",
+    ComponentName=cms.string('TransientTrackBuilder')
+)
 
 ###############################################################################################################################
 
@@ -648,18 +657,22 @@ process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "charge
 #process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexMass"))
 process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
 
-####process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8LVec"))
-####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau1"))
-####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau2"))
-####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau3"))
-####process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8SoftDropMass"))
-####
-####process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8SubjetLVec"))
-####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetMult"))
-####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetPtD"))
-####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis1"))
-####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis2"))
-####process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetBDisc"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8LVec"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau1"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau2"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau3"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8SoftDropMass"))
+
+process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8SubjetLVec"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetMult"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetPtD"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis1"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis2"))
+process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "puppiAK8SubjetBDisc"))
+
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "deepAK8LVec"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8btop"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "deepAK8bW"))
 
 
 if not options.isData:
@@ -781,5 +794,5 @@ process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "g
 #process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
 process.p = cms.Path(process.stopTreeMaker)
-#process.p = cms.Path(process.pfDeepFlavourJetTags*process.stopTreeMaker*process.dump)
+#process.p = cms.Path(process.stopTreeMaker*process.dump)
 
