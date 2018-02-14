@@ -17,9 +17,9 @@ from WMCore.Configuration import saveConfigurationFile
 from crab3Config import config as config
 from multiprocessing import Process
 
-workArea = 'crabProdv16'
-outDir = '/store/group/lpcsusyhad/Stop_production/Top_ntuple_V7'
-Pubname = 'Top_ntuple_V7'
+workArea = 'crabProdv18'
+outDir = '/store/group/lpcsusyhad/Stop_production/Top_ntuple_V8'
+Pubname = 'Top_ntuple_V8'
 json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 # Use the common keyword to select the samples you'd like to submit
 # ALL: all of them; NONE: none of them; TEST: test printing out the crab3 config or disable actual submission; STATUS: check job status
@@ -36,10 +36,13 @@ json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 
 #selSubmitKey = 'ZJetsToNuNu WJetsToLNu TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept SMS-T1tttt_mGluino SMS-T2tt_mStop QCD_HT'
 #selSubmitKey = 'MET-Run2016 SingleMuon-Run2016 DY ZJetsToNuNu WJetsToLNu TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept SMS-T1tttt_mGluino SMS-T2tt_mStop QCD_HT ST_ tQz WW WZ ZZ ttH VH TTZ TTW TTH TTG TTTT'
-selSubmitKey = 'MET-Run2016 SingleMuon-Run2016 DY WJetsToLNu TTJets_Inc TTJets_DiLept QCD_HT ST_ tQz WW WZ ZZ ttH VH TTZ TTW TTH TTG TTTT'
+#selSubmitKey = 'JetHT-Run2016'
 #selSubmitKey = 'ZJetsToNuNu TTJets_SingleLeptFrom SMS-T2tt_mStop SMS-T1tttt_mGluino'
 #selSubmitKey = 'SMS-T1tttt_mGluino'
 
+#selSubmitKey = 'MET-Run2016 SingleMuon-Run2016 JetHT-Run2016 Photon-Run2016 DY WJetsToLNu TTJets_Inc TTJets_DiLept QCD_HT ST_ tQz WW WZ ZZ ttH VH TTZ TTW TTH TTG TTTT GJets_HT'
+#selSubmitKey = 'SMS-T2tt_mStop SMS-T1tttt_mGluino'
+selSubmitKey = 'SMS-T1tttt_mGluino-1200_mLSP-800'
 
 doAutoMonitor = False
 
@@ -74,7 +77,7 @@ jobslist = {
     'WJetsToLNu_HT-800To1200'                : [False, '/WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'WJetsToLNu_HT-800To1200_ext1'           : [False, '/WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
     'WJetsToLNu_HT-1200To2500'               : [False, '/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
-  'WJetsToLNu_HT-1200To2500_ext1'            : [False, '/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
+    'WJetsToLNu_HT-1200To2500_ext1'          : [False, '/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
     'WJetsToLNu_HT-2500ToInf'                : [False, '/WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'WJetsToLNu_HT-2500ToInf_ext1'           : [False, '/WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
 
@@ -107,6 +110,10 @@ jobslist = {
     'DYJetsToLL_M-50_HT-800to1200'           : [False, '/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'DYJetsToLL_M-50_HT-1200to2500'          : [False, '/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'DYJetsToLL_M-50_HT-2500toInf'           : [False, '/DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+
+   'GJets_HT-200To400'                      : [False, '/GJets_DR-0p4_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+   'GJets_HT-400To600'                      : [False, '/GJets_DR-0p4_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+   'GJets_HT-600ToInf'                      : [False, '/GJets_DR-0p4_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
 
     # QCD,
     'QCD_HT100to200'                         : [False, '/QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
@@ -245,6 +252,16 @@ jobslist = {
     'HTMHT-Run2016B-03Feb2017_ver2-v2'            : [True, '/HTMHT/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'HTMHT-Run2016B-03Feb2017_ver1-v1'            : [True, '/HTMHT/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
 
+    'JetHT-Run2016H-03Feb2017_ver3-v1'            : [True, '/JetHT/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
+    'JetHT-Run2016H-03Feb2017_ver2-v1'            : [True, '/JetHT/Run2016H-03Feb2017_ver2-v1/MINIAOD', 10],
+    'JetHT-Run2016G-03Feb2017-v1'                 : [True, '/JetHT/Run2016G-03Feb2017-v1/MINIAOD', 10],
+    'JetHT-Run2016F-03Feb2017-v1'                 : [True, '/JetHT/Run2016F-03Feb2017-v1/MINIAOD', 10],
+    'JetHT-Run2016E-03Feb2017-v1'                 : [True, '/JetHT/Run2016E-03Feb2017-v1/MINIAOD', 10],
+    'JetHT-Run2016D-03Feb2017-v1'                 : [True, '/JetHT/Run2016D-03Feb2017-v1/MINIAOD', 10],
+    'JetHT-Run2016C-03Feb2017-v1'                 : [True, '/JetHT/Run2016C-03Feb2017-v1/MINIAOD', 10],
+    'JetHT-Run2016B-03Feb2017_ver2-v2'            : [True, '/JetHT/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
+    'JetHT-Run2016B-03Feb2017_ver1-v1'            : [True, '/JetHT/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
+
     #For the explaination of the extremely confusing name of MINIAOD, look at https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes
     'MET-Run2016H-03Feb2017_ver3-v1'            : [True, '/MET/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
     'MET-Run2016H-03Feb2017_ver2-v1'            : [True, '/MET/Run2016H-03Feb2017_ver2-v1/MINIAOD', 10],
@@ -275,6 +292,17 @@ jobslist = {
     'SingleElectron-Run2016C-03Feb2017-v1'                 : [True, '/SingleElectron/Run2016C-03Feb2017-v1/MINIAOD', 10],
     'SingleElectron-Run2016B-03Feb2017_ver2-v2'            : [True, '/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'SingleElectron-Run2016B-03Feb2017_ver1-v1'            : [True, '/SingleElectron/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
+
+    'Photon-Run2016B-03Feb2017-v1' : [True, '/SinglePhoton/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
+    'Photon-Run2016B-03Feb2017-v2' : [True, '/SinglePhoton/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
+    'Photon-Run2016C-03Feb2017-v1' : [True, '/SinglePhoton/Run2016C-03Feb2017-v1/MINIAOD', 10],
+    'Photon-Run2016D-03Feb2017-v1' : [True, '/SinglePhoton/Run2016D-03Feb2017-v1/MINIAOD', 10],
+    'Photon-Run2016E-03Feb2017-v1' : [True, '/SinglePhoton/Run2016E-03Feb2017-v1/MINIAOD', 10],
+    'Photon-Run2016F-03Feb2017-v1' : [True, '/SinglePhoton/Run2016F-03Feb2017-v1/MINIAOD', 10],
+    'Photon-Run2016G-03Feb2017-v1' : [True, '/SinglePhoton/Run2016G-03Feb2017-v1/MINIAOD', 10],
+    'Photon-Run2016H-03Feb2017-v2' : [True, '/SinglePhoton/Run2016H-03Feb2017_ver2-v1/MINIAOD', 10],
+    'Photon-Run2016H-03Feb2017-v3' : [True, '/SinglePhoton/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
+    
 }
 
 tasklist = {}
@@ -345,43 +373,50 @@ def SubmitJob(key, value):
     tempconfig.Data.outputDatasetTag = Pubname + "_" + key
     tempconfig.Data.outLFNDirBase = outDir
 
+
+
+    # copy the dnn model files
+    # the files will be put in the working directory of the job, so one needs only the relative path in fatjetNN_->load_json() and load_model()
+    inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz", os.path.expandvars("$CMSSW_BASE/src/NNKit/data/preprocessing.json"), os.path.expandvars("$CMSSW_BASE/src/NNKit/data/resnet-symbol.json"), os.path.expandvars("$CMSSW_BASE/src/NNKit/data/resnet.params"), os.path.expandvars("$CMSSW_BASE/src/NNKit/NNKitMisc.tar.gz")]
+    inputFilesMC = ['Summer16_23Sep2016V3_MC.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz", os.path.expandvars("$CMSSW_BASE/src/NNKit/data/preprocessing.json"), os.path.expandvars("$CMSSW_BASE/src/NNKit/data/resnet-symbol.json"), os.path.expandvars("$CMSSW_BASE/src/NNKit/data/resnet.params"), os.path.expandvars("$CMSSW_BASE/src/NNKit/NNKitMisc.tar.gz")]
+
     if len(value) <3:
         print "Not enough argument for %s" % key
         raise  AssertionError()
     if value[0]: # Data : note the version number after 23Sep2016 is complicated, so removing them
         if key.find('Run2016B-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016C-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016D-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016E-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016F-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016G-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         elif key.find('Run2016H-03Feb2017') != -1:
             tempconfig.JobType.pyCfgParams = ['isData=1']
-            tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+            tempconfig.JobType.inputFiles = inputFiles
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
         else:
@@ -389,11 +424,11 @@ def SubmitJob(key, value):
     else:
        if key.find('FastSim') != -1:
           tempconfig.JobType.pyCfgParams = []
-          tempconfig.JobType.inputFiles = ['Spring16_25nsFastSimMC_V1.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+          tempconfig.JobType.inputFiles = inputFilesMC
           tempconfig.Data.splitting = 'FileBased'
        else:
           tempconfig.JobType.pyCfgParams = ['isData=0']
-          tempconfig.JobType.inputFiles = ['Summer16_23Sep2016V3_MC.db', "QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml", "tensorflow-cmssw8-0-26.tar.gz"]
+          tempconfig.JobType.inputFiles = inputFilesMC
           tempconfig.Data.splitting = 'FileBased'
 
     tempconfig.Data.inputDataset = value[1].strip()

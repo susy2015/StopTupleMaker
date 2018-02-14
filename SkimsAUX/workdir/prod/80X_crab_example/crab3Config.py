@@ -11,6 +11,8 @@ config.JobType.allowUndistributedCMSSW = False
 config.JobType.inputFiles = ["QGL_cmssw8020_v2.db", "py2-numpy-c-api.xml"]
 config.JobType.scriptExe = 'userScript.sh'
 #config.JobType.pyCfgParams = ['GlobalTag=GR_P_V56', 'mcInfo=0']
+# send the external libarary of mxnet
+#config.JobType.sendExternalFolder = True
 
 config.section_("Data")
 config.Data.inputDataset = '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM'
