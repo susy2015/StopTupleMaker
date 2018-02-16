@@ -104,12 +104,12 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   produces<std::vector<int> >("elesFlagVeto");
   produces<std::vector<int> >("elesFlagMedium");
   produces<std::vector<TLorentzVector> >("elesLVec");
-  produces<std::vector<double> >("elesCharge");
-  produces<std::vector<double> >("elesMtw");
-  produces<std::vector<double> >("elesRelIso");
+  produces<std::vector<float> >("elesCharge");
+  produces<std::vector<float> >("elesMtw");
+  produces<std::vector<float> >("elesRelIso");
   produces<std::vector<bool> >("elesisEB");
-  produces<std::vector<double> >("elesMiniIso");
-  produces<std::vector<double> >("elespfActivity");
+  produces<std::vector<float> >("elesMiniIso");
+  produces<std::vector<float> >("elespfActivity");
   produces<int>("nElectrons");
 }
 
@@ -154,12 +154,12 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<pat::Electron> > ele2Clean(new std::vector<pat::Electron>());
 
   std::unique_ptr<std::vector<TLorentzVector> > elesLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<double> > elesCharge(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > elesMtw(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > elesRelIso(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > elesCharge(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > elesMtw(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > elesRelIso(new std::vector<float>());
   std::unique_ptr<std::vector<bool> > elesisEB(new std::vector<bool>());
-  std::unique_ptr<std::vector<double> > elesMiniIso(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > elespfActivity(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > elesMiniIso(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > elespfActivity(new std::vector<float>());
 
   std::unique_ptr<std::vector<int> > elesFlagVeto(new std::vector<int>());
   std::unique_ptr<std::vector<int> > elesFlagMedium(new std::vector<int>());

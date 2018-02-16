@@ -17,9 +17,8 @@ cmsrel CMSSW_9_2_6
 cd CMSSW_9_2_6/src/
 cmsenv
 git cms-init
-git clone -b TestMiniAOD git@github.com:susy2015/recipeAUX.git
-git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_91X_v1 (https://github.com/cms-jet/JetToolbox/tree/jetToolbox_91X)
-git clone -b CMSSW926 git@github.com:susy2015/SusyAnaTools.git
+git clone git@github.com:TreeMaker/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X
+git clone -b CMSSW942 git@github.com:susy2015/SusyAnaTools.git
 scram b -j9
 ```
 

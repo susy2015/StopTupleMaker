@@ -377,3 +377,4 @@ double prodIsoTrks::GetTrackActivity(const edm::Handle<pat::PackedCandidateColle
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 DEFINE_FWK_MODULE(prodIsoTrks);
+

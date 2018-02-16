@@ -14,7 +14,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 
-typedef unsigned int size;
+typedef unsigned int uint;
 
 class leptonDecaysFilter : public edm::EDFilter {
 
@@ -108,14 +108,14 @@ bool leptonDecaysFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetu
 
 //  if( tauGenIdxVec.empty() && lepGenIdxVec.empty() ) return pass;
 
-  size nGenTau = tauGenIdxVec.size();
+  uint nGenTau = tauGenIdxVec.size();
 
   bool isWTauHadDecay = false, isWTauMuDecay = false, isWTauEleDecay = false, isOtherTauHadDecay = false, isOtherTauMuDecay = false, isOtherTauEleDecay = false;
   int isWTauDecayCnt =0;
 
   std::vector<int> pickedHadTauGenIdx, pickedTauMuGenIdx, pickedTauEleGenIdx;
 
-  for(size ig=0; ig<nGenTau; ig++){
+  for(uint ig=0; ig<nGenTau; ig++){
 
      bool isWTauDecay = false, isTauMuDecay = false, isTauEleDecay = false, isTauLeptonicDecay = false;
 
@@ -137,14 +137,14 @@ bool leptonDecaysFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetu
 
   }
 
-  size nleps = lepGenIdxVec.size();
+  uint nleps = lepGenIdxVec.size();
 
   std::vector<int> pickedWLepGenIdx;
 
   bool isLepDecay = false, isWLepDecay = false, isWMuDecay = false, isWEleDecay = false, isOtherLepDecay = false, isWTauLepDecay = false;
   bool isOtherMuDecay = false, isOtherEleDecay = false, isMuAndEleDecay = false, isMuDecay = false, isEleDecay = false;
 
-  for(size il=0; il<nleps; il++){
+  for(uint il=0; il<nleps; il++){
 
      bool isMu = false, isEle = false; // only muon and electron (tau is treated specially)
 
@@ -190,28 +190,28 @@ bool leptonDecaysFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetu
 
         int isHadTauFromThisBoson =0, isWLepFromThisBoson =0, isTauMuFromThisBoson =0, isTauEleFromThisBoson =0;
 
-        for(size it=0; it<pickedHadTauGenIdx.size(); it++){
+        for(uint it=0; it<pickedHadTauGenIdx.size(); it++){
            int itau = pickedHadTauGenIdx[it];
            const reco::GenParticle& genTau = genParticles->at(itau);
            bool isFromThisBoson = find_mother( &genTau, gen);
            if( isFromThisBoson ) isHadTauFromThisBoson ++;
         }
 
-        for(size it=0; it<pickedTauMuGenIdx.size(); it++){
+        for(uint it=0; it<pickedTauMuGenIdx.size(); it++){
            int itau = pickedTauMuGenIdx[it];
            const reco::GenParticle& genTau = genParticles->at(itau);
            bool isFromThisBoson = find_mother( &genTau, gen);
            if( isFromThisBoson ) isTauMuFromThisBoson ++;
         }
 
-        for(size it=0; it<pickedTauEleGenIdx.size(); it++){
+        for(uint it=0; it<pickedTauEleGenIdx.size(); it++){
            int itau = pickedTauEleGenIdx[it];
            const reco::GenParticle& genTau = genParticles->at(itau);
            bool isFromThisBoson = find_mother( &genTau, gen);
            if( isFromThisBoson ) isTauEleFromThisBoson ++;
         }
 
-        for(size il=0; il<pickedWLepGenIdx.size(); il++){
+        for(uint il=0; il<pickedWLepGenIdx.size(); il++){
            int ilep = pickedWLepGenIdx[il];
            const reco::GenParticle& genLep = genParticles->at(ilep);
            bool isFromThisBoson = find_mother( &genLep, gen);
@@ -291,11 +291,11 @@ std::vector<int> leptonDecaysFilter::tauDecays(std::vector<std::vector<int> > &e
 
       if( abs(gen.pdgId()) == 15 && gen.status() == 2 ){
 
-         size numDaug = gen.numberOfDaughters();
+         uint numDaug = gen.numberOfDaughters();
 
 // If any of the tau daughter is tau itself, this means we have not reached the final tau yet!
          bool isFinalTau = true;
-         for(size id=0; id<numDaug; id++){
+         for(uint id=0; id<numDaug; id++){
             if( gen.daughter(id)->pdgId() == gen.pdgId() && gen.daughter(id)->status() ==2 ){
                isFinalTau = false;
             }
@@ -305,7 +305,7 @@ std::vector<int> leptonDecaysFilter::tauDecays(std::vector<std::vector<int> > &e
          int signTau = gen.pdgId()/abs(gen.pdgId());
          int numEleMatched =0, numEleNeutMatched =0;
          int numMuonMatched =0, numMuonNeutMatched =0;
-         for(size id=0; id<numDaug; id++){
+         for(uint id=0; id<numDaug; id++){
             int daupdgId = gen.daughter(id)->pdgId();
             int status = gen.daughter(id)->status();
             if( status ==1 && (daupdgId == signTau*11 /*e+ : -11  e- : 11*/ || daupdgId == -signTau*12 /*nu_e : 12  anti-nu_tau : -12*/) ){
@@ -382,7 +382,7 @@ std::vector<int> leptonDecaysFilter::lepDecays(std::vector<std::vector<int> > &e
    std::vector<int> lepGenIdxVec;
    evtLepDecayStatusVec.clear(); 
                
-   for(size ig=0; ig<genParticles->size(); ig++){
+   for(uint ig=0; ig<genParticles->size(); ig++){
          
       int isLepDecay = 0, isWLepDecay =0, isWTauLepDecay =0;
           

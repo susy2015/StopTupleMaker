@@ -43,8 +43,8 @@ class prodMuons : public edm::EDFilter
   bool debug_;
   bool doMuonVeto_, doMuonID_, doMuonVtx_;
   int doMuonIso_; // 0: don't do any isolation; 1: relIso;  2: miniIso
-  double minMuPt_, maxMuEta_, maxMuD0_, maxMuDz_, maxMuRelIso_, maxMuMiniIso_, minMuNumHit_;
-  double minMuPtForMuon2Clean_;
+  float minMuPt_, maxMuEta_, maxMuD0_, maxMuDz_, maxMuRelIso_, maxMuMiniIso_, minMuNumHit_;
+  float minMuPtForMuon2Clean_;
   bool specialFix_;
   edm::InputTag badGlobalMuonTaggerSrc_, cloneGlobalMuonTaggerSrc_;
   edm::EDGetTokenT<edm::PtrVector<reco::Muon>> badGlobalMuonTok_, cloneGlobalMuonTok_;
@@ -99,11 +99,11 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
   produces<std::vector<int> >("muonsFlagMedium");
   produces<std::vector<int> >("muonsFlagTight");
   produces<std::vector<TLorentzVector> >("muonsLVec");
-  produces<std::vector<double> >("muonsCharge");
-  produces<std::vector<double> >("muonsMtw");
-  produces<std::vector<double> >("muonsRelIso");
-  produces<std::vector<double> >("muonsMiniIso");
-  produces<std::vector<double> >("muonspfActivity");
+  produces<std::vector<float> >("muonsCharge");
+  produces<std::vector<float> >("muonsMtw");
+  produces<std::vector<float> >("muonsRelIso");
+  produces<std::vector<float> >("muonsMiniIso");
+  produces<std::vector<float> >("muonspfActivity");
   produces<int>("nMuons");
   if( specialFix_ ){
 // 0 : good muon wrt the specialFix  1 : badGlobalMuon  2 : cloneGlobalMuon  3 : badGlobalMuon & cloneGlobalMuon
@@ -111,7 +111,7 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
 // Only store bad muons and store their LorentzVector and charge -> so should be no 0 in the specialFixtype vector
      produces<std::vector<int>>("specialFixtype");
      produces<std::vector<TLorentzVector>>("specialFixMuonsLVec");
-     produces<std::vector<double>>("specialFixMuonsCharge");
+     produces<std::vector<float>>("specialFixMuonsCharge");
   }
 }
 
@@ -147,11 +147,11 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<pat::Muon> > prod(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<pat::Muon> > mu2Clean(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<TLorentzVector> > muonsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<double> > muonsCharge(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsMtw(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsRelIso(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsMiniIso(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonspfActivity(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > muonsCharge(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsMtw(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsRelIso(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsMiniIso(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonspfActivity(new std::vector<float>());
 
   std::unique_ptr<std::vector<int> > muonsIDtype(new std::vector<int>());
   std::unique_ptr<std::vector<int> > muonsFlagLoose(new std::vector<int>());
@@ -160,7 +160,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::unique_ptr<std::vector<int>> specialFixtype(new std::vector<int>());
   std::unique_ptr<std::vector<TLorentzVector>> specialFixMuonsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<double>> specialFixMuonsCharge(new std::vector<double>());
+  std::unique_ptr<std::vector<float>> specialFixMuonsCharge(new std::vector<float>());
 
   if( specialFix_ ){
      edm::Handle<edm::PtrVector<reco::Muon>> badGlobalMuonPtr_handle, cloneGlobalMuonPtr_handle;
