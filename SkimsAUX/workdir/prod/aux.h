@@ -65,14 +65,14 @@ public :
    Int_t           bestTopJetIdx; // index of picked triplet in all the triplet combinations
    Int_t           pickedRemainingCombfatJetIdx; // index of the picked triplet (if any) in all the triplet combinations in the Rsys
    UInt_t          remainPassCSVS; // the Rsys has a CSVM b-tagged jet or not
-   vector<double>  *muonsCharge; // charge of muons
-   vector<double>  *muonsMtw; // MT of muon and MET
-   vector<double>  *muonsRelIso; // relIso of muons
-   vector<double>  *muonsMiniIso; // mini isolation of muons
-   vector<double>  *elesCharge; // charge of electrons
-   vector<double>  *elesMtw; // MT of electron and MET
-   vector<double>  *elesRelIso; // relIso of electrons
-   vector<double>  *elesMiniIso; // mini isolation of eles
+   vector<float>  *muonsCharge; // charge of muons
+   vector<float>  *muonsMtw; // MT of muon and MET
+   vector<float>  *muonsRelIso; // relIso of muons
+   vector<float>  *muonsMiniIso; // mini isolation of muons
+   vector<float>  *elesCharge; // charge of electrons
+   vector<float>  *elesMtw; // MT of electron and MET
+   vector<float>  *elesRelIso; // relIso of electrons
+   vector<float>  *elesMiniIso; // mini isolation of eles
    vector<double>  *recoJetsBtag_0; // b-tagging CSV values. In PHYS14 sample, it's combinedInclusiveSecondaryVertexV2BJetTags
    vector<double>  *trksForIsoVeto_charge; // charges of the charged tracks for isolated veto studies
    vector<double>  *trksForIsoVeto_dz; // dz of the charged tracks for isolated veto studies
