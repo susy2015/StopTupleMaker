@@ -114,7 +114,7 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 ## -- Maximal Number of Events --
-process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))#options.maxEvents) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )#cms.untracked.PSet(input = cms.untracked.int32(-1))#options.maxEvents) )
 
 if options.debug and options.verbose ==1:
    process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',
@@ -145,8 +145,8 @@ elif options.fileslist:
    process.source.fileNames = inputfiles
 else:
    process.source.fileNames = [
-      #'file:/uscms_data/d3/mkilpatr/CMSSW_9_4_2/src/AnalysisBase/Analyzer/test/9EE984CF-39E7-E711-A918-001E67DFF67C.root'
-     '/store/mc/RunIIFall17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/06634AB3-14E6-E711-8DA6-0CC47A4D7632.root'
+      'file:/uscms_data/d3/mkilpatr/CMSSW_9_4_2/src/AnalysisBase/Analyzer/test/9EE984CF-39E7-E711-A918-001E67DFF67C.root'
+     #'/store/mc/RunIIFall17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/06634AB3-14E6-E711-8DA6-0CC47A4D7632.root'
    ]
 
 ## ---------------------
@@ -760,7 +760,7 @@ if "BADMUON" in options.specialFix:
    process.prodMuonsNoIso.cloneGlobalMuonTaggerSrc = cms.InputTag("cloneGlobalMuonTaggerMAOD", "bad")
    process.stopTreeMaker.vectorInt.append(cms.InputTag("prodMuonsNoIso", "specialFixtype"))
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsLVec"))
-   process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsCharge"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsCharge"))
 
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectrons"))
 process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectrons|nElectrons_CUT")

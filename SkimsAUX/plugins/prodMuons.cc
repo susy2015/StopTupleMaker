@@ -43,8 +43,8 @@ class prodMuons : public edm::EDFilter
   bool debug_;
   bool doMuonVeto_, doMuonID_, doMuonVtx_;
   int doMuonIso_; // 0: don't do any isolation; 1: relIso;  2: miniIso
-  float minMuPt_, maxMuEta_, maxMuD0_, maxMuDz_, maxMuRelIso_, maxMuMiniIso_, minMuNumHit_;
-  float minMuPtForMuon2Clean_;
+  double minMuPt_, maxMuEta_, maxMuD0_, maxMuDz_, maxMuRelIso_, maxMuMiniIso_, minMuNumHit_;
+  double minMuPtForMuon2Clean_;
   bool specialFix_;
   edm::InputTag badGlobalMuonTaggerSrc_, cloneGlobalMuonTaggerSrc_;
   edm::EDGetTokenT<edm::PtrVector<reco::Muon>> badGlobalMuonTok_, cloneGlobalMuonTok_;
@@ -111,7 +111,7 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
 // Only store bad muons and store their LorentzVector and charge -> so should be no 0 in the specialFixtype vector
      produces<std::vector<int>>("specialFixtype");
      produces<std::vector<TLorentzVector>>("specialFixMuonsLVec");
-     produces<std::vector<float>>("specialFixMuonsCharge");
+     produces<std::vector<double>>("specialFixMuonsCharge");
   }
 }
 
@@ -160,7 +160,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::unique_ptr<std::vector<int>> specialFixtype(new std::vector<int>());
   std::unique_ptr<std::vector<TLorentzVector>> specialFixMuonsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<float>> specialFixMuonsCharge(new std::vector<float>());
+  std::unique_ptr<std::vector<double>> specialFixMuonsCharge(new std::vector<double>());
 
   if( specialFix_ ){
      edm::Handle<edm::PtrVector<reco::Muon>> badGlobalMuonPtr_handle, cloneGlobalMuonPtr_handle;

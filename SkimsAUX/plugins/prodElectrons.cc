@@ -167,7 +167,7 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // loop on electrons
   for( edm::View<pat::Electron>::const_iterator ele = electrons->begin(); ele != electrons->end(); ele++ )
   {
-    double pt = ele->pt();
+    float pt = ele->pt();
     if (ele->pt() < minElePt_) continue;
 
     // get the ID variables from the electron object
@@ -183,13 +183,13 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // isolation cuts                                                                                                                                        
     reco::GsfElectron::PflowIsolationVariables pfIso = ele->pfIsolationVariables();
-    double absiso = pfIso.sumChargedHadronPt + std::max(0.0 , pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - 0.5 * pfIso.sumPUPt );
+    float absiso = pfIso.sumChargedHadronPt + std::max(0.0 , pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - 0.5 * pfIso.sumPUPt );
 
     // compute final isolation
-    double iso = absiso/pt;
+    float iso = absiso/pt;
     //double miniIso = commonFunctions::getPFIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), 0.05, 0.2, 10., false, false);
-    double miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho);
-    double pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho, true);
+    float miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho);
+    float pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho, true);
 
     if(doEleIso_ == 1 ) 
     {
@@ -207,7 +207,7 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       TLorentzVector perLVec; perLVec.SetPtEtaPhiE(ele->pt(), ele->eta(), ele->phi(), ele->energy());
       elesLVec->push_back(perLVec);
 
-      double mtw = sqrt( 2*( (*met)[0].pt()*ele->pt() -( (*met)[0].px()*ele->px() + (*met)[0].py()*ele->py() ) ) );
+      float mtw = sqrt( 2*( (*met)[0].pt()*ele->pt() -( (*met)[0].px()*ele->px() + (*met)[0].py()*ele->py() ) ) );
 
       elesCharge->push_back(ele->charge());
       elesMtw->push_back(mtw);
