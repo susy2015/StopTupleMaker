@@ -13,12 +13,12 @@ git checkout NEW_TAG_NAME
 The following installation instructions assume the user wants to process Run2016 data or Spring16 MC.
 
 ```
-cmsrel CMSSW_9_2_6
-cd CMSSW_9_2_6/src/
+cmsrel CMSSW_9_4_2
+cd CMSSW_9_4_2/src/
 cmsenv
 git cms-init
 git clone git@github.com:TreeMaker/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X
-git clone -b CMSSW942 git@github.com:susy2015/SusyAnaTools.git
+git clone -b CMSSW942 git@github.com:susy2015/StopTupleMaker.git
 scram b -j9
 ```
 
