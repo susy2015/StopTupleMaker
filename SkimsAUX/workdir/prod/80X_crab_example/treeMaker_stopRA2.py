@@ -549,7 +549,7 @@ process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodEventInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.ISRJetProducer_cfi")
-
+process.load("StopTupleMaker.SkimsAUX.PhotonIDisoProducer_cfi")
 
 process.load("StopTupleMaker.Skims.StopBTagJets_cff")
 process.stopBJets.JetSrc = cms.InputTag("stopJetsPFchsPt30")
@@ -766,9 +766,9 @@ for idmod in my_photon_id_modules:
    setupAllVIDIdsInModule(process, idmod, setupVIDPhotonSelection)
 
 # Set ID tags
-process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")
-process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
-process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
+process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose")
+process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium")
+process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight")
             
 process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "loosePhotonID"))
 process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "mediumPhotonID"))
