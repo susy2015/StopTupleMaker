@@ -748,8 +748,53 @@ process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuons", "nMuons"))
 process.stopTreeMaker.varsIntNamesInTree.append("prodMuons:nMuons|nMuons_CUT")
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuonsNoIso", "nMuons"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "muonsLVec"))
+
 process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodMuonsNoIso", "muonsCharge"), cms.InputTag("prodMuonsNoIso", "muonsMtw"), cms.InputTag("prodMuonsNoIso", "muonsRelIso"), cms.InputTag("prodMuonsNoIso", "muonsMiniIso"), cms.InputTag("prodMuonsNoIso", "muonspfActivity")])
 process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodMuonsNoIso", "muonsFlagMedium"), cms.InputTag("prodMuonsNoIso", "muonsFlagTight")])
+
+#ANDRES Gamma Var  
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+
+switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+
+# Define which IDs we want to produce
+my_photon_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff']
+
+# Add them to the VID producer
+#if process.PhotonIDisoProducer.isFilled:
+for idmod in my_photon_id_modules:
+   setupAllVIDIdsInModule(process, idmod, setupVIDPhotonSelection)
+
+# Set ID tags
+process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")
+process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
+process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
+            
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "loosePhotonID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "mediumPhotonID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "tightPhotonID"))
+                                                  
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "isEB"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "genMatched"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hadTowOverEM"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "sigmaIetaIeta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIso"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfChargedIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfNeutralIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "pfGammaIsoRhoCorr"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "hasPixelSeed"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "passElectronVeto"))
+#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "hadronization"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "nonPrompt"))
+#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "fullID"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPt"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonEta"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPhi"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVec"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVecGen"))
+
 if "BADMUON" in options.specialFix:
    print ("\nAdding bad muon special filter information in prodMuon & prodMuonNoIso ...\n")
    process.prodMuons.specialFix      = cms.bool(True)
@@ -760,7 +805,7 @@ if "BADMUON" in options.specialFix:
    process.prodMuonsNoIso.cloneGlobalMuonTaggerSrc = cms.InputTag("cloneGlobalMuonTaggerMAOD", "bad")
    process.stopTreeMaker.vectorInt.append(cms.InputTag("prodMuonsNoIso", "specialFixtype"))
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsLVec"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsCharge"))
+   process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsCharge"))
 
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectrons"))
 process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectrons|nElectrons_CUT")

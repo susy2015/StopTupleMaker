@@ -167,7 +167,7 @@ VectorTLorentzVectorTags_.push_back(consumes<std::vector<TLorentzVector> >(tag))
     TString nameT = formBranchName(varsFloatTags_.at(i), varsFloatNames_);
     varsFloatNamesCached_.push_back(nameT);
     if( debug_ ) std::cout<<"varsFloatTags :  i : "<<i<<"  nameT : "<<nameT<<std::endl;
-    tree_->Branch(nameT, &(varsFloat_.at(i)), nameT+"/D");
+    tree_->Branch(nameT, &(varsFloat_.at(i)), nameT+"/F");
   }
 
   varsInt_ = std::vector<int>(varsIntTags_.size(), 9999);
@@ -226,7 +226,7 @@ VectorTLorentzVectorTags_.push_back(consumes<std::vector<TLorentzVector> >(tag))
     TString nameT = formBranchName(vectorFloatTags_.at(i), vectorFloatNames_);
     vectorFloatNamesCached_.push_back(nameT);
     if( debug_ ) std::cout<<"vectorFloatTags :  i : "<<i<<"  nameT : "<<nameT<<std::endl;
-    tree_->Branch(nameT, "std::vector<double>", &(vectorFloatVector_.at(i)), 32000, 0);
+    tree_->Branch(nameT, "std::vector<float>", &(vectorFloatVector_.at(i)), 32000, 0);
   }
 
 //
@@ -492,9 +492,6 @@ stopTreeMaker::setBranchVariablesToDefault()
 
   for(unsigned int i = 0; i < varsDouble_.size(); ++i) {
     varsDouble_.at(i) = 9999.;
-  }
-  for(unsigned int i = 0; i < varsFloat_.size(); ++i) {
-    varsFloat_.at(i) = 9999.;
   }
   for(unsigned int i = 0; i < varsFloat_.size(); ++i) {
     varsFloat_.at(i) = 9999.;
