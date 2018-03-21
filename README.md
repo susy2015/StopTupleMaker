@@ -18,6 +18,7 @@ cd CMSSW_9_4_2/src/
 cmsenv
 git cms-init
 git clone git@github.com:TreeMaker/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X
+git cms-addpkg RecoEgamma/ or (git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP)
 git clone -b CMSSW942 git@github.com:susy2015/StopTupleMaker.git
 scram b -j9
 ```

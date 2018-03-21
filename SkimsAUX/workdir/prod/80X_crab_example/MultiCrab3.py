@@ -17,12 +17,12 @@ from WMCore.Configuration import saveConfigurationFile
 from crab3Config import config as config
 from multiprocessing import Process
 
-workArea = 'crabProdvTest2_all_Var2_all_Var'
-outDir = '/store/group/lpcsusyhad/Stop_production/2017Test/Trigger'
-Pubname = 'Summer16_80X_Mar_2017_Ntp_v13p0'
+workArea = 'crabProdv_Data17_Trigger'
+outDir = '/store/group/lpcsusyhad/Stop_production/TriggerStudies2017'
+Pubname = 'Fall17_94X_Mar_2017'
 json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 #json_2017 ='Cert_294927-302343_13TeV_PromptReco_Collisions17_JSON.txt'
-json_2017 = 'Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
+json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
 # Use the common keyword to select the samples you'd like to submit
 # ALL: all of them; NONE: none of them; TEST: test printing out the crab3 config or disable actual submission; STATUS: check job status
 # TTJets, WJetsToLNu, ZJetsToNuNu, DYJetsToLL, QCD, TTW, TTZ, ST_tW, SMS, HTMHT, SingleMuon, SingleElectron, DoubleMuon, DoubleEG
@@ -33,8 +33,8 @@ json_2017 = 'Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
 #selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
 #selSubmitKey = 'MET-Run2017B-23Jun2017-v1 MET-Run2017C-PromptReco-v1 MET-Run2017C-PromptReco-v2 MET-Run2017C-PromptReco-v3 MET-Run2017D-PromptReco-v1'
 #selSubmitKey = 'SingleMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
-selSubmitKey = 'SingleElectron-Run2017A-PromptReco-v2 SingleElectron-Run2017A-PromptReco-v3 SingleElectron-Run2017B-12Sep2017-v1 SingleElectron-Run2017B-22Sep2017-v1 SingleElectron-Run2017B-23Sep2017-v1 SingleElectron-Run2017B-PromptReco-v1 SingleElectron-Run2017B-PromptReco-v2 SingleElectron-Run2017C-12Sep2017-v1 SingleElectron-Run2017C-PromptReco-v1 SingleElectron-Run2017C-PromptReco-v2 SingleElectron-Run2017C-PromptReco-v3 SingleElectron-Run2017D-PromptReco-v1 SingleElectron-Run2017E-PromptReco-v1 SingleElectron-Run2017F-PromptReco-v1'
-#selSubmitKey = 'TEST STATUS TTJets_SingleLeptFrom HTMHT'
+#selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
+selSubmitKey = 'WWTo2L2Nu'
 #selSubmitKey = 'TEST ALL'
 #selSubmitKey = 'TEST TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept ZJetsToNuNu_HT'
 doAutoMonitor = False#True
@@ -153,7 +153,7 @@ jobslist = {
     'WZTo3LNu'                               : [False, '/WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
 
     'WWTo4Q'                                 : [False, '/WWTo4Q_13TeV-powheg/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
-    'WWTo2L2Nu'                              : [False, '/WWTo2L2Nu_13TeV-powheg/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'WWTo2L2Nu'                              : [False, '/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', 1],
     #'WWTo1L1Nu2Q' : [False, '/WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'WWToLNuQQ'                              : [False, '/WWToLNuQQ_13TeV-powheg/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'WWToLNuQQ_ext1'                         : [False, '/WWToLNuQQ_13TeV-powheg/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
@@ -252,11 +252,11 @@ jobslist = {
     'MET-Run2016B-03Feb2017_ver2-v2'            : [True, '/MET/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'MET-Run2016B-03Feb2017_ver1-v1'            : [True, '/MET/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
 
-    'MET-Run2017B-23Jun2017-v1'                 : [True, '/MET/Run2017B-23Jun2017-v1/MINIAOD', 10],
-    'MET-Run2017C-PromptReco-v1'                : [True, '/MET/Run2017C-PromptReco-v1/MINIAOD', 10],
-    'MET-Run2017C-PromptReco-v2'                : [True, '/MET/Run2017C-PromptReco-v2/MINIAOD', 10],
-    'MET-Run2017C-PromptReco-v3'                : [True, '/MET/Run2017C-PromptReco-v3/MINIAOD', 10],
-    'MET-Run2017D-PromptReco-v1'                : [True, '/MET/Run2017D-PromptReco-v1/MINIAOD', 10],
+    'MET-Run2017B-v1'	                        : [True, '/MET/Run2017B-17Nov2017-v1/MINIAOD', 8],
+    'MET-Run2017C-v1'	                        : [True, '/MET/Run2017C-17Nov2017-v1/MINIAOD', 8],
+    'MET-Run2017D-v1'   	                : [True, '/MET/Run2017D-17Nov2017-v1/MINIAOD', 8],
+    'MET-Run2017E-v1'             	        : [True, '/MET/Run2017E-17Nov2017-v1/MINIAOD', 8],
+    'MET-Run2017F-v1'                           : [True, '/MET/Run2017F-17Nov2017-v1/MINIAOD', 8],
 
 
     'SingleMuon-Run2016H-03Feb2017_ver3-v1'            : [True, '/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
@@ -269,23 +269,11 @@ jobslist = {
     'SingleMuon-Run2016B-03Feb2017_ver2-v2'            : [True, '/SingleMuon/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'SingleMuon-Run2016B-03Feb2017_ver1-v1'            : [True, '/SingleMuon/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
 
-    'SingleMuon-Run2017A-PromptReco-v2'                :[True, '/SingleMuon/Run2017A-PromptReco-v2/MINIAOD', 10],
-    'SingleMuon-Run2017A-PromptReco-v3'                :[True, '/SingleMuon/Run2017A-PromptReco-v3/MINIAOD', 10],
-    'SingleMuon-Run2017B-04Jul2017-v2'                 :[True, '/SingleMuon/Run2017B-04Jul2017-v2/MINIAOD', 10],
-    'SingleMuon-Run2017B-06Jul2017-v2'                 :[True, '/SingleMuon/Run2017B-06Jul2017-v2/MINIAOD', 10],
-    'SingleMuon-Run2017B-12Sep2017-v1'                 :[True, '/SingleMuon/Run2017B-12Sep2017-v1/MINIAOD', 10],
-    'SingleMuon-Run2017B-22Jun2017-v1'                 :[True, '/SingleMuon/Run2017B-22Jun2017-v1/MINIAOD', 10],
-    'SingleMuon-Run2017B-23Jun2017-v1'                 :[True, '/SingleMuon/Run2017B-23Jun2017-v1/MINIAOD', 10],
-    'SingleMuon-Run2017B-PromptReco-v1'                :[True, '/SingleMuon/Run2017B-PromptReco-v1/MINIAOD', 10],
-    'SingleMuon-Run2017B-PromptReco-v2'                :[True, '/SingleMuon/Run2017B-PromptReco-v2/MINIAOD', 10],
-    'SingleMuon-Run2017C-12Sep2017-v1'                 :[True, '/SingleMuon/Run2017C-12Sep2017-v1/MINIAOD', 10],
-    'SingleMuon-Run2017C-PromptReco-v1'                :[True, '/SingleMuon/Run2017C-PromptReco-v1/MINIAOD', 10],
-    'SingleMuon-Run2017C-PromptReco-v2'                :[True, '/SingleMuon/Run2017C-PromptReco-v2/MINIAOD', 10],
-    'SingleMuon-Run2017C-PromptReco-v3'                :[True, '/SingleMuon/Run2017C-PromptReco-v3/MINIAOD', 10],
-    'SingleMuon-Run2017D-PromptReco-v1'                :[True, '/SingleMuon/Run2017D-PromptReco-v1/MINIAOD', 10],
-    'SingleMuon-Run2017E-PromptReco-v1'                :[True, '/SingleMuon/Run2017E-PromptReco-v1/MINIAOD', 10],
-    'SingleMuon-Run2017F-PromptReco-v1'                :[True, '/SingleMuon/Run2017F-PromptReco-v1/MINIAOD', 10],
-    'SingleMuon-Run2017G-PromptReco-v1'                :[True, '/SingleMuon/Run2017G-PromptReco-v1/MINIAOD', 10],
+    'SingleMuon-Run2017B'                 :[True, '/SingleMuon/Run2017B-17Nov2017-v1/MINIAOD', 8],
+    'SingleMuon-Run2017C'                 :[True, '/SingleMuon/Run2017C-17Nov2017-v1/MINIAOD', 8],
+    'SingleMuon-Run2017D'                :[True, '/SingleMuon/Run2017D-17Nov2017-v1/MINIAOD', 8],
+    'SingleMuon-Run2017E'                :[True, '/SingleMuon/Run2017E-17Nov2017-v1/MINIAOD', 8],
+    'SingleMuon-Run2017F'                :[True, '/SingleMuon/Run2017F-17Nov2017-v1/MINIAOD', 8],
 
     'SingleElectron-Run2016H-03Feb2017_ver3-v1'            : [True, '/SingleElectron/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
     'SingleElectron-Run2016H-03Feb2017_ver2-v1'            : [True, '/SingleElectron/Run2016H-03Feb2017_ver2-v1/MINIAOD', 10],
@@ -297,20 +285,17 @@ jobslist = {
     'SingleElectron-Run2016B-03Feb2017_ver2-v2'            : [True, '/SingleElectron/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'SingleElectron-Run2016B-03Feb2017_ver1-v1'            : [True, '/SingleElectron/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
 
-    'SingleElectron-Run2017A-PromptReco-v2'            : [True, '/SingleElectron/Run2017A-PromptReco-v2/MINIAOD', 10],
-    'SingleElectron-Run2017A-PromptReco-v3'            : [True, '/SingleElectron/Run2017A-PromptReco-v3/MINIAOD', 10],
-    'SingleElectron-Run2017B-12Sep2017-v1'             : [True, '/SingleElectron/Run2017B-12Sep2017-v1/MINIAOD', 10],
-    'SingleElectron-Run2017B-22Jun2017-v1'             : [True, '/SingleElectron/Run2017B-22Jun2017-v1/MINIAOD', 10],
-    'SingleElectron-Run2017B-23Jun2017-v1'             : [True, '/SingleElectron/Run2017B-23Jun2017-v1/MINIAOD', 10],
-    'SingleElectron-Run2017B-PromptReco-v1'            : [True, '/SingleElectron/Run2017B-PromptReco-v1/MINIAOD', 10],
-    'SingleElectron-Run2017B-PromptReco-v2'            : [True, '/SingleElectron/Run2017B-PromptReco-v2/MINIAOD', 10],
-    'SingleElectron-Run2017C-12Sep2017-v1'             : [True, '/SingleElectron/Run2017C-12Sep2017-v1/MINIAOD', 10],
-    'SingleElectron-Run2017C-PromptReco-v1'            : [True, '/SingleElectron/Run2017C-PromptReco-v1/MINIAOD', 10],
-    'SingleElectron-Run2017C-PromptReco-v2'            : [True, '/SingleElectron/Run2017C-PromptReco-v2/MINIAOD', 10],
-    'SingleElectron-Run2017C-PromptReco-v3'            : [True, '/SingleElectron/Run2017C-PromptReco-v3/MINIAOD', 10],
-    'SingleElectron-Run2017D-PromptReco-v1'            : [True, '/SingleElectron/Run2017D-PromptReco-v1/MINIAOD', 10],
-    'SingleElectron-Run2017E-PromptReco-v1'            : [True, '/SingleElectron/Run2017E-PromptReco-v1/MINIAOD', 10],
-    'SingleElectron-Run2017F-PromptReco-v1'            : [True, '/SingleElectron/Run2017F-PromptReco-v1/MINIAOD', 10],
+    'SingleElectron-Run2017B'             : [True, '/SingleElectron/Run2017B-17Nov2017-v1/MINIAOD', 8],
+    'SingleElectron-Run2017C'             : [True, '/SingleElectron/Run2017C-17Nov2017-v1/MINIAOD', 8],
+    'SingleElectron-Run2017D'            : [True, '/SingleElectron/Run2017D-17Nov2017-v1/MINIAOD', 8],
+    'SingleElectron-Run2017E'            : [True, '/SingleElectron/Run2017E-17Nov2017-v1/MINIAOD', 8],
+    'SingleElectron-Run2017F'            : [True, '/SingleElectron/Run2017F-17Nov2017-v1/MINIAOD', 8],
+
+    'SinglePhoton-Run2017B'             : [True, '/SinglePhoton/Run2017B-17Nov2017-v1/MINIAOD', 8],
+    'SinglePhoton-Run2017C'             : [True, '/SinglePhoton/Run2017C-17Nov2017-v1/MINIAOD', 8],
+    'SinglePhoton-Run2017D'             : [True, '/SinglePhoton/Run2017D-17Nov2017-v1/MINIAOD', 8],
+    'SinglePhoton-Run2017E'             : [True, '/SinglePhoton/Run2017E-17Nov2017-v1/MINIAOD', 8],
+    'SinglePhoton-Run2017F'             : [True, '/SinglePhoton/Run2017F-17Nov2017-v1/MINIAOD', 8],
 }
 
 tasklist = {}
@@ -420,64 +405,29 @@ def SubmitJob(key, value):
             tempconfig.JobType.inputFiles = [json_25ns, 'Summer16_23Sep2016AllV3_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_25ns
-        elif key.find('Run2017A-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
+        elif key.find('Run2017B') != -1:
+            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=94X_mc2017_realistic_v12', 'jecDBname=Fall17_17Nov2017BCDEF_V6_DATA']
+            tempconfig.JobType.inputFiles = [json_2017, 'Fall17_17Nov2017BCDEF_V6_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017B-04Jul2017') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
+        elif key.find('Run2017C') != -1:
+            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=94X_mc2017_realistic_v12', 'jecDBname=Fall17_17Nov2017BCDEF_V6_DATA']
+            tempconfig.JobType.inputFiles = [json_2017, 'Fall17_17Nov2017BCDEF_V6_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017B-06Jul2017') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
+        elif key.find('Run2017D') != -1:
+            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=94X_mc2017_realistic_v12', 'jecDBname=Fall17_17Nov2017BCDEF_V6_DATA']
+            tempconfig.JobType.inputFiles = [json_2017, 'Fall17_17Nov2017BCDEF_V6_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017B-12Sep2017') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
+        elif key.find('Run2017E') != -1:
+            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=94X_mc2017_realistic_v12', 'jecDBname=Fall17_17Nov2017BCDEF_V6_DATA']
+            tempconfig.JobType.inputFiles = [json_2017, 'Fall17_17Nov2017BCDEF_V6_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017B-23Jun2017') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017B-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017C-12Sep2017') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017C-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017D-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017E-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017F-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
-            tempconfig.Data.splitting = 'LumiBased'
-            tempconfig.Data.lumiMask = json_2017
-        elif key.find('Run2017G-PromptReco') != -1:
-            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=92X_dataRun2_Prompt_v7', 'jecDBname=Summer16_23Sep2016AllV3_DATA']
-            tempconfig.JobType.inputFiles = [json_2017, 'Summer16_23Sep2016AllV3_DATA.db']
+        elif key.find('Run2017F') != -1:
+            tempconfig.JobType.pyCfgParams = ['mcInfo=0', 'GlobalTag=94X_mc2017_realistic_v12', 'jecDBname=Fall17_17Nov2017BCDEF_V6_DATA']
+            tempconfig.JobType.inputFiles = [json_2017, 'Fall17_17Nov2017BCDEF_V6_DATA.db']
             tempconfig.Data.splitting = 'LumiBased'
             tempconfig.Data.lumiMask = json_2017
         else:
