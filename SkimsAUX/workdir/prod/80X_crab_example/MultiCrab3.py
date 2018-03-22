@@ -438,8 +438,8 @@ def SubmitJob(key, value):
           tempconfig.JobType.inputFiles = ['Spring16_25nsFastSimMC_V1.db']
           tempconfig.Data.splitting = 'FileBased'
        else:
-          tempconfig.JobType.pyCfgParams = ['mcInfo=1', 'GlobalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v6', 'specialFix=JEC BADMUON', 'jecDBname=Summer16_23Sep2016V3_MC']
-          tempconfig.JobType.inputFiles = ['Summer16_23Sep2016V3_MC.db']
+          tempconfig.JobType.pyCfgParams = ['mcInfo=1', 'GlobalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v6', 'specialFix=JEC BADMUON', 'jecDBname=Fall17_17Nov2017_V6_MC']
+          tempconfig.JobType.inputFiles = ['Fall17_17Nov2017_V6_MC.db']
           tempconfig.Data.splitting = 'FileBased'
 
 
