@@ -14,13 +14,22 @@ The following installation instructions assume the user wants to process Run2016
 
 ```
 cmsrel CMSSW_9_4_2
-cd CMSSW_9_4_2/src/
+cd CMSSW_9_4_2/src
 cmsenv
 git cms-init
-git clone git@github.com:TreeMaker/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X
-git cms-addpkg RecoEgamma/ or (git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP)
-git clone -b CMSSW942 git@github.com:susy2015/StopTupleMaker.git
+git clone -b jetToolbox_94X git@github.com:cms-jet/JetToolbox.git
+
+git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
+
+git cms-addpkg MagneticField
+
+git clone -b CMSSW942 git@github.com:susy2015/SusyAnaTools.git
+
 scram b -j9
+
+git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data/Fall17/HggPhoId_92X_*
+
+you also need Fall17_17Nov2017_V6_MC.db
 ```
 
 To produce ntuples with crab submission (google doc for production signup is https://docs.google.com/spreadsheets/d/17Hpp5S-UkiKvuugKxqbW0-3aLhiJrJP8MEEyHce_Lzw/edit#gid=0):
