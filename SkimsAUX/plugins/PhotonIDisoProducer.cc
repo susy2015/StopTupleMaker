@@ -19,6 +19,7 @@
 
 // system include files
 #include <memory>
+#include "TMath.h"
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -70,6 +71,7 @@ PhotonIDisoProducer::PhotonIDisoProducer(const edm::ParameterSet& iConfig):
   //Andres TLorentz 
   produces<std::vector<TLorentzVector> >("gammaLVec");
   produces<std::vector<TLorentzVector> >("gammaLVecGen");
+  produces<std::vector<TLorentzVector> >("genPartonLVec");
 
   produces< std::vector< pat::Photon > >(); 
   produces< std::vector< double > >("isEB");
@@ -141,9 +143,11 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   auto photon_extraLooseID = std::make_unique<std::vector<bool>>();
   auto gammaLVec = std::make_unique<std::vector<TLorentzVector> >();
   auto gammaLVecGen = std::make_unique<std::vector<TLorentzVector> >();
+  auto genPartonLVec = std::make_unique<std::vector<TLorentzVector> >();
   auto photon_pt = std::make_unique<std::vector<double>>();
   auto photon_eta = std::make_unique<std::vector<double>>();
   auto photon_phi = std::make_unique<std::vector<double>>();
+  
 
   if( debug ){
     std::cout << "new events" << std::endl;
@@ -185,6 +189,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     for(unsigned int ig = 0; ig < genParticles->size(); ig++) {
 
       TLorentzVector genPhoton;
+      TLorentzVector genParton;
 
       if (genParticles->at(ig).pt() > 10) {
 	if( genParticles->at(ig).pdgId() == 22 && (genParticles->at(ig).status() == 1 || genParticles->at(ig).status() == 2 
@@ -194,10 +199,18 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	  gammaLVecGen->push_back(genPhoton);
 
-	}
+	  }
+        if ((abs(genParticles->at(ig).pdgId()) == 1 || abs(genParticles->at(ig).pdgId()) == 2 || abs(genParticles->at(ig).pdgId()) == 3 ||
+             abs(genParticles->at(ig).pdgId()) == 4 || abs(genParticles->at(ig).pdgId()) == 5 || abs(genParticles->at(ig).pdgId()) == 6 ||
+             abs(genParticles->at(ig).pdgId()) == 9 || abs(genParticles->at(ig).pdgId()) == 21) && (genParticles->at(ig).status() == 23 ||
+                                                                                          genParticles->at(ig).status() == 71)){
+
+          genParton.SetPtEtaPhiE( genParticles->at(ig).pt(), genParticles->at(ig).eta(), genParticles->at(ig).phi(), genParticles->at(ig).energy() );
+          genPartonLVec->push_back(genParton);
       }
     }
   }
+ }//ADDed
   /*
   for(unsigned int ip = 0; ip < genParticles->size(); ip++){
     TLorentzVector perGammaLVecGen;
@@ -417,6 +430,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //Gamma TLorentz
   iEvent.put(std::move(gammaLVec),"gammaLVec");
   iEvent.put(std::move(gammaLVecGen),"gammaLVecGen");
+  iEvent.put(std::move(genPartonLVec), "genPartonLVec");
 }
 
 // copied from https://github.com/RazorCMS/SUSYBSMAnalysis-RazorTuplizer/blob/6072ffb43bbeb3f6b34cf8a96426c7f104c5b902/plugins/RazorAux.cc#L127

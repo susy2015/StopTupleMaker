@@ -124,6 +124,7 @@ private:
   std::string   CvsLCJetTags_;
   std::string   CvsLNegCJetTags_;
   std::string   CvsLPosCJetTags_;
+  
 };
 
 prodBTag::prodBTag(const edm::ParameterSet & iConfig) 
@@ -185,6 +186,8 @@ prodBTag::prodBTag(const edm::ParameterSet & iConfig)
   CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
   CvsLNegCJetTags_             = iConfig.getParameter<std::string>("CvsLNegCJetTags");
   CvsLPosCJetTags_             = iConfig.getParameter<std::string>("CvsLPosCJetTags");
+
+  deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
 
   JetTok_ = consumes<std::vector<pat::Jet> >(jetSrc_);
 
@@ -474,6 +477,24 @@ std::vector<pat::Jet> extJets = (*jets);
     CvsLNeg->push_back(tri_CvsLNeg);
     float tri_CvsLPos = jet.bDiscriminator(CvsLPosCJetTags_.c_str());
     CvsLPos->push_back(tri_CvsLPos);
+
+    float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
+    DeepFlavorb->push_back(trialDeepFlavorb);
+
+    float trialDeepFlavorbb = jet.bDiscriminator((deepFlavorBJetTags_+":probbb").c_str());
+    DeepFlavorbb->push_back(trialDeepFlavorbb);
+
+    float trialDeepFlavorlepb = jet.bDiscriminator((deepFlavorBJetTags_+":problepb").c_str());
+    DeepFlavorlepb->push_back(trialDeepFlavorlepb);
+
+    float trialDeepFlavorc = jet.bDiscriminator((deepFlavorBJetTags_+":probc").c_str());
+    DeepFlavorc->push_back(trialDeepFlavorc);
+
+    float trialDeepFlavoruds = jet.bDiscriminator((deepFlavorBJetTags_+":probuds").c_str());
+    DeepFlavoruds->push_back(trialDeepFlavoruds);
+
+    float trialDeepFlavorg = jet.bDiscriminator((deepFlavorBJetTags_+":probg").c_str());
+    DeepFlavorg->push_back(trialDeepFlavorg);
 }
 
   iEvent.put(std::move(DeepCSVb),"DeepCSVb");

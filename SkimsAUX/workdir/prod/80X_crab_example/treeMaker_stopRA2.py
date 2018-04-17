@@ -128,7 +128,8 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
       #'/store/relval/CMSSW_3_8_0_pre8/RelValTTbar/GEN-SIM-RECO/START38_V6-v1/0004/847D00B0-608E-DF11-A37D-003048678FA0.root'
       #'/store/data/Run2017C/SingleMuon/MINIAOD/17Nov2017-v1/40000/0015635A-0BD9-E711-A76C-02163E0133BB.root'
-      '/store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/2C881587-4CF6-E711-B958-0CC47AA989C0.root'
+    '/store/relval/CMSSW_9_4_5_cand1/RelValTTbar_13/MINIAODSIM/94X_mc2017_realistic_v14_RelVal_rmaod-v1/10000/A8356B71-6E2E-E811-8A63-0CC47A7C3424.root'      
+   #'/store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/2C881587-4CF6-E711-B958-0CC47AA989C0.root'
       #'root://cmsxrootd.fnal.gov///store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/04291F1E-A501-E811-8EC9-6CC2173D4980.root'
     )
 )
@@ -198,9 +199,9 @@ process.pfNoElectronCHSNoEle = cms.EDProducer("CandPtrProjector",
                                               veto = cms.InputTag("prodElectrons", "ele2Clean"))
 process.ak4PFJetsCHSNoLep = ak4PFJets.clone(src = 'pfNoElectronCHSNoEle', doAreaFastjet = True) # no idea while doArea is false by default, but it's True in RECO so we have to set it
 
-## define the JECs
+## define the JECs JET Corrections
 #if options.cmsswVersion == "80X":
-jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+jetCorrectionLevels = ('AK4PFchs', cms.vstring([]), 'None')#cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
 jetCorrLevelLists = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if options.mcInfo == False:
       jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
@@ -259,7 +260,23 @@ addJetCollection(
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
-      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags' ],
+      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags', 
+      'pfJetBProbabilityBJetTags',
+      'pfJetProbabilityBJetTags', 
+      'pfCombinedCvsLJetTags',     
+      'pfCombinedCvsBJetTags',     
+      'pfCombinedSecondaryVertexV2BJetTags',
+      'pfDeepCSVJetTags:probudsg', 
+      'pfDeepCSVJetTags:probb', 
+      'pfDeepCSVJetTags:probc', 
+      'pfDeepCSVJetTags:probbb', 
+      'pfDeepFlavourJetTags:probb',
+      'pfDeepFlavourJetTags:probbb',
+      'pfDeepFlavourJetTags:problepb',
+      'pfDeepFlavourJetTags:probc',
+      'pfDeepFlavourJetTags:probuds',
+      'pfDeepFlavourJetTags:probg',
+],
       genJetCollection = cms.InputTag('ak4GenJetsNoNu'),
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
@@ -812,6 +829,7 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonEta
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("goodPhotons", "photonPhi"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVec"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVecGen"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "genPartonLVec"))
 
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodSecondaryVertex", "svPT"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodSecondaryVertex", "svETA"))
@@ -828,6 +846,7 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodSecondaryVertex", "s
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVertex", "svSoftLVec"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVertex", "svLVec"))
 
+"""
 if "BADMUON" in options.specialFix:
    print ("\nAdding bad muon special filter information in prodMuon & prodMuonNoIso ...\n")
    process.prodMuons.specialFix      = cms.bool(True)
@@ -839,6 +858,7 @@ if "BADMUON" in options.specialFix:
    process.stopTreeMaker.vectorInt.append(cms.InputTag("prodMuonsNoIso", "specialFixtype"))
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsLVec"))
    process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodMuonsNoIso", "specialFixMuonsCharge"))
+"""
 
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectrons"))
 process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectrons|nElectrons_CUT")
@@ -1119,7 +1139,7 @@ if options.mcInfo == False:
 ) #process.hltFilte process.QGAK4PFCHSr process.stopPFJets
 
 else:
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task, process.genHT, process.PDFWeights, process.ISRJetProducer, process.prodGenJets
+	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task, process.prodBTag, process.genHT, process.PDFWeights, process.ISRJetProducer, process.prodGenJets
 )
 
 # Other sequence
