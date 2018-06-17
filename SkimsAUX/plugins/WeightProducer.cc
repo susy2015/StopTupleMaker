@@ -134,10 +134,10 @@ WeightProducer::WeightProducer(const edm::ParameterSet& iConfig):
     accuWeight_ = 0;
 
     //register your products
-    produces<double> ("weight");
-    produces<double> ("ptHat");
-    produces<double> ("ptHatweight");
-    produces<double> ("puweight");
+    produces<float> ("weight");
+    produces<float> ("ptHat");
+    produces<float> ("ptHatweight");
+    produces<float> ("puweight");
 }
 
 WeightProducer::~WeightProducer() {
@@ -219,16 +219,16 @@ void WeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
     if( storedWeight < 0 ) _weight *= -1;
 
     // put weight into the Event
-    std::unique_ptr<double> weightPtr(new double(_weight));
+    std::unique_ptr<float> weightPtr(new float(_weight));
     iEvent.put(std::move(weightPtr), "weight");
 
-    std::unique_ptr<double> ptHatPtr(new double(ptHat_));
+    std::unique_ptr<float> ptHatPtr(new float(ptHat_));
     iEvent.put(std::move(ptHatPtr), "ptHat");
 
-    std::unique_ptr<double> ptHatweightPtr(new double(ptHatweight_));
+    std::unique_ptr<float> ptHatweightPtr(new float(ptHatweight_));
     iEvent.put(std::move(ptHatweightPtr), "ptHatweight");
 
-    std::unique_ptr<double> puweightPtr(new double(puweight_));
+    std::unique_ptr<float> puweightPtr(new float(puweight_));
     iEvent.put(std::move(puweightPtr), "puweight");
 
     cntPrintOut_ ++; 

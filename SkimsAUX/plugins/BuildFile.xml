@@ -30,6 +30,7 @@
   <use   name="DataFormats/BTauReco"/>
   <use   name="RecoBTag/BTagTools"/>
   <use   name="RecoBTau/JetTagComputer"/>
+  <use   name="RecoBTag/DeepFlavour"/>
   <flags   EDM_PLUGIN="1"/>
 </library>
 <export>

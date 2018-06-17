@@ -45,7 +45,7 @@ private:
 GenHTProducer::GenHTProducer(const edm::ParameterSet& iConfig) : getterOfProducts_(edm::ProcessMatch("*"), this)
 {
   callWhenNewProductsRegistered(getterOfProducts_);
-  produces<double>("genHT");
+  produces<float>("genHT");
 
 }
 
@@ -93,7 +93,7 @@ void GenHTProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
-  std::unique_ptr<double > genHT_(new double(genHT));
+  std::unique_ptr<float > genHT_(new float(genHT));
   iEvent.put(std::move(genHT_), "genHT");
   
 }

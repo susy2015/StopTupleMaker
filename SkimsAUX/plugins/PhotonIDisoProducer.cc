@@ -74,18 +74,18 @@ PhotonIDisoProducer::PhotonIDisoProducer(const edm::ParameterSet& iConfig):
   produces<std::vector<TLorentzVector> >("genPartonLVec");
 
   produces< std::vector< pat::Photon > >(); 
-  produces< std::vector< double > >("isEB");
-  produces< std::vector< double > >("genMatched"); 
-  produces< std::vector< double > >("hadTowOverEM"); 
-  produces< std::vector< double > >("sigmaIetaIeta"); 
-  produces< std::vector< double > >("pfChargedIso"); 
-  produces< std::vector< double > >("pfNeutralIso"); 
-  produces< std::vector< double > >("pfGammaIso"); 
-  produces< std::vector< double > >("pfChargedIsoRhoCorr"); 
-  produces< std::vector< double > >("pfNeutralIsoRhoCorr"); 
-  produces< std::vector< double > >("pfGammaIsoRhoCorr"); 
-  produces< std::vector< double > >("hasPixelSeed"); 
-  produces< std::vector< double > >("passElectronVeto"); 
+  produces< std::vector< float > >("isEB");
+  produces< std::vector< float > >("genMatched"); 
+  produces< std::vector< float > >("hadTowOverEM"); 
+  produces< std::vector< float > >("sigmaIetaIeta"); 
+  produces< std::vector< float > >("pfChargedIso"); 
+  produces< std::vector< float > >("pfNeutralIso"); 
+  produces< std::vector< float > >("pfGammaIso"); 
+  produces< std::vector< float > >("pfChargedIsoRhoCorr"); 
+  produces< std::vector< float > >("pfNeutralIsoRhoCorr"); 
+  produces< std::vector< float > >("pfGammaIsoRhoCorr"); 
+  produces< std::vector< float > >("hasPixelSeed"); 
+  produces< std::vector< float > >("passElectronVeto"); 
   //produces< std::vector< bool > >("hadronization");
   produces< std::vector< bool > >("nonPrompt");
   produces< std::vector< bool > >("fullID");
@@ -94,9 +94,9 @@ PhotonIDisoProducer::PhotonIDisoProducer(const edm::ParameterSet& iConfig):
   produces< std::vector< bool > >("tightPhotonID");
   produces< std::vector< bool > >("extraLooseID");  
   //Andres: adding pt, eta and phi
-  produces< std::vector< double > >("photonPt");
-  produces< std::vector< double > >("photonEta");
-  produces< std::vector< double > >("photonPhi");
+  produces< std::vector< float > >("photonPt");
+  produces< std::vector< float > >("photonEta");
+  produces< std::vector< float > >("photonPhi");
 
 }
 
@@ -121,18 +121,18 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
  
   //std::auto_ptr< std::vector< pat::Photon > > goodPhotons ( new std::vector< pat::Photon >() );
   auto goodPhotons  = std::make_unique<std::vector<pat::Photon>>();
-  auto photon_isEB = std::make_unique<std::vector<double>>();
-  auto photon_genMatched = std::make_unique<std::vector<double>>();
-  auto photon_hadTowOverEM = std::make_unique<std::vector<double>>();
-  auto photon_sigmaIetaIeta = std::make_unique<std::vector<double>>();
-  auto photon_pfGammaIso = std::make_unique<std::vector<double>>();
-  auto photon_pfChargedIso = std::make_unique<std::vector<double>>();
-  auto photon_pfNeutralIso = std::make_unique<std::vector<double>>();
-  auto photon_pfGammaIsoRhoCorr = std::make_unique<std::vector<double>>();
-  auto photon_pfChargedIsoRhoCorr = std::make_unique<std::vector<double>>();
-  auto photon_pfNeutralIsoRhoCorr = std::make_unique<std::vector<double>>();
-  auto photon_hasPixelSeed = std::make_unique<std::vector<double>>();
-  auto photon_passElectronVeto = std::make_unique<std::vector<double>>();
+  auto photon_isEB = std::make_unique<std::vector<float>>();
+  auto photon_genMatched = std::make_unique<std::vector<float>>();
+  auto photon_hadTowOverEM = std::make_unique<std::vector<float>>();
+  auto photon_sigmaIetaIeta = std::make_unique<std::vector<float>>();
+  auto photon_pfGammaIso = std::make_unique<std::vector<float>>();
+  auto photon_pfChargedIso = std::make_unique<std::vector<float>>();
+  auto photon_pfNeutralIso = std::make_unique<std::vector<float>>();
+  auto photon_pfGammaIsoRhoCorr = std::make_unique<std::vector<float>>();
+  auto photon_pfChargedIsoRhoCorr = std::make_unique<std::vector<float>>();
+  auto photon_pfNeutralIsoRhoCorr = std::make_unique<std::vector<float>>();
+  auto photon_hasPixelSeed = std::make_unique<std::vector<float>>();
+  auto photon_passElectronVeto = std::make_unique<std::vector<float>>();
   auto   photon_hadronization = std::make_unique<std::vector<bool>>();
   auto   photon_nonPrompt  = std::make_unique<std::vector<bool>>();
   auto   photon_fullID  = std::make_unique<std::vector<bool>>();
@@ -144,9 +144,9 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   auto gammaLVec = std::make_unique<std::vector<TLorentzVector> >();
   auto gammaLVecGen = std::make_unique<std::vector<TLorentzVector> >();
   auto genPartonLVec = std::make_unique<std::vector<TLorentzVector> >();
-  auto photon_pt = std::make_unique<std::vector<double>>();
-  auto photon_eta = std::make_unique<std::vector<double>>();
-  auto photon_phi = std::make_unique<std::vector<double>>();
+  auto photon_pt = std::make_unique<std::vector<float>>();
+  auto photon_eta = std::make_unique<std::vector<float>>();
+  auto photon_phi = std::make_unique<std::vector<float>>();
   
 
   if( debug ){
@@ -329,7 +329,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // check if photon is a good loose photon
     //if( passAcc && passIDLoose && passIsoLoose && iPhoton->pt() > 100.0){
-    if( passAcc && iPhoton->pt() > 100.0){ 
+    if( passAcc ){//&& iPhoton->pt() > 100.0){ 
       goodPhotons->push_back( *iPhoton );
       photon_isEB->push_back( iPhoton->isEB() );
       photon_genMatched->push_back( iPhoton->genPhoton() != NULL );
@@ -351,7 +351,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       photon_tightID->push_back(passtight);
       photon_fullID->push_back(passID&&passIso);
       photon_extraLooseID->push_back(passIDLoose&&passIsoLoose);
-    }
+      }
       //Andres pt with cut applied at 100 GeV
       //photon_pt->push_back( iPhoton->pt() );
       //photon_eta->push_back( iPhoton->eta() );

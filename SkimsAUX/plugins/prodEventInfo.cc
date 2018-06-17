@@ -61,13 +61,13 @@ prodEventInfo::prodEventInfo(const edm::ParameterSet & iConfig) {
   GenTok_ = consumes<GenEventInfoProduct>(genSrc_);
 
   produces<int>("vtxSize");
-  produces<double>("trunpv");
-  produces<double>("avgnpv");
+  produces<float>("trunpv");
+  produces<float>("avgnpv");
   produces<int>("npv");
   produces<int>("nm1");
   produces<int>("n0");
   produces<int>("np1");
-  produces<double>("storedWeight");
+  produces<float>("storedWeight");
 }
 
 
@@ -86,16 +86,16 @@ bool prodEventInfo::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   std::unique_ptr<int> vtxSize(new int);
   *vtxSize = vertices->size();
 
-  std::unique_ptr<double> tru_npv(new double);
+  std::unique_ptr<float> tru_npv(new float);
   *tru_npv = -1;
 
-  std::unique_ptr<double> avg_npv(new double);
+  std::unique_ptr<float> avg_npv(new float);
   *avg_npv = 0;
 
   std::unique_ptr<int> nm1(new int), n0(new int), np1(new int), npv(new int);
   *nm1 = -1; *n0 = -1; *np1 = -1; *npv = -1;
 
-  std::unique_ptr<double> storedWeight(new double);
+  std::unique_ptr<float> storedWeight(new float);
   *storedWeight = -1.0;
 
   if( !isData_ ){

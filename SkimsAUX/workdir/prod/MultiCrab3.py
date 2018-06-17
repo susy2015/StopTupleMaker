@@ -34,7 +34,7 @@ json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
 #selSubmitKey = 'MET-Run2017B-23Jun2017-v1 MET-Run2017C-PromptReco-v1 MET-Run2017C-PromptReco-v2 MET-Run2017C-PromptReco-v3 MET-Run2017D-PromptReco-v1'
 #selSubmitKey = 'SingleMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
 #selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
-selSubmitKey= 'QCD GJets_HT'
+selSubmitKey= 'TTJets_SingleLet00257'#TTJets_SingleLeptFromT'
 #selSubmitKey = 'WWTo2L2Nu'
 #selSubmitKey = 'TEST ALL'
 #selSubmitKey = 'TEST TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept ZJetsToNuNu_HT'
@@ -44,8 +44,7 @@ doAutoMonitor = False#True
 jobslist = {
     # TTbar
     'TTJets_Inc'                             : [False, '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
-    'TTJets_SingleLeptFromT'                 : [False, '/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
-    'TTJets_SingleLeptFromT_ext1'            : [False, '/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
+    'TTJets_SingleLeptFromT'            : [False, '/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromTbar'              : [False, '/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromTbar_ext1'         : [False, '/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
     'TTJets_HT-600to800'                     : [False, '/TTJets_HT-600to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
@@ -54,7 +53,7 @@ jobslist = {
     'TTJets_HT-2500toInf'                    : [False, '/TTJets_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
     'TTJets_DiLept'                          : [False, '/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'TTJets_DiLept_ext1'                     : [False, '/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
-
+    'TTJets_SingleLet00257'                  : [False,   '/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root', 1],
     # WJets,
     'WJetsToLNu'                             : [False, '/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'WJetsToLNu_HT-70To100'                  : [False, '/WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],

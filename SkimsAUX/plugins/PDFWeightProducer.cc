@@ -68,21 +68,21 @@ PDFWeightProducer::PDFWeightProducer(const edm::ParameterSet& iConfig) : getterO
    GenTok_ = consumes<GenEventInfoProduct>(iConfig.getUntrackedParameter<edm::InputTag>("src",edm::InputTag("generator")));
      
    //From LHAPDF Grid
-   produces<std::vector<double> >("PDFweights");
+   produces<std::vector<float> >("PDFweights");
    produces<std::vector<int> >("PDFids");
       
    //_MiniAOD corresponds to Weights and scales taken from
    //MiniAOD not from LHAPDF Grid.
-   produces<std::vector<double> >("ScaleWeightsMiniAOD");
-   produces<std::vector<double> >("PDFweightsMiniAOD");
+   produces<std::vector<float> >("ScaleWeightsMiniAOD");
+   produces<std::vector<float> >("PDFweightsMiniAOD");
    produces<std::vector<int> >("PDFidsMiniAOD");
 
    //For x1 and x2
-   produces<double>("x1");
-   produces<double>("x2");      
+   produces<float>("x1");
+   produces<float>("x2");      
    produces<int>("id2");
    produces<int>("id1");
-   produces<double>("q");
+   produces<float>("q");
 }
 
 PDFWeightProducer::~PDFWeightProducer()
@@ -111,7 +111,7 @@ void PDFWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    //***************************
    // From LHAPDF Grid
    //***************************
-   std::vector<double> pdfweights;
+   std::vector<float> pdfweights;
    std::vector<int> pdfids;
    pdfweights.clear();
    pdfids.clear();
@@ -170,8 +170,8 @@ void PDFWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    //**************************************
    // From MiniAOD
    //**************************************
-   std::vector<double> scaleweightsMiniAOD;
-   std::vector<double> pdfweightsMiniAOD;
+   std::vector<float> scaleweightsMiniAOD;
+   std::vector<float> pdfweightsMiniAOD;
    std::vector<int> pdfidsMIniAOD;
    bool found_weights = false;
         
@@ -221,9 +221,9 @@ void PDFWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
    }
       
   //For x1 and x2
-  std::unique_ptr<double> x1Ptr_(new double);
-  std::unique_ptr<double> x2Ptr_(new double);
-  std::unique_ptr<double> qPtr_(new double);
+  std::unique_ptr<float> x1Ptr_(new float);
+  std::unique_ptr<float> x2Ptr_(new float);
+  std::unique_ptr<float> qPtr_(new float);
 
   *x1Ptr_ = x1;
   *x2Ptr_ = x2;
@@ -234,17 +234,17 @@ void PDFWeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.put(std::move(qPtr_), "q");
 
   // From LHAPDF Grid
-  std::unique_ptr<std::vector<double> > pdfweights_(new std::vector<double>(pdfweights));
+  std::unique_ptr<std::vector<float> > pdfweights_(new std::vector<float>(pdfweights));
   iEvent.put(std::move(pdfweights_),"PDFweights");
       
   std::unique_ptr<std::vector<int> > pdfids_(new std::vector<int>(pdfids));
   iEvent.put(std::move(pdfids_),"PDFids");
       
   // From MiniAOD
-  std::unique_ptr<std::vector<double> > scaleweightsMiniAOD_(new std::vector<double>(scaleweightsMiniAOD));
+  std::unique_ptr<std::vector<float> > scaleweightsMiniAOD_(new std::vector<float>(scaleweightsMiniAOD));
   iEvent.put(std::move(scaleweightsMiniAOD_),"ScaleWeightsMiniAOD");
       
-  std::unique_ptr<std::vector<double> > pdfweightsMiniAOD_(new std::vector<double>(pdfweightsMiniAOD));
+  std::unique_ptr<std::vector<float> > pdfweightsMiniAOD_(new std::vector<float>(pdfweightsMiniAOD));
   iEvent.put(std::move(pdfweightsMiniAOD_),"PDFweightsMiniAOD");
       
   std::unique_ptr<std::vector<int> > pdfidsMiniAOD_(new std::vector<int>(pdfidsMIniAOD));

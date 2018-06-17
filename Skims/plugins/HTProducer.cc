@@ -32,7 +32,7 @@ HTProducer::HTProducer(const edm::ParameterSet & iConfig) {
   minJetPt_    = iConfig.getParameter<double>("MinJetPt");
   maxJetEta_   = iConfig.getParameter<double>("MaxJetEta");
   TheJetLabelTok_ = consumes<edm::View<reco::Jet> >(theJetLabel_);
-  produces<double>("");
+  produces<float>("");
 }
 
 
@@ -47,14 +47,14 @@ void HTProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup) {
   iEvent.getByToken(TheJetLabelTok_, jets);
 
   // calculate MHT
-  double ht = 0;
+  float ht = 0;
   for (edm::View<reco::Jet>::const_iterator it = jets->begin(); it != jets->end(); ++it) {
     if (it->pt() > minJetPt_ && fabs(it->eta()) < maxJetEta_) {
       ht += it->pt();
     }
   }
 
-  std::unique_ptr<double> htp(new double(ht));
+  std::unique_ptr<float> htp(new float(ht));
   iEvent.put(std::move(htp));
 
 }

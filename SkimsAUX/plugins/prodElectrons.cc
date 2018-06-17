@@ -312,19 +312,19 @@ bool prodElectrons::passElectronID(const pat::Electron & ele, const edm::Handle<
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/CutBasedElectronIdentificationRun2
 
   // barrel electrons
-  double eb_ieta_cut[4] = {0.0115, 0.011, 0.00998, 0.00998};
-  double eb_deta_cut[4] = {0.00749, 0.00477, 0.00311, 0.00308};
-  double eb_dphi_cut[4] = {0.228, 0.222, 0.103, 0.0816};
-  double eb_hovere_cut[4] = {0.356, 0.298, 0.253, 0.0414};
-  double eb_ooeminusoop_cut[4] = {0.299, 0.241, 0.134, 0.0129};
+  double eb_ieta_cut[4] = {0.0128,  0.0105,  0.0105,  0.0104};//0.0115, 0.011, 0.00998, 0.00998};
+  double eb_deta_cut[4] = {0.00523, 0.00387, 0.00365, 0.00353};//0.00749, 0.00477, 0.00311, 0.00308};
+  double eb_dphi_cut[4] = {0.159,   0.0716,  0.0588,  0.0499};//0.228, 0.222, 0.103, 0.0816};
+  double eb_hovere_cut[4] = {0.05,    0.05,    0.026,   0.026};//0.356, 0.298, 0.253, 0.0414};
+  double eb_ooeminusoop_cut[4] = {0.193,   0.129,   0.0327,  0.0278};//0.299, 0.241, 0.134, 0.0129};
   int eb_misshits_cut[4] = {2, 1, 1, 1};
 
   // endcap electrons
-  double ee_ieta_cut[4] = {0.037, 0.0314, 0.0298, 0.0292};
-  double ee_deta_cut[4] = {0.00895, 0.00868, 0.00609, 0.00605};
-  double ee_dphi_cut[4] = {0.213, 0.213, 0.045, 0.0394};
-  double ee_hovere_cut[4] = {0.211, 0.101, 0.0878, 0.0641};
-  double ee_ooeminusoop_cut[4] = {0.15, 0.14, 0.13, 0.0129};
+  double ee_ieta_cut[4] = {0.0445,  0.0356,  0.0309,  0.0305};//0.037, 0.0314, 0.0298, 0.0292};
+  double ee_deta_cut[4] = {0.00984, 0.0072,  0.00625, 0.00567};//0.00895, 0.00868, 0.00609, 0.00605};
+  double ee_dphi_cut[4] = {0.157,   0.147,   0.0355,  0.0165};//0.213, 0.213, 0.045, 0.0394};
+  double ee_hovere_cut[4] = {0.05,    0.0414,  0.026,   0.026};//0.211, 0.101, 0.0878, 0.0641};
+  double ee_ooeminusoop_cut[4] = {0.0962,  0.0875,  0.0335,  0.0158};//0.15, 0.14, 0.13, 0.0129};
   int ee_misshits_cut[4] = {3, 1, 1, 1};
 
   // common
@@ -402,8 +402,8 @@ bool prodElectrons::passElectronID(const pat::Electron & ele, const edm::Handle<
 
 bool prodElectrons::passElectronISO(const pat::Electron & ele, const double relIso, const elesIDLevel level)
 {
-  double eb_relIsoWithEA_cut[4] = {0.175, 0.0994, 0.0695, 0.0588};
-  double ee_relIsoWithEA_cut[4] = {0.159, 0.1070, 0.0821, 0.0571}; 
+  double eb_relIsoWithEA_cut[4] = {0.1566, 0.1626, 0.1073, 0.0854};//0.175, 0.0994, 0.0695, 0.0588};
+  double ee_relIsoWithEA_cut[4] = {0.1051, 0.1204, 0.1524, 0.1524};//0.159, 0.1070, 0.0821, 0.0571}; 
    
   if( ele.isEB() )
   {
