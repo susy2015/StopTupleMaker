@@ -23,7 +23,7 @@ git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
 
 git cms-addpkg MagneticField
 
-git clone -b CMSSW942 git@github.com:susy2015/SusyAnaTools.git
+git clone -b CMSSW942 git@github.com:susy2015/StopTupleMaker.git
 
 scram b -j9
 

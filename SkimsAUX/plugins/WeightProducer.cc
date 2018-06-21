@@ -53,32 +53,32 @@ private:
 
     const std::string _weightingMethod;
 
-    double _expo;
+    float _expo;
 // This is now used for total weight
-    double _weight;
+    float _weight;
 // This one is to record the weight from ptHat calculation
 // We'd expect NOT to put all the information into "produces", 
 // so we expect to check the configuration files for any other information
 // on how the weight is produced.
-    double ptHatweight_;
-    double _startWeight;
-    double _LumiScale;
-    double _xs;
-    double _NumberEvents;
-    double _lumi;
+    float ptHatweight_;
+    float _startWeight;
+    float _LumiScale;
+    float _xs;
+    float _NumberEvents;
+    float _lumi;
     edm::InputTag _weightName;
 
-    double weightFactor;
+    float weightFactor;
 
     int maxInitPrintOut_;
     int cntPrintOut_;
-    double accuWeight_;
+    float accuWeight_;
 
-    double ptHat_;
+    float ptHat_;
 
-    double weightWARNingLowThreshold_;
-    double weightWARNingUpThreshold_;
-    double ratioWARNingThreshold_;
+    float weightWARNingLowThreshold_;
+    float weightWARNingUpThreshold_;
+    float ratioWARNingThreshold_;
 
 // Default is an empty string which means there is no PU weighting needed 
 // (Any of the input string is empty means no PU weighting...)
@@ -91,12 +91,12 @@ private:
 
     edm::LumiReWeighting LumiWeights_;
     edm::Lumi3DReWeighting Lumi3DWeights_;
-    double initPUscaleFactor_;
+    float initPUscaleFactor_;
     bool initPUinput();
-    double puweight_;
+    float puweight_;
     edm::InputTag genSrc_;
     edm::EDGetTokenT<GenEventInfoProduct> GenTok_;
-    edm::EDGetTokenT<double> WeightNameTok_;
+    edm::EDGetTokenT<float> WeightNameTok_;
 };
 
 WeightProducer::WeightProducer(const edm::ParameterSet& iConfig):
@@ -126,7 +126,7 @@ WeightProducer::WeightProducer(const edm::ParameterSet& iConfig):
  
      genSrc_ = iConfig.getParameter<edm::InputTag>("generatorSource");
      GenTok_ = consumes<GenEventInfoProduct>(genSrc_);    
-     WeightNameTok_ = consumes<double>(_weightName);
+     WeightNameTok_ = consumes<float>(_weightName);
     doPUweighting = initPUinput();
 
     maxInitPrintOut_ = 10;
@@ -156,8 +156,8 @@ void WeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
     ///informations, i.e. using sample ID, pt-hat-information, etc;
 
     //Option 3: pt-hat weighting
-    double storedWeight = 0.0;
-    double ratioPtHat = -1.;
+    float storedWeight = 0.0;
+    float ratioPtHat = -1.;
     ptHat_ = 0.0; ptHatweight_ = 1.0;
     if( !iEvent.isRealData() ){
         edm::Handle<GenEventInfoProduct> genEvtInfoHandle;
@@ -186,7 +186,7 @@ void WeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
     }    
     //Option 1: weight constant, as defined in cfg file
     else {
-        edm::Handle<double> event_weight;
+        edm::Handle<float> event_weight;
         iEvent.getByToken(WeightNameTok_, event_weight);
         _weight = (event_weight.isValid() ? (*event_weight) : 1.0);
     }

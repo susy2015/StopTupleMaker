@@ -17,12 +17,13 @@ from WMCore.Configuration import saveConfigurationFile
 from crab3Config import config as config
 from multiprocessing import Process
 
-workArea = 'crabProdv_Data17_MC_ZInvisibleStudy'
-outDir = '/store/group/lpcsusyhad/Stop_production/MC_ZInvisibleStudy'
+workArea = 'crabProdv_Data17_MET_Mar2018reprocessing'
+outDir = '/store/group/lpcsusyhad/Stop_production/TriggerStudies2017'
 Pubname = 'Fall17_94X_Mar_2017'
 json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 #json_2017 ='Cert_294927-302343_13TeV_PromptReco_Collisions17_JSON.txt'
-json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
+#json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
+json_2017 = 'Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'
 # Use the common keyword to select the samples you'd like to submit
 # ALL: all of them; NONE: none of them; TEST: test printing out the crab3 config or disable actual submission; STATUS: check job status
 # TTJets, WJetsToLNu, ZJetsToNuNu, DYJetsToLL, QCD, TTW, TTZ, ST_tW, SMS, HTMHT, SingleMuon, SingleElectron, DoubleMuon, DoubleEG
@@ -31,10 +32,10 @@ json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
 #selSubmitKey = 'TTJets_SingleLeptFrom HTMHT'
 #selSubmitKey = 'TTJets_SingleLeptFrom TTJets_DiLept'
 #selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
-#selSubmitKey = 'MET-Run2017B-23Jun2017-v1 MET-Run2017C-PromptReco-v1 MET-Run2017C-PromptReco-v2 MET-Run2017C-PromptReco-v3 MET-Run2017D-PromptReco-v1'
+selSubmitKey = 'MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1'
 #selSubmitKey = 'SingleMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
 #selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
-selSubmitKey= 'TTJets_SingleLet00257'#TTJets_SingleLeptFromT'
+#selSubmitKey= 'TTJets_SingleLet00257'#TTJets_SingleLeptFromT'
 #selSubmitKey = 'WWTo2L2Nu'
 #selSubmitKey = 'TEST ALL'
 #selSubmitKey = 'TEST TTJets_SingleLeptFrom TTJets_Inc TTJets_DiLept ZJetsToNuNu_HT'
@@ -242,11 +243,11 @@ jobslist = {
     'MET-Run2016B-03Feb2017_ver2-v2'            : [True, '/MET/Run2016B-03Feb2017_ver2-v2/MINIAOD', 10],
     'MET-Run2016B-03Feb2017_ver1-v1'            : [True, '/MET/Run2016B-03Feb2017_ver1-v1/MINIAOD', 10],
 
-    'MET-Run2017B-v1'	                        : [True, '/MET/Run2017B-17Nov2017-v1/MINIAOD', 8],
-    'MET-Run2017C-v1'	                        : [True, '/MET/Run2017C-17Nov2017-v1/MINIAOD', 8],
-    'MET-Run2017D-v1'   	                : [True, '/MET/Run2017D-17Nov2017-v1/MINIAOD', 8],
-    'MET-Run2017E-v1'             	        : [True, '/MET/Run2017E-17Nov2017-v1/MINIAOD', 8],
-    'MET-Run2017F-v1'                           : [True, '/MET/Run2017F-17Nov2017-v1/MINIAOD', 8],
+    'MET-Run2017B-v1'	                        : [True, '/MET/Run2017B-31Mar2018-v1/MINIAOD', 20],
+    'MET-Run2017C-v1'	                        : [True, '/MET/Run2017C-31Mar2018-v1/MINIAOD', 20],
+    'MET-Run2017D-v1'   	                : [True, '/MET/Run2017E-31Mar2018-v1/MINIAOD ', 20],
+    'MET-Run2017E-v1'                           : [True, '/MET/Run2017E-31Mar2018-v1/MINIAOD', 20],
+    'MET-Run2017F-v1'                           : [True, '/MET/Run2017F-31Mar2018-v1/MINIAOD ', 20],
 
 
     'SingleMuon-Run2016H-03Feb2017_ver3-v1'            : [True, '/SingleMuon/Run2016H-03Feb2017_ver3-v1/MINIAOD', 10],
