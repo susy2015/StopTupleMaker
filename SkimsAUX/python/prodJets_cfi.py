@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 
 prodJets = cms.EDFilter(
   "prodJets",
-  jetSrc = cms.InputTag('slimmedJets'),
+  jetSrc = cms.InputTag('selectedUpdatedPatJetsDeepCSV'),#'slimmedJets'),
   jetOtherSrc = cms.InputTag('patJetsAK4PFCHS'),
   jetType = cms.string('AK4PFchs'),
   qgTaggerKey = cms.string('QGTagger'),
@@ -30,8 +30,8 @@ prodJets = cms.EDFilter(
   debug  = cms.bool(False),
   NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
   ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
- deepCSVBJetTags = cms.string('pfDeepCSVJetTags'),#'deepFlavourJetTags:probb'),#'deepFlavourJetTags'),
-  deepFlavorBJetTags = cms.string('pfDeepFlavourJetTags'),
+ deepCSVBJetTags = cms.string('deepFlavourJetTags'),#'pfDeepCSVJetTags'),#'deepFlavourJetTags:probb'),#'deepFlavourJetTags'),
+  deepFlavorBJetTags = cms.string('pfDeepCSVJetTags'),#'pfDeepFlavourJetTags'),
   deepCSVNegBJetTags = cms.string('negativeDeepFlavourJetTags'),#pfNegativeDeepCSVJetTags'),
   deepCSVPosBJetTags = cms.string('positiveDeepFlavourJetTags'),
   combinedSVBJetTags = cms.string('pfCombinedSecondaryVertexV2BJetTags'),

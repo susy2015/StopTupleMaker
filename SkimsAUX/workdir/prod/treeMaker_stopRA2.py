@@ -240,7 +240,7 @@ patJetsAuxiliary = patJetsUpdated.clone(
    jetSource = cms.InputTag('slimmedJets'),
    addJetCorrFactors = cms.bool(False),
 )
-patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2']
+patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis1', 'QGTagger:axis2']
 patJetsAuxiliary.userData.userInts.src += ['QGTagger:mult']
 setattr(process,JetTagOut.value(),patJetsAuxiliary)
 
@@ -262,12 +262,30 @@ addJetCollection(
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
-      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags'],
+      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+           'softPFMuonBJetTags',
+           'softPFElectronBJetTags',
+           'pfJetBProbabilityBJetTags',
+           'pfJetProbabilityBJetTags',
+           'pfCombinedCvsLJetTags',     
+           'pfCombinedCvsBJetTags',     
+           'pfCombinedSecondaryVertexV2BJetTags',
+           'pfDeepCSVJetTags:probudsg', 
+           'pfDeepCSVJetTags:probb', 
+           'pfDeepCSVJetTags:probc', 
+           'pfDeepCSVJetTags:probbb', 
+           #'pfDeepFlavourJetTags:probb',
+           #'pfDeepFlavourJetTags:probbb',
+           #'pfDeepFlavourJetTags:problepb',
+           #'pfDeepFlavourJetTags:probc',
+           #'pfDeepFlavourJetTags:probuds',
+           #'pfDeepFlavourJetTags:probg',
+          ],
       genJetCollection = cms.InputTag('ak4GenJetsNoNu'),
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2']
+process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2', 'QGTaggerOther:axis1']
 process.patJetsAK4PFCHS.userData.userInts.src += ['QGTaggerOther:mult']
    
 addJetCollection(
@@ -281,12 +299,30 @@ addJetCollection(
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
-      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags' ],
+      btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags', 
+          'softPFMuonBJetTags',
+          'softPFElectronBJetTags',
+          'pfJetBProbabilityBJetTags',
+          'pfJetProbabilityBJetTags',
+          'pfCombinedCvsLJetTags',
+          'pfCombinedCvsBJetTags', 
+          'pfCombinedSecondaryVertexV2BJetTags',
+          'pfDeepCSVJetTags:probudsg', 
+          'pfDeepCSVJetTags:probb', 
+          'pfDeepCSVJetTags:probc', 
+          'pfDeepCSVJetTags:probbb', 
+          #'pfDeepFlavourJetTags:probb',
+          #'pfDeepFlavourJetTags:probbb',
+          #'pfDeepFlavourJetTags:problepb',
+          #'pfDeepFlavourJetTags:probc',
+          #'pfDeepFlavourJetTags:probuds',
+          #'pfDeepFlavourJetTags:probg',
+          ],
       genJetCollection = cms.InputTag('ak4GenJetsNoNu'),
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2']
+process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2','QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
 if "JEC" in options.specialFix:
@@ -397,7 +433,25 @@ jetToolbox( process, 'ak8', 'ak8JetSubsNoLep', 'out',
             addSoftDrop = True, 
             addNsub = True, 
             bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                                  'pfDeepCSVJetTags:probb'], 
+                 'softPFMuonBJetTags',
+                 'softPFElectronBJetTags',
+                 'pfJetBProbabilityBJetTags',
+                 'pfJetProbabilityBJetTags',
+                 'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+                 'pfCombinedCvsLJetTags',     
+                 'pfCombinedCvsBJetTags',     
+                 'pfCombinedSecondaryVertexV2BJetTags',
+                 'pfDeepCSVJetTags:probudsg', 
+                 'pfDeepCSVJetTags:probb', 
+                 'pfDeepCSVJetTags:probc', 
+                 'pfDeepCSVJetTags:probbb', 
+                 #'pfDeepFlavourJetTags:probb',
+                 #'pfDeepFlavourJetTags:probbb',
+                 #'pfDeepFlavourJetTags:problepb',
+                 #'pfDeepFlavourJetTags:probc',
+                 #'pfDeepFlavourJetTags:probuds',
+                 #'pfDeepFlavourJetTags:probg',
+                 ], 
             addCMSTopTagger = False,
             postFix="NoLep")
 
@@ -409,7 +463,25 @@ jetToolbox( process, 'ak8', 'ak8JetSubs', 'out',
   addSoftDrop = True, 
   addNsub = True, 
   bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                        'pfDeepCSVJetTags:probb'], 
+      'softPFMuonBJetTags',
+      'softPFElectronBJetTags',
+      'pfJetBProbabilityBJetTags',
+      'pfJetProbabilityBJetTags',
+      'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+      'pfCombinedCvsLJetTags',     
+      'pfCombinedCvsBJetTags',     
+      'pfCombinedSecondaryVertexV2BJetTags',
+      'pfDeepCSVJetTags:probudsg', 
+      'pfDeepCSVJetTags:probb', 
+      'pfDeepCSVJetTags:probc', 
+      'pfDeepCSVJetTags:probbb', 
+      #'pfDeepFlavourJetTags:probb',
+      #'pfDeepFlavourJetTags:probbb',
+      #'pfDeepFlavourJetTags:problepb',
+      #'pfDeepFlavourJetTags:probc',
+      #'pfDeepFlavourJetTags:probuds',
+      #'pfDeepFlavourJetTags:probg',
+      ], 
   addCMSTopTagger = False)
 
 
@@ -886,7 +958,8 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgPtD"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgMult"))
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgPtDrLog"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgAxis1"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis1"))
 #process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgnMult"))
 #process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgcMult"))
 
@@ -909,25 +982,25 @@ process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsBtag|recoJ
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCharge"))
 process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge_0")
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodBTag", "DeepCSVb"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbb"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcc"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodBTag", "DeepCSVb"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbb"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcc"))
 
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccN"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbN"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcN"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlN"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbN"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccN"))
 
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccP"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbP"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcP"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlP"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbP"))
+process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccP"))
 
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "muMatchedJetIdx"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "eleMatchedJetIdx"))
