@@ -3,10 +3,10 @@ import FWCore.ParameterSet.Config as cms
 
 prodElectrons = cms.EDFilter(
   "prodElectrons",
-  VetoElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto'),
-  LooseElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose'),
-  MediumElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium'),
-  TightElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight'),
+  VetoElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto'),
+  LooseElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose'),
+  MediumElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium'),
+  TightElectronID   =cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight'),
   ElectronSource    = cms.InputTag('slimmedElectrons'),
   ConversionsSource = cms.InputTag("reducedEgamma", "reducedConversions"), #not used for WP VETO
   VertexSource      = cms.InputTag('offlineSlimmedPrimaryVertices'),#goodVertices'),

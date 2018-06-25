@@ -444,8 +444,8 @@ bool PhotonIDisoProducer::hasMatchedPromptElectron(const reco::SuperClusterRef &
   for (std::vector<pat::Electron>::const_iterator it = eleCol->begin(); it!=eleCol->end(); ++it) {
     //match electron to supercluster
     if (it->superCluster()!=sc) continue;
-    //check expected inner hits
-    if (it->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) > 0) continue;
+    //check expected inner hits 2017/2018 numberofAllHits named CHANGED!!!!
+    if (it->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS) > 0) continue;
     //check if electron is matching to a conversion
     if (ConversionTools::hasMatchedConversion(*it,convCol,beamspot,lxyMin,probMin,nHitsBeforeVtxMax)) continue;
     return true;

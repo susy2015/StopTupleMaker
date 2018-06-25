@@ -38,7 +38,7 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-#include "MagneticField/UniformEngine/interface/UniformMagneticField.h"
+#include "MagneticField/UniformEngine/src/UniformMagneticField.h"
 #include "MagneticField/ParametrizedEngine/src/OAEParametrizedMagneticField.h"
 #include "TrackingTools/PatternTools/interface/TwoTrackMinimumDistance.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"

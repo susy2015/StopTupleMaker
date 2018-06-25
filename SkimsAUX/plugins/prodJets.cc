@@ -1,7 +1,8 @@
 
 #include <memory>
 #include <algorithm>
-
+#include <vector>
+#include <map>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
@@ -21,6 +22,7 @@
 #include "DataFormats/METReco/interface/MET.h"
 
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -63,6 +65,8 @@ class prodJets : public edm::EDFilter
  private:
 
   virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
+
+  void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
   edm::InputTag jetSrc_, jetOtherSrc_;
   // All have to be pat::Jet, otherwise cannot get b-tagging information!
@@ -172,6 +176,93 @@ class prodJets : public edm::EDFilter
   std::string   CvsLNegCJetTags_;
   std::string   CvsLPosCJetTags_;
 };
+
+void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
+{
+
+    totalMult_ = 0;
+    ptD_       = 0;
+    axis1_     = 0;
+    axis2_     = 0;
+    
+    if(jet->numberOfDaughters() == 0) return;
+
+    float sum_weight    = 0.0;
+    float sum_dEta      = 0.0;
+    float sum_dPhi      = 0.0;
+    float sum_dEta2     = 0.0;
+    float sum_dPhi2     = 0.0;
+    float sum_dEta_dPhi = 0.0;
+    float sum_pt        = 0.0;
+    bool useQC          = false; // useQualityCuts; hard-coded for now to mimic what jetMet does in 731
+
+    // loop over the jet constituents
+    // (packed candidate situation)
+    for(auto part : jet->getJetConstituentsQuick()) {
+        if(part->charge()){ // charged particles
+            if(isReco) {
+                auto p = dynamic_cast<const pat::PackedCandidate*>(part);
+                if(!p){
+                    try { throw; }
+                    catch(...) {
+                        std::cout << "ERROR: QGTagging variables cannot be computed for these jets!" << std::endl
+                                  << "       See QuauarGluonTaggingVaiables::compute()"              << std::endl;
+                    } // catch(...)
+                } // !p
+                if(!( p->fromPV() > 1 && p->trackHighPurity() )) continue;
+                if(useQC) {
+                    // currently hard-coded to false above
+                    // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
+                    if( p->dzError()==0 || p->dxyError()==0 ) continue;
+                    if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
+                    if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only applies to multiplicity
+                } else ++totalMult_;
+            } else ++totalMult_;
+        } else { // neutral particles
+            if(part->pt() < 1.0) continue;
+            ++totalMult_;
+        } // charged, neutral particles
+
+        float dEta   = part->eta() - jet->eta();
+        float dPhi   = reco::deltaPhi(part->phi(), jet->phi());
+        float partPt = part->pt();
+        float weight = partPt*partPt;
+
+        sum_weight    += weight;
+        sum_pt        += partPt;
+        sum_dEta      += dEta      * weight;
+        sum_dPhi      += dPhi      * weight;
+        sum_dEta2     += dEta*dEta * weight;
+        sum_dEta_dPhi += dEta*dPhi * weight;
+        sum_dPhi2     += dPhi*dPhi * weight;
+    } // jet->getJetConstituentsQuick()
+
+    // calculate axis2 and ptD
+    float a = 0.0;
+    float b = 0.0;
+    float c = 0.0;
+    float ave_dEta  = 0.0;
+    float ave_dPhi  = 0.0;
+    float ave_dEta2 = 0.0;
+    float ave_dPhi2 = 0.0;
+
+    if(sum_weight > 0){
+        ptD_ = sqrt(sum_weight)/sum_pt;
+        ave_dEta  = sum_dEta  / sum_weight;
+        ave_dPhi  = sum_dPhi  / sum_weight;
+        ave_dEta2 = sum_dEta2 / sum_weight;
+        ave_dPhi2 = sum_dPhi2 / sum_weight;
+        a = ave_dEta2 - ave_dEta*ave_dEta;
+        b = ave_dPhi2 - ave_dPhi*ave_dPhi;
+        c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
+    } else ptD_ = 0;
+
+    float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
+    if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
+    else              axis2_ = 0.0;
+    if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
+    else              axis1_ = 0.0;
+}
 
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
