@@ -985,7 +985,7 @@ process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsBtag|recoJ
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCharge"))
 process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge_0")
 
-process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodBTag", "DeepCSVb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodBTag", "DeepCSVb"))
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbb"))
