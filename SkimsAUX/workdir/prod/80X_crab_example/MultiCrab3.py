@@ -40,9 +40,10 @@ json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 #selSubmitKey = 'ZJetsToNuNu TTJets_SingleLeptFrom SMS-T2tt_mStop SMS-T1tttt_mGluino'
 #selSubmitKey = 'SMS-T1tttt_mGluino'
 
-#selSubmitKey = 'MET-Run2016 SingleMuon-Run2016 JetHT-Run2016 Photon-Run2016 DY WJetsToLNu TTJets_Inc TTJets_DiLept QCD_HT ST_ tQz WW WZ ZZ ttH VH TTZ TTW TTH TTG TTTT GJets_HT'
+#selSubmitKey = 'MET-Run2016 SingleMuon-Run2016 JetHT-Run2016 Photon-Run2016 DY ZJetsToNuNu WJetsToLNu TTJets_Inc TTJets_DiLept TTJets_SingleLeptFrom QCD_HT ST_ tQz WW WZ ZZ ttH VH TTZ TTW TTH TTG TTTT GJets_HT SMS-T1tttt_mGluino-1500_mLSP-100 SMS-T1tttt_mGluino-2000_mLSP-100 SMS-T2tt_mStop'
 #selSubmitKey = 'SMS-T2tt_mStop SMS-T1tttt_mGluino'
-selSubmitKey = 'SMS-T1tttt_mGluino-1200_mLSP-800'
+#selSubmitKey = 'SMS-T1tttt_mGluino-1200_mLSP-800'
+selSubmitKey =     'TTJets_powheg_2l TTJets-powheg-herwigpp TTJets-powheg-herwigpp-ext1 TTJets-powheg-herwigpp-ext2 QCD-flatp6-pythia QCD-flatp6-herwigpp'
 
 doAutoMonitor = False
 
@@ -50,6 +51,11 @@ doAutoMonitor = False
 jobslist = {
     # TTbar
     'TTJets_Inc'                             : [False, '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'TTJets_powheg_1l'                       : [False, '/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'TTJets_powheg_2l'                       : [False, '/TTTo2L2Nu_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'TTJets-powheg-herwigpp'                  : [False, '/TT_TuneEE5C_13TeV-powheg-herwigpp/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'TTJets-powheg-herwigpp-ext1'             : [False, '/TT_TuneEE5C_13TeV-powheg-herwigpp/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/MINIAODSIM', 1],
+    'TTJets-powheg-herwigpp-ext2'             : [False, '/TT_TuneEE5C_13TeV-powheg-herwigpp/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext3-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromT'                 : [False, '/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromT_ext1'            : [False, '/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromTbar'              : [False, '/TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
@@ -111,6 +117,7 @@ jobslist = {
     'DYJetsToLL_M-50_HT-1200to2500'          : [False, '/DYJetsToLL_M-50_HT-1200to2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'DYJetsToLL_M-50_HT-2500toInf'           : [False, '/DYJetsToLL_M-50_HT-2500toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
 
+   'GJets_HT-100To200'                      : [False, '/GJets_DR-0p4_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
    'GJets_HT-200To400'                      : [False, '/GJets_DR-0p4_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
    'GJets_HT-400To600'                      : [False, '/GJets_DR-0p4_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
    'GJets_HT-600ToInf'                      : [False, '/GJets_DR-0p4_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_qcut19_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
@@ -139,6 +146,9 @@ jobslist = {
     'QCD_HT1000to1500_BFilter'               : [False, '/QCD_HT1000to1500_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'QCD_HT1500to2000_BFilter'               : [False, '/QCD_HT1500to2000_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
     'QCD_HT2000toInf_BFilter'                : [False, '/QCD_HT2000toInf_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+
+    'QCD-flatp6-pythia'             : [False, '/QCD_Pt-15to7000_TuneCUETP8M1_FlatP6_13TeV_pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
+    'QCD-flatp6-herwigpp'           : [False, '/QCD_Pt-15to7000_TuneCUETHS1_FlatP6_13TeV_herwigpp/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],
 
 
 

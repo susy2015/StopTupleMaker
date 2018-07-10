@@ -37,6 +37,7 @@ options.register('job', 0, VarParsing.VarParsing.multiplicity.singleton, VarPars
 options.register('nJobs', 1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "total jobs")
 options.register('release','8_0_1', VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"release number (w/o CMSSW)")
 options.register('isData', 0, VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"isData flag (0 for MC, 1 for data)")
+options.register('jecDBname', '',VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"jecDB")
 
 options.parseArguments()
 
@@ -183,6 +184,33 @@ process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-
 process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")
 process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")
             
+
+###############################################################################################################################
+
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
+#from CondCore.CondDB.CondDB_cfi import *
+#process.jec = cms.ESSource("PoolDBESSource",
+#                           DBParameters = cms.PSet(
+#        messageLevel = cms.untracked.int32(0)
+#        ),
+#        timetype = cms.string('runnumber'),
+#        toGet = cms.VPSet(
+#        cms.PSet(
+#            record = cms.string('JetCorrectionsRecord'),
+#            tag    = cms.string('JetCorrectorParametersCollection_'+options.jecDBname+"_AK4PFchs"),
+#            label  = cms.untracked.string('AK4PFchs')
+#            ),
+#        ## here you add as many jet types as you need
+#        ## note that the tag name is specific for the particular sqlite file 
+#        ),
+#        # from page 19 on slides https://indico.cern.ch/event/405326/contribution/2/attachments/811719/1112498/Pythia8.pdf
+#        # connect = cms.string('sqlite:PY8_RunIISpring15DR74_bx25_MC.db')
+#        connect = cms.string('sqlite:'+options.jecDBname+'.db')
+#        # connect = cms.string(inputDB)
+#        # uncomment above tag lines and this comment to use MC JEC
+#)
+#  ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 ###############################################################################################################################
 
@@ -338,7 +366,7 @@ for type in ['AK4PFchs','AK4PFchs_antib']:
                 label  = cms.untracked.string('QGL_'+type)
                 )))
 
-process.es_prefer_jec = cms.ESPrefer("PoolDBESSource", "QGPoolDBESSource")
+process.es_prefer_definitelynotjec = cms.ESPrefer("PoolDBESSource", "QGPoolDBESSource")
 
 
 ###############################################################################################################################
@@ -646,16 +674,16 @@ process.stopTreeMaker.vectorDoubleNamesInTree.append("prodJets:recoJetsCharge|re
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "CTagVertexLeptonCategory"))
 
 #pfcands
-process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "chargedPFCandLV"))
-process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "neutralPFCandLV"))
-
-process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDxy"))
-process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDz"))
-#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFFromPV"))
-process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexChi2"))
-process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexNdof"))
-#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexMass"))
-process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
+#process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "chargedPFCandLV"))
+#process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "neutralPFCandLV"))
+#
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDxy"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFDz"))
+##process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFFromPV"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexChi2"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexNdof"))
+##process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "chargedPFVertexMass"))
+#process.stopTreeMaker.vectorVectorDouble.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
 
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8LVec"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "puppiAK8Tau1"))

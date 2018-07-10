@@ -402,6 +402,8 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
   ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
+  jetType_ = iConfig.getParameter<std::string>("jetType");
+
   // initialize the FatJetNN class in the constructor
   auto cc = consumesCollector();
   fatjetNN_ = new deepntuples::FatJetNN(iConfig, cc);
@@ -409,6 +411,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   fatjetNN_->load_json("preprocessing.json"); // use the full path or put the file in the current working directory (i.e., where you run cmsRun)
   // load DNN model and parameter files
   fatjetNN_->load_model("resnet-symbol.json", "resnet.params"); // use the full path or put the file in the current working directory (i.e., where you run cmsRun)
+
 
   //produces<std::vector<pat::Jet> >("");
   produces<std::vector<TLorentzVector> >("jetsLVec");
@@ -600,10 +603,10 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByToken(JetTok_, jets);
 
   //get the JEC uncertainties
-  //edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-  //iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
-  //JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
-  //std::auto_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
+  edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+  iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
+  JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+  std::auto_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
   
   edm::Handle<std::vector<pat::Jet> > ak8Jets;
   iEvent.getByToken(AK8JetTok_, ak8Jets);
@@ -825,13 +828,13 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
 
     //get JEC unc for this jet, using corrected pT
-    //jecUnc->setJetEta(jet.eta());
-    //jecUnc->setJetPt(jet.pt());
+    jecUnc->setJetEta(jet.eta());
+    jecUnc->setJetPt(jet.pt());
     //
-    //double uncertainty = jecUnc->getUncertainty(true);
-    ////safety check if uncertainty is not available for a jet
-    //if( uncertainty==-999. ) uncertainty = 0;
-    //recoJetsJecUnc->push_back(uncertainty);
+    double uncertainty = jecUnc->getUncertainty(true);
+    //safety check if uncertainty is not available for a jet
+    if( uncertainty==-999. ) uncertainty = 0;
+    recoJetsJecUnc->push_back(uncertainty);
 
     if( perJetLVec.Pt() < jetPtCut_miniAOD_ && ij < jets->size() ) cntJetLowPt ++;
 
@@ -1284,7 +1287,7 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       for( auto const & it : subjets)
       {
           TLorentzVector perSubJetLVec;
-          perSubJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+          perSubJetLVec.SetPtEtaPhiE( it->pt(), it->eta(), it->phi(), it->energy() );
           
           // btag info
           double subjetBDiscriminator = it->bDiscriminator(bTagKeyString_.c_str());
