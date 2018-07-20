@@ -129,8 +129,9 @@ process.source = cms.Source("PoolSource",
       #'/store/relval/CMSSW_3_8_0_pre8/RelValTTbar/GEN-SIM-RECO/START38_V6-v1/0004/847D00B0-608E-DF11-A37D-003048678FA0.root'
       #'/store/data/Run2017C/SingleMuon/MINIAOD/17Nov2017-v1/40000/0015635A-0BD9-E711-A76C-02163E0133BB.root'
     #'/store/relval/CMSSW_9_4_5_cand1/RelValTTbar_13/MINIAODSIM/94X_mc2017_realistic_v14_RelVal_rmaod-v1/10000/A8356B71-6E2E-E811-8A63-0CC47A7C3424.root'      
-   '/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
-    #'/store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/2C881587-4CF6-E711-B958-0CC47AA989C0.root'
+   #'/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
+   #'/store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver3-v1/80000/CE40C7B7-76EA-E611-BD9F-A0000420FE80.root' 
+   #'/store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/2C881587-4CF6-E711-B958-0CC47AA989C0.root'
       #'root://cmsxrootd.fnal.gov///store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/04291F1E-A501-E811-8EC9-6CC2173D4980.root'
     )
 )
@@ -151,7 +152,11 @@ else:
    process.source.fileNames = [
       #'file:/uscms_data/d3/mkilpatr/CMSSW_9_4_2/src/AnalysisBase/Analyzer/test/9EE984CF-39E7-E711-A918-001E67DFF67C.root'
      #'/store/mc/RunIIFall17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/06634AB3-14E6-E711-8DA6-0CC47A4D7632.root'
-   '/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
+    #'file:/uscms_data/d3/pastika/zinv/dev/CMSSW_9_3_3/src/TopTagger/TopTagger/test/2626BC61-D8CF-E611-87A6-02163E019D2A.root'
+    '/store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver3-v1/80000/CE40C7B7-76EA-E611-BD9F-A0000420FE80.root'
+     #'/store/mc/RunIISummer16MiniAODv2/SMS-T2tt_mStop-650_mLSP-350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/2626BC61-D8CF-E611-87A6-02163E019D2A.root'
+     #'/store/mc/RunIISummer16MiniAODv2/SMS-T2tt_mStop-850_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/42862491-08C8-E611-B447-0026B9277A32.root'
+     #'/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
      ]
 
 ## ---------------------
@@ -240,7 +245,7 @@ patJetsAuxiliary = patJetsUpdated.clone(
    jetSource = cms.InputTag('slimmedJets'),
    addJetCorrFactors = cms.bool(False),
 )
-patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2']
+patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1' ]
 patJetsAuxiliary.userData.userInts.src += ['QGTagger:mult']
 setattr(process,JetTagOut.value(),patJetsAuxiliary)
 
@@ -286,7 +291,7 @@ addJetCollection(
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2']
+process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2', 'QGTaggerOther:axis1']
 process.patJetsAK4PFCHS.userData.userInts.src += ['QGTaggerOther:mult']
    
 addJetCollection(
@@ -324,7 +329,7 @@ addJetCollection(
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2']
+process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2', 'QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
 if "JEC" in options.specialFix:
@@ -366,7 +371,7 @@ if "JEC" in options.specialFix:
       postfix = 'UpdatedJEC',
       jetCorrections = ('AK4PFchs', jetCorrLevelLists, 'None')
   )
-  process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2']
+  process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTaggerOther:axis1']
   process.updatedPatJetsUpdatedJEC.userData.userInts.src += ['QGTagger:mult']
   # update the MET to account for the new JECs
   from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -772,13 +777,15 @@ process.prodJets.debug = cms.bool(options.debug)
 #Jetsrc JetToolBox
 process.prodJets.jetSrc = cms.InputTag('QGAK4PFCHS')
 process.prodJets.jetOtherSrc = cms.InputTag('patJetsAK4PFCHS')
+process.prodJets.puppiJetsSrc = cms.InputTag('packedPatJetsAK8PFPuppiSoftDrop')
+process.prodJets.NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi')
 
 process.prodJetsNoLep = process.prodJets.clone()
 process.prodJetsNoLep.jetSrc = cms.InputTag('patJetsAK4PFCHSPt10NoLep')
 process.prodJetsNoLep.jetOtherSrc = cms.InputTag('patJetsAK4PFCHSPt10NoLep')
 process.prodJetsNoLep.qgTaggerKey = cms.string('QGTaggerNoLep')
-process.prodJetsNoLep.puppiJetsSrc = cms.InputTag('selectedPatJetsAK8PFPuppiNoLep')
-process.prodJetsNoLep.puppiSubJetsSrc = cms.InputTag('selectedPatJetsAK8PFPuppiNoLepSoftDropPacked')
+process.prodJetsNoLep.puppiJetsSrc = cms.InputTag('packedPatJetsAK8PFPuppiNoLepSoftDrop')#selectedPatJetsAK8PFPuppiNoLep')Selected Jets does not have subJet collections
+#process.prodJetsNoLep.puppiSubJetsSrc = cms.InputTag('packedPatJetsAK8PFPuppiNoLepSoftDropPacked')
 process.prodJetsNoLep.NjettinessAK8Puppi_label = cms.string('NjettinessAK8PuppiNoLep')
 process.prodJetsNoLep.ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppiNoLep')
 #process.prodJetsNoLep.ak8JetsSrc = cms.string('slimmedJetsAK8NoLep')
@@ -961,49 +968,60 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgLikelihood"
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgPtD"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgMult"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgPtDrLog"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgAxis1"))
-#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgnMult"))
-#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgcMult"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis1"))
 
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetschargedHadronEnergyFraction"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetschargedEmEnergyFraction"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsneutralEmEnergyFraction"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsmuonEnergyFraction"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsHFHadronEnergyFraction"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsneutralEnergyFraction"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsHFEMEnergyFraction"));
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "PhotonEnergyFraction"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ElectronEnergyFraction"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "PhotonEnergyFraction"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "ElectronEnergyFraction"))
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ChargedHadronMultiplicity"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "NeutralHadronMultiplicity"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "PhotonMultiplicity"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "ElectronMultiplicity"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "MuonMultiplicity"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "ChargedHadronMultiplicity"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "NeutralHadronMultiplicity"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "PhotonMultiplicity"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "ElectronMultiplicity"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "MuonMultiplicity"))
 
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsBtag"))
-process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsBtag|recoJetsBtag_0")
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCSVv2"))
+#process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsBtag|recoJetsBtag_0")
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCharge"))
-process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge_0")
+process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge")
 
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodBTag", "DeepCSVb"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbb"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcc"))
+#process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "chargedPFDxy"))
+#process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "chargedPFDz"))
+#process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "chargedPFVertexChi2"))
+#process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "chargedPFVertexNdof"))
+#process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "neutralPFHCALFrac"))
 
+process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJets", "puppiAK8SubjetLVec"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetMult"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetPtD"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis1"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis2"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetBDisc"))
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbN"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccN"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVc"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVl"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcc"))
 
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbN"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcN"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVlN"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbbN"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVccN"))
 
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbP"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccP"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbP"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcP"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVlP"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbbP"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVccP"))
 
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "muMatchedJetIdx"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "eleMatchedJetIdx"))
@@ -1019,34 +1037,44 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppitau3"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppisoftDropMass"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiSubJetsBdisc"))
 
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "deepAK8LVec"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8btop"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8bW"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8bZ"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8bZbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8bHbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "deepAK8bH4q"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "deepAK8raw"))
+
 if options.addJetsForZinv == True: 
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "jetsLVec"))
-   process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodJetsNoLep:jetsLVec|jetsLVecLepCleaned")
+   process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodJetsNoLep:jetsLVec|prodJetsNoLep_jetsLVec")
 
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsJecUnc"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsJecUnc|recoJetsJecUncLepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsJecUnc|prodJetsNoLep_recoJetsJecUnc")
 
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgLikelihood"))
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgPtD"))
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgAxis2"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgAxis1"))
    process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJetsNoLep", "qgMult"))
 
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetschargedHadronEnergyFraction"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetschargedHadronEnergyFraction|recoJetschargedHadronEnergyFractionLepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetschargedHadronEnergyFraction|prodJetsNoLep_recoJetschargedHadronEnergyFraction")
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsneutralEmEnergyFraction"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsneutralEmEnergyFraction|recoJetsneutralEmEnergyFractionLepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsneutralEmEnergyFraction|prodJetsNoLep_recoJetsneutralEmEnergyFraction")
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetschargedEmEnergyFraction"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetschargedEmEnergyFraction|recoJetschargedEmEnergyFractionLepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetschargedEmEnergyFraction|prodJetsNoLep_recoJetschargedEmEnergyFraction")
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsmuonEnergyFraction"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsmuonEnergyFraction|recoJetsmuonEnergyFractionLepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsmuonEnergyFraction|prodJetsNoLep_recoJetsmuonEnergyFraction")
 
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsBtag"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsBtag|recoJetsBtag_0_LepCleaned")
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsCSVv2"))
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:CSVv2|prodJetsNoLep_recoJetsCSVv2")
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsCharge"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsCharge|recoJetsCharge_0_LepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsCharge|prodJetsNoLep_recoJetsCharge")
 
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsJecScaleRawToFull"))
-   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsJecScaleRawToFull|recoJetsJecScaleRawToFull_LepCleaned")
+   process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetsJecScaleRawToFull|prodJetsNoLep_recoJetsJecScaleRawToFull")
 
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "puppiJetsLVec"))
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "puppiSubJetsLVec"))
@@ -1057,6 +1085,52 @@ if options.addJetsForZinv == True:
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppitau2"))
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppitau3"))
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiSubJetsBdisc"))
+   process.stopTreeMaker.vectorVectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetLVec"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetMult"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetPtD"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetAxis1"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetAxis2"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetBDisc"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "PhotonEnergyFraction"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "ElectronEnergyFraction"))
+   
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "ChargedHadronMultiplicity"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "NeutralHadronMultiplicity"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "PhotonMultiplicity"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "ElectronMultiplicity"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "MuonMultiplicity"))
+  
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVb"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVc"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVl"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbb"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcc"))
+   
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbN"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcN"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVlN"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbbN"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVccN"))
+   
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbP"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcP"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVlP"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbbP"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVccP"))
+
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsneutralEnergyFraction"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsHFEMEnergyFraction"));
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsHFHadronEnergyFraction"))
+
+   process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "deepAK8LVec"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8btop"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8bW"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8bZ"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8bZbb"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8bHbb"))
+   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8bH4q"))
+   process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "deepAK8raw"))
+
 
 if options.mcInfo == True:
    process.prodGenInfo.debug = cms.bool(options.debug)
@@ -1122,7 +1196,7 @@ process.stopTreeMaker.varsFloatNamesInTree.append("ak4stophtPFchs|ht")
 process.stopTreeMaker.varsInt.append(cms.InputTag("ak4nJetsForSkimsStop:nJets"))
 process.stopTreeMaker.varsIntNamesInTree.append("ak4nJetsForSkimsStop:nJets|nJets_CUT")
 
-#process.stopTreeMaker.varsDouble.extend([cms.InputTag("prodMET:met"), cms.InputTag("prodMET:metphi")])
+process.stopTreeMaker.varsFloat.extend([cms.InputTag("prodMET:met"), cms.InputTag("prodMET:metphi")])
 
 if "BADMUON" in options.specialFix and options.mcInfo == False:
 #   # Note that this default met from prodMET is both e/gamma and muon corrected which is the recommended one
