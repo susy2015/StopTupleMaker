@@ -34,10 +34,10 @@ JetMHTDPhiForSkimsRA2::JetMHTDPhiForSkimsRA2(const edm::ParameterSet & iConfig) 
   MhtTok_= consumes<edm::View<reco::MET> >(mhtSrc_);
   JetTok_= consumes<edm::View<reco::Jet> >(jetSrc_);
 
-  produces<std::vector<double> >("jetMHTDPhiVec");
-  produces<double>("dPhi0");
-  produces<double>("dPhi1");
-  produces<double>("dPhi2");
+  produces<std::vector<float> >("jetMHTDPhiVec");
+  produces<float>("dPhi0");
+  produces<float>("dPhi1");
+  produces<float>("dPhi2");
 }
 
 
@@ -49,7 +49,7 @@ bool JetMHTDPhiForSkimsRA2::filter(edm::Event & iEvent, const edm::EventSetup & 
   edm::Handle<edm::View<reco::Jet> > jets;
   iEvent.getByToken(JetTok_, jets);
 
-  std::unique_ptr<std::vector<double> > jetMHTDPhiVecPtr (new std::vector<double> );
+  std::unique_ptr<std::vector<float> > jetMHTDPhiVecPtr (new std::vector<float> );
 
   double dPhi0 = 999., dPhi1 = 999., dPhi2 = 999.;
 
@@ -59,9 +59,9 @@ bool JetMHTDPhiForSkimsRA2::filter(edm::Event & iEvent, const edm::EventSetup & 
 
   jetMHTDPhiVecPtr->push_back(dPhi0); jetMHTDPhiVecPtr->push_back(dPhi1); jetMHTDPhiVecPtr->push_back(dPhi2);
 
-  std::unique_ptr<double> dPhi0_CUT(new double); *dPhi0_CUT = dPhi0;
-  std::unique_ptr<double> dPhi1_CUT(new double); *dPhi1_CUT = dPhi1;
-  std::unique_ptr<double> dPhi2_CUT(new double); *dPhi2_CUT = dPhi2;
+  std::unique_ptr<float> dPhi0_CUT(new float); *dPhi0_CUT = dPhi0;
+  std::unique_ptr<float> dPhi1_CUT(new float); *dPhi1_CUT = dPhi1;
+  std::unique_ptr<float> dPhi2_CUT(new float); *dPhi2_CUT = dPhi2;
 
   iEvent.put(std::move(jetMHTDPhiVecPtr), "jetMHTDPhiVec");
   iEvent.put(std::move(dPhi0_CUT), "dPhi0");

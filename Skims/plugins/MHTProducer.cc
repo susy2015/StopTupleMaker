@@ -33,8 +33,8 @@ MHTProducer::MHTProducer(const edm::ParameterSet & iConfig) {
   maxJetEta_   = iConfig.getParameter<double>("MaxJetEta");
   TheJetLabelTok_ = consumes<edm::View<reco::Jet> >(theJetLabel_);
   produces<std::vector<reco::MET> >("");
-  produces<double>("mht");
-  produces<double>("mhtphi");
+  produces<float>("mht");
+  produces<float>("mhtphi");
 }
 
 
@@ -58,10 +58,10 @@ void MHTProducer::produce(edm::Event & iEvent, const edm::EventSetup & iSetup) {
   }
   mhtp->push_back(reco::MET(mht, reco::MET::Point()));
 
-  std::unique_ptr<double> mhtVal(new double);
+  std::unique_ptr<float> mhtVal(new float);
   *mhtVal = mht.pt();
 
-  std::unique_ptr<double> mhtphiVal(new double);
+  std::unique_ptr<float> mhtphiVal(new float);
   *mhtphiVal = mht.phi();
 
   iEvent.put(std::move(mhtp));

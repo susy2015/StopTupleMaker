@@ -131,18 +131,18 @@ prodSecondaryVertex::prodSecondaryVertex(const edm::ParameterSet& iConfig)//:
   produces<std::vector<TLorentzVector> >("jetsLVec");
   produces<std::vector<TLorentzVector> >("svLVec");
   produces<std::vector<TLorentzVector> >("svSoftLVec");
-  produces<std::vector<double> >("svPT");
-  produces<std::vector<double> >("svETA");
-  produces<std::vector<double> >("svPhi");
-  produces<std::vector<double> >("svMass");
-  produces<std::vector<double> >("svNTracks");
-  produces<std::vector<double> >("svChi2");
-  produces<std::vector<double> >("svNDF");
-  produces<std::vector<double> >("svDXY");
-  produces<std::vector<double> >("svDXYerr");
-  produces<std::vector<double> >("svD3D");
-  produces<std::vector<double> >("svD3Derr");
-  produces<std::vector<double> >("svCosThetaSVPS");
+  produces<std::vector<float> >("svPT");
+  produces<std::vector<float> >("svETA");
+  produces<std::vector<float> >("svPhi");
+  produces<std::vector<float> >("svMass");
+  produces<std::vector<float> >("svNTracks");
+  produces<std::vector<float> >("svChi2");
+  produces<std::vector<float> >("svNDF");
+  produces<std::vector<float> >("svDXY");
+  produces<std::vector<float> >("svDXYerr");
+  produces<std::vector<float> >("svD3D");
+  produces<std::vector<float> >("svD3Derr");
+  produces<std::vector<float> >("svCosThetaSVPS");
 
 }
 
@@ -185,18 +185,18 @@ prodSecondaryVertex::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::vector<pat::Jet> extJets = (*jets);
 
-  std::unique_ptr<std::vector<double> > svPT(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svETA(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svPhi(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svMass(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svNTracks(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svChi2(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svNDF(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svDXY(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svDXYerr(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svD3D(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svD3Derr(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > svCosThetaSVPS(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > svPT(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svETA(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svPhi(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svMass(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svNTracks(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svChi2(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svNDF(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svDXY(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svDXYerr(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svD3D(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svD3Derr(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > svCosThetaSVPS(new std::vector<float>());
   std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<TLorentzVector> > svLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<TLorentzVector> >  svSoftLVec(new std::vector<TLorentzVector>());
