@@ -32,7 +32,8 @@ json_2017 = 'Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'
 #selSubmitKey = 'TTJets_SingleLeptFrom HTMHT'
 #selSubmitKey = 'TTJets_SingleLeptFrom TTJets_DiLept'
 #selSubmitKey = 'TEST HTMHT TTJets_SingleLeptFrom TTJets_DiLept'
-selSubmitKey = 'MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1'
+selSubmitKey = 'MET-Run2017D-v1'
+#'MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1'
 #selSubmitKey = 'SingleMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
 #selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
 #selSubmitKey= 'TTJets_SingleLet00257'#TTJets_SingleLeptFromT'
@@ -245,7 +246,7 @@ jobslist = {
 
     'MET-Run2017B-v1'	                        : [True, '/MET/Run2017B-31Mar2018-v1/MINIAOD', 20],
     'MET-Run2017C-v1'	                        : [True, '/MET/Run2017C-31Mar2018-v1/MINIAOD', 20],
-    'MET-Run2017D-v1'   	                : [True, '/MET/Run2017E-31Mar2018-v1/MINIAOD ', 20],
+    'MET-Run2017D-v1'   	                : [True, '/MET/Run2017D-31Mar2018-v1/MINIAOD  ', 20],
     'MET-Run2017E-v1'                           : [True, '/MET/Run2017E-31Mar2018-v1/MINIAOD', 20],
     'MET-Run2017F-v1'                           : [True, '/MET/Run2017F-31Mar2018-v1/MINIAOD ', 20],
 

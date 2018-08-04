@@ -151,7 +151,8 @@ else:
    process.source.fileNames = [
       #'file:/uscms_data/d3/mkilpatr/CMSSW_9_4_2/src/AnalysisBase/Analyzer/test/9EE984CF-39E7-E711-A918-001E67DFF67C.root'
      #'/store/mc/RunIIFall17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/06634AB3-14E6-E711-8DA6-0CC47A4D7632.root'
-       '/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
+    '/store/data/Run2017D/MET/MINIAOD/31Mar2018-v1/00000/2286D18E-3037-E811-844E-001F290860A6.root'
+    #'/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
    ]
 
 ## ---------------------
@@ -240,7 +241,7 @@ patJetsAuxiliary = patJetsUpdated.clone(
    jetSource = cms.InputTag('slimmedJets'),
    addJetCorrFactors = cms.bool(False),
 )
-patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis1', 'QGTagger:axis2']
+patJetsAuxiliary.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2']#, 'QGTagger:axis1']
 patJetsAuxiliary.userData.userInts.src += ['QGTagger:mult']
 setattr(process,JetTagOut.value(),patJetsAuxiliary)
 
@@ -285,7 +286,7 @@ addJetCollection(
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2', 'QGTaggerOther:axis1']
+process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2']#, 'QGTaggerOther:axis1']
 process.patJetsAK4PFCHS.userData.userInts.src += ['QGTaggerOther:mult']
    
 addJetCollection(
@@ -322,7 +323,7 @@ addJetCollection(
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2','QGTaggerNoLep:axis1']
+process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2']#,'QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
 if "JEC" in options.specialFix:
@@ -959,7 +960,7 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgMult"))
 #process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgPtDrLog"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis1"))
+#process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis1"))
 #process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgnMult"))
 #process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgcMult"))
 
@@ -981,7 +982,7 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsBtag"
 process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsBtag|recoJetsBtag_0")
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCharge"))
 process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge_0")
-
+'''
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodBTag", "DeepCSVb"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVc"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVl"))
@@ -1001,7 +1002,7 @@ process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVcP"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVlP"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVbbP"))
 process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "DeepCSVccP"))
-
+'''
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "muMatchedJetIdx"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "eleMatchedJetIdx"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "looseisoTrksMatchedJetIdx"))
