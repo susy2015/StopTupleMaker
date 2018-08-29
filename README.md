@@ -13,23 +13,22 @@ git checkout NEW_TAG_NAME
 The following installation instructions assume the user wants to process Run2016 data or Spring16 MC.
 
 ```
-cmsrel CMSSW_9_4_2
-cd CMSSW_9_4_2/src
+cmsrel CMSSW_10_1_4_patch1
+cd CMSSW_10_1_4_patch1/src
 cmsenv
 git cms-init
 git clone -b jetToolbox_94X git@github.com:cms-jet/JetToolbox.git
+or copy from /uscms_data/d3/snorberg/CMSSW_10_1_4_patch1/src/JMEAnalysis
 
-git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
-
-git cms-addpkg MagneticField
-
-git clone -b CMSSW942 git@github.com:susy2015/SusyAnaTools.git
+git clone -b CMSSW1014_CMSSW949 git@github.com:susy2015/StopTupleMaker.git
 
 scram b -j9
 
-git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git RecoEgamma/PhotonIdentification/data/Fall17/HggPhoId_92X_*
-
 you also need Fall17_17Nov2017_V6_MC.db
+Cert_314472-317080_13TeV_PromptReco_Collisions18_JSON.txt 
+Cert_314472-318876_13TeV_PromptReco_Collisions18_JSON.txt  
+Fall17_17Nov2017BCDEF_V6_DATA.db                          
+Fall17_17Nov2017_V6_MC.db
 ```
 
 To produce ntuples with crab submission (google doc for production signup is https://docs.google.com/spreadsheets/d/17Hpp5S-UkiKvuugKxqbW0-3aLhiJrJP8MEEyHce_Lzw/edit#gid=0):

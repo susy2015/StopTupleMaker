@@ -36,7 +36,8 @@ jsonHCALreval = 'Cert_314472-318876_13TeV_PromptReco_Collisions18_JSON.txt'
 #selSubmitKey = 'MET-Run2017B-23Jun2017-v1 MET-Run2017C-PromptReco-v1 MET-Run2017C-PromptReco-v2 MET-Run2017C-PromptReco-v3 MET-Run2017D-PromptReco-v1'
 #selSubmitKeun2018A-v1eMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
 #selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
-selSubmitKey= 'RelValNuGun'
+selSubmitKey= ' WToENu_HEM'
+#'TTToSemiLeptonic_HEM TTToSemiLeptonic_NoHEM'
 #'METReval METReval_HEmiss SingleMuonReval_HEmiss SingleMuonReval JetHTReval JetHTReval_HEmiss EGammaReval EGammaReval_HEmiss'
 #'RelValSMS-T1tttt_mGl-1500_mLSP-100 RelValNuGun RelValTTbarLepton RelValTTbar' 
 #'SingleMuon-Run2018A-v1 SingleMuon-Run2018A-v2 SingleMuon-Run2018A-v3 SingleMuon-Run2018B-v1 SingleMuon-Run2018B-v2'
@@ -59,7 +60,15 @@ jobslist = {
     'TTJets_HT-2500toInf'                    : [False, '/TTJets_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/MINIAODSIM', 1],#JustStarted
     'TTJets_DiLept'                          : [False, '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],#JustStarted
     'TTJets_DiLept_ext1'                     : [False, '/TTJets_DiLept_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],#JustStarted
-    
+    'TTToSemiLeptonic_HEM'                   : [False, '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISpring18MiniAOD-HEMPremix_100X_upgrade2018_realistic_v10-v3/MINIAODSIM', 1],    
+    'TTToSemiLeptonic_NoHEM'                  : [False, '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISpring18MiniAOD-100X_upgrade2018_realistic_v10_ext1-v1/MINIAODSIM', 1],
+  #HEM Full
+  'TTTo2L2Nu_Full'                           : [False, '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISpring18MiniAOD-100X_upgrade2018_realistic_v10_ext1-v3/MINIAODSIM', 1],
+  'TTTo2L2Nu_HEM'                            : [False, '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISpring18MiniAOD-HEMPremix_100X_upgrade2018_realistic_v10_ext2-v1/MINIAODSIM', 1],
+  'WToENu_Full'                              : [False, '/WToENu_M-200_TuneCP5_13TeV-pythia8/RunIISpring18MiniAOD-100X_upgrade2018_realistic_v10-v3/MINIAODSIM', 1],
+  'WToENu_HEM'                               : [False, '/WToENu_M-200_TuneCP5_13TeV-pythia8/RunIISpring18MiniAOD-HEMPremix_100X_upgrade2018_realistic_v10_ext1-v1/MINIAODSIM', 1],
+
+
     # WJets,
     'WJetsToLNu'                             : [False, '/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],#Chain not started
     'WJetsToLNu_HT-70To100'                  : [False, '/WJetsToLNu_HT-70To100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM', 1],#Does not exist

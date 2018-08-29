@@ -872,15 +872,15 @@ for idmod in my_electron_id_modules:
 from RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff import *
 process.load('RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff')
 
-process.prodElectrons.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto")
-process.prodElectrons.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose")
-process.prodElectrons.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium")
-process.prodElectrons.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight")
+process.prodElectronsNoIso.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto")
+process.prodElectronsNoIso.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose")
+process.prodElectronsNoIso.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium")
+process.prodElectronsNoIso.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight")
 
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","vetoElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","looseElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","mediumElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","tightElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","vetoElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","looseElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","mediumElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","tightElectronID"))
 
 #process.stopTreeMaker.varsInt.append(cms.InputTag("prodJets", "nJets"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "jetsLVec"))
