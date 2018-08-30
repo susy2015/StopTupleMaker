@@ -13,16 +13,18 @@ git checkout NEW_TAG_NAME
 The following installation instructions assume the user wants to process Run2016 data or Spring16 MC.
 
 ```
-cmsrel CMSSW_10_1_4_patch1
-cd CMSSW_10_1_4_patch1/src
+cmsrel CMSSW_9_4_6_patch1
+cd CMSSW_9_4_6_patch1/src
 cmsenv
 git cms-init
 git clone -b jetToolbox_94X git@github.com:cms-jet/JetToolbox.git
 or copy from /uscms_data/d3/snorberg/CMSSW_10_1_4_patch1/src/JMEAnalysis
 
-git clone -b CMSSW1014_CMSSW949 git@github.com:susy2015/StopTupleMaker.git
+git clone -b 94X_intermediate_Branch_works git@github.com:susy2015/StopTupleMaker.git
 
 scram b -j9
+
+Zhenbin wanted a intermediate branch.
 
 you also need Fall17_17Nov2017_V6_MC.db
 Cert_314472-317080_13TeV_PromptReco_Collisions18_JSON.txt 
