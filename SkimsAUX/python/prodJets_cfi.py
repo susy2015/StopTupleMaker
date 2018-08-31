@@ -1,37 +1,13 @@
-
 import FWCore.ParameterSet.Config as cms
 
 prodJets = cms.EDFilter(
   "prodJets",
-  jetSrc = cms.InputTag('selectedUpdatedPatJetsDeepCSV'),#'slimmedJets'),
+  jetSrc = cms.InputTag('slimmedJets'),
   jetOtherSrc = cms.InputTag('patJetsAK4PFCHS'),
   jetType = cms.string('AK4PFchs'),
   qgTaggerKey = cms.string('QGTagger'),
-  vtxSrc = cms.InputTag('offlineSlimmedPrimaryVertices'),#goodVertices'),
-#  metSrc = cms.InputTag('slimmedMETs'),
-  bTagKeyString = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-  W_emuVec = cms.InputTag("prodGenInfo:WemuVec"),
-  W_tauVec = cms.InputTag("prodGenInfo:WtauVec"),
-  W_tau_emuVec = cms.InputTag("prodGenInfo:WtauemuVec"),
-  W_tau_prongsVec = cms.InputTag("prodGenInfo:WtauprongsVec"),
-  W_tau_nuVec = cms.InputTag("prodGenInfo:WtaunuVec"),
-  genDecayLVec = cms.InputTag("prodGenInfo:genDecayLVec"),
-  genDecayMomRefVec = cms.InputTag("prodGenInfo:genDecayMomRefVec"),
-  eleLVec = cms.InputTag("prodElectronsNoIso:elesLVec"), 
-  muLVec = cms.InputTag("prodMuonsNoIso:muonsLVec"), 
-  trksForIsoVetoLVec = cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"),
-  looseisoTrksLVec = cms.InputTag("prodIsoTrks:looseisoTrksLVec"),
-  #puppiJetsSrc = cms.InputTag("slimmedJetsPuppi"),
-  puppiJetsSrc = cms.InputTag("selectedPatJetsAK8PFPuppi"),
-  puppiSubJetsSrc = cms.InputTag("selectedPatJetsAK8PFPuppiSoftDropPacked"),
-  ak8JetsSrc = cms.InputTag("slimmedJetsAK8"),
-  #ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
-  ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked","SubJets"),
-  debug  = cms.bool(False),
-  NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
-  ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
- deepCSVBJetTags = cms.string('deepFlavourJetTags'),#'pfDeepCSVJetTags'),#'deepFlavourJetTags:probb'),#'deepFlavourJetTags'),
-  deepFlavorBJetTags = cms.string('pfDeepCSVJetTags'),#'pfDeepFlavourJetTags'),
+  deepCSVBJetTags = cms.string('pfDeepCSVJetTags'),#'deepFlavourJetTags:probb'),#'deepFlavourJetTags'),
+  deepFlavorBJetTags = cms.string('pfDeepFlavourJetTags'),
   deepCSVNegBJetTags = cms.string('negativeDeepFlavourJetTags'),#pfNegativeDeepCSVJetTags'),
   deepCSVPosBJetTags = cms.string('positiveDeepFlavourJetTags'),
   combinedSVBJetTags = cms.string('pfCombinedSecondaryVertexV2BJetTags'),
@@ -60,7 +36,7 @@ prodJets = cms.EDFilter(
   CvsBPosCJetTags = cms.string('pfPositiveCombinedCvsBJetTags'),
   CvsLCJetTags = cms.string('pfCombinedCvsLJetTags'),
   CvsLNegCJetTags = cms.string('pfNegativeCombinedCvsLJetTags'),
-  CvsLPosCJetTags = cms.string('pfPositiveCombinedCvsLJetTags'),
+  CvsLPosCJetTags = cms.string('pfPositiveCombinedCvsLJetTags'),  
   tagInfoName = cms.string('pfDeepCSV'),#'deepNN'),
   ipTagInfos = cms.string('pfImpactParameter'),
   svTagInfos = cms.string('pfInclusiveSecondaryVertexFinder'),
@@ -68,27 +44,44 @@ prodJets = cms.EDFilter(
   svTagInfosCTag = cms.string('pfInclusiveSecondaryVertexFinderCvsL'),
   softPFMuonTagInfosCTag = cms.string('softPFMuons'),
   softPFElectronTagInfosCTag = cms.string('softPFElectrons'),
-  jetPNegBJetTags= cms.string('pfNegativeOnlyJetBProbabilityBJetTags'),
-  jetPBJetTags = cms.string('pfJetBProbabilityBJetTags'),
-  jetPPosBJetTags= cms.string('pfPositiveOnlyJetBProbabilityBJetTags'),
-  jetBPBJetTags= cms.string('jetBPBJetTags'),
-  jetBPNegBJetTags= cms.string('jetBPNegBJetTags'),
-  jetBPPosBJetTags= cms.string('jetBPPosBJetTags'),
+  vtxSrc = cms.InputTag('goodVertices'),
+  #  metSrc = cms.InputTag('slimmedMETs'),
+  ak4ptCut = cms.double(20.0),
+  bTagKeyString = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
+  W_emuVec = cms.InputTag("prodGenInfo:WemuVec"),
+  W_tauVec = cms.InputTag("prodGenInfo:WtauVec"),
+  W_tau_emuVec = cms.InputTag("prodGenInfo:WtauemuVec"),
+  W_tau_prongsVec = cms.InputTag("prodGenInfo:WtauprongsVec"),
+  W_tau_nuVec = cms.InputTag("prodGenInfo:WtaunuVec"),
+  genDecayLVec = cms.InputTag("prodGenInfo:genDecayLVec"),
+  genDecayMomRefVec = cms.InputTag("prodGenInfo:genDecayMomRefVec"),
+  eleLVec = cms.InputTag("prodElectronsNoIso:elesLVec"), 
+  muLVec = cms.InputTag("prodMuonsNoIso:muonsLVec"), 
+  trksForIsoVetoLVec = cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"),
+  looseisoTrksLVec = cms.InputTag("prodIsoTrks:looseisoTrksLVec"),
+  #puppiJetsSrc = cms.InputTag("slimmedJetsPuppi"),
+  puppiJetsSrc = cms.InputTag("slimmedJetsAK8"),#"selectedPatJetsAK8PFPuppi"),
+  puppiSubJetsSrc = cms.InputTag("selectedPatJetsAK8PFPuppiSoftDropPacked"),
+  ak8JetsSrc = cms.InputTag("slimmedJetsAK8"),
+  #ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
+  ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked","SubJets"),
+  debug  = cms.bool(False),
+  NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
+  ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
+  svComputer = cms.string('candidateCombinedSecondaryVertexV2Computer'),
+  slComputer = cms.string('candidateCombinedSecondaryVertexSoftLeptonComputer'),
+  properties = cms.vstring(
+       "bDiscriminatorCSV",
+  ),
   bDiscriminatorCSV = cms.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags'
                             ,'deepFlavourJetTags:probudsg'
                             ,'deepFlavourJetTags:probb'
                             ,'deepFlavourJetTags:probc'
                             ,'deepFlavourJetTags:probbb'
                             ,'deepFlavourJetTags:probcc'
-                            ,'pfDeepCSVJetTags:probb'
-                            ,'pfDeepCSVJetTags:probc'
-                            ,'pfDeepCSVJetTags:probudsg'
-                            ,'pfDeepCSVJetTags:probbb'
-                            ,'pfDeepCSVDiscriminatorsJetTags:BvsAll'
-                            ,'pfDeepCSVDiscriminatorsJetTags:CvsB'
-                            ,'pfDeepCSVDiscriminatorsJetTags:CvsL'
                             ),
-  bDiscriminators = cms.vstring(),
+  bDiscriminators = cms.vstring(), 
   ak8JetSrc = cms.InputTag("selectedPatJetsAK8PFPuppi"),
-  ak8ptCut = cms.double(170.0),
+  ak8ptCut = cms.double(200.0),
+
 )
