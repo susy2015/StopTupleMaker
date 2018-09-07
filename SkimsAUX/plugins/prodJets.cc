@@ -901,7 +901,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
 
   }
 
-  /* KH
+  /*
   for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
      // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
      // Most of the time there are two daughters, sometimes there is only one
@@ -918,7 +918,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
        puppiSubJetsBdisc->push_back(dynamic_cast<const pat::Jet *>(puppiSubJets->at(ip).daughter(id))->bDiscriminator(bTagKeyString_.c_str()));
      }
   }
-  KH */
+  */
   //Puppi End ************
   //
 
