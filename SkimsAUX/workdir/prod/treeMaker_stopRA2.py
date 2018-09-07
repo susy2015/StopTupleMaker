@@ -526,11 +526,11 @@ process.mhtPFchsFilter = process.mhtFilter.clone()
 process.mhtPFchsFilter.MHTSource = cms.InputTag("mhtPFchs")
 
 #MT2
-process.load("StopTupleMaker.SkimsAUX.mt2Producer_cfi")
-##process.load("StopTupleMaker.SkimsAUX.mt2Filter_cfi")
-process.mt2PFchs = process.mt2.clone()
-process.mt2PFchs.JetTag = cms.InputTag("ak4patJetsPFchsPt30")
-process.mt2PFchs.METTag = cms.InputTag("slimmedMETs")
+#KH process.load("StopTupleMaker.SkimsAUX.mt2Producer_cfi")
+#KH ##process.load("StopTupleMaker.SkimsAUX.mt2Filter_cfi")
+#KH process.mt2PFchs = process.mt2.clone()
+#KH process.mt2PFchs.JetTag = cms.InputTag("ak4patJetsPFchsPt30")
+#KH process.mt2PFchs.METTag = cms.InputTag("slimmedMETs")
 
 
 # Delta Phi
@@ -1327,80 +1327,6 @@ process.comb_seq = cms.Sequence(
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
 process.ak4Stop_Path = cms.Path(
-                                   #KH-starts
-                                   #
-                                   process.egmGsfElectronIDs *
-                                   process.egmPhotonIDs *
-                                   #
-                                   process.pfCHS *
-                                   process.pfNoMuonCHSNoMu *
-                                   process.pfNoElectronCHSNoEle *
-                                   process.ak4PFJetsCHSNoLep *
-                                   process.patJetPartons *
-                                   process.patJetCorrFactorsAK4PFCHSNoLep *
-                                   process.patJetFlavourAssociationAK4PFCHSNoLep *
-                                   process.patJetPartonMatchAK4PFCHSNoLep *
-                                   process.packedGenParticlesForJetsNoNu *
-                                   process.ak4GenJetsNoNu *
-                                   process.patJetGenJetMatchAK4PFCHSNoLep *
-                                   #
-                                   # Similar set as above, but for the non-NoLep set
-                                   process.myak4PFJetsCHS *
-                                   process.patJetCorrFactorsAK4PFCHS *
-                                   process.patJetFlavourAssociationAK4PFCHS *
-                                   process.patJetPartonMatchAK4PFCHS *
-                                   process.patJetGenJetMatchAK4PFCHS *
-                                   #
-                                   process.pfImpactParameterTagInfosAK4PFCHSNoLep *
-                                   process.inclusiveCandidateVertexFinderCvsL *
-                                   process.candidateVertexMergerCvsL *
-                                   process.candidateVertexArbitratorCvsL *
-                                   process.slimmedSecondaryVerticesCvsL *
-                                   process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHSNoLep *
-                                   process.softPFMuonsTagInfosAK4PFCHSNoLep *
-                                   process.softPFElectronsTagInfosAK4PFCHSNoLep *
-                                   process.softPFMuonBJetTagsAK4PFCHSNoLep *
-                                   process.softPFElectronBJetTagsAK4PFCHSNoLep *
-                                   process.pfCombinedCvsLJetTagsAK4PFCHSNoLep *
-                                   process.pfCombinedCvsBJetTagsAK4PFCHSNoLep *
-                                   process.pfImpactParameterTagInfosAK4PFCHSNoLep *
-                                   process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHSNoLep *
-                                   process.pfDeepCSVTagInfosAK4PFCHSNoLep *
-                                   process.pfSecondaryVertexTagInfosAK4PFCHSNoLep *
-                                   process.QGTaggerNoLep *
-                                   process.pfDeepCSVJetTagsAK4PFCHSNoLep *
-                                   process.pfJetProbabilityBJetTagsAK4PFCHSNoLep *
-                                   process.pfJetBProbabilityBJetTagsAK4PFCHSNoLep *
-                                   process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHSNoLep *
-                                   process.pfCombinedSecondaryVertexV2BJetTagsAK4PFCHSNoLep *
-                                   #
-                                   # Similar set as above, but for the non-NoLep set
-                                   process.pfImpactParameterTagInfosAK4PFCHS *
-                                   process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHS *
-                                   process.softPFMuonsTagInfosAK4PFCHS *
-                                   process.softPFElectronsTagInfosAK4PFCHS *
-                                   process.softPFMuonBJetTagsAK4PFCHS *
-                                   process.softPFElectronBJetTagsAK4PFCHS *
-                                   process.pfCombinedCvsLJetTagsAK4PFCHS *
-                                   process.pfCombinedCvsBJetTagsAK4PFCHS *
-                                   process.pfImpactParameterTagInfosAK4PFCHS *
-                                   process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHS *
-                                   process.pfDeepCSVTagInfosAK4PFCHS *
-                                   process.pfSecondaryVertexTagInfosAK4PFCHS *
-                                   process.QGTagger *
-                                   process.pfDeepCSVJetTagsAK4PFCHS *
-                                   process.pfJetProbabilityBJetTagsAK4PFCHS *
-                                   process.pfJetBProbabilityBJetTagsAK4PFCHS *
-                                   process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHS *
-                                   process.pfCombinedSecondaryVertexV2BJetTagsAK4PFCHS *
-                                   #
-                                   process.patJetsAK4PFCHSNoLep *
-                                   #
-                                   process.QGAK4PFCHS *
-                                   process.patJetsAK4PFCHS *
-                                   #
-                                   process.patJetsAK4PFCHSPt10 * # for ISRJetProducer
-                                   #KH--ends-----------------------------------------------------------
                                    process.comb_seq * 
                                    process.printDecayPythia8 * process.prodGenInfo * process.prodGoodVertices * 
                                    process.prodMuonsNoIso * process.prodElectronsNoIso * process.prodIsoTrks * process.prodJetIDEventFilter *
@@ -1497,15 +1423,20 @@ if "JEC" in options.specialFix:
       
          #process.mt2PFchs.METTag = cms.InputTag("slimmedMETs", "", process.name_())
 
-process.prodMET.metSrc = cms.InputTag("slimmedMETs")
+         process.prodMET.metSrc = cms.InputTag("slimmedMETs")
 
-#process.myTask = cms.Task()
-#process.myTask.add(*[getattr(process,prod) for prod in process.producers_()])
-#process.myTask.add(*[getattr(process,filt) for filt in process.filters_()])
-#process.ak4Stop_Path = cms.Task()
-#process.ak4Stop_Path.add(*[getattr(process,prod) for prod in process.producers_()])
-#process.ak4Stop_Path.add(*[getattr(process,filt) for filt in process.filters_()])
-#process.ak4Stop_Path.associate(process.myTask)   
+
+## ----------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------
+## Final steps
+## ----------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------
+
+process.myTask = cms.Task()
+process.myTask.add(*[getattr(process,prod) for prod in process.producers_()])
+process.myTask.add(*[getattr(process,filt) for filt in process.filters_()])
+process.ak4Stop_Path.associate(process.myTask)   
+
 ###-- Dump config ------------------------------------------------------------
 if options.debug:
    file = open('allDump_cfg.py','w')
