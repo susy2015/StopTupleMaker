@@ -849,7 +849,6 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
     }
   }
   //PUPPI
-
   for(unsigned int ip = 0; ip < puppiJets->size(); ip++){
      TLorentzVector perPuppiJetLVec;
      perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
@@ -1122,10 +1121,12 @@ DeepCSVcP->push_back(trialDeepCSVcP);
     float thisqgAxis2 = jet.userFloat(toGetName.c_str());
     qgAxis2->push_back(thisqgAxis2);
   
+    //KH
     toGetName = qgTaggerKey_+":axis1";
     if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
     float thisqgAxis1 = jet.userFloat(toGetName.c_str());
     qgAxis1->push_back(thisqgAxis1);
+    //KH
 
     toGetName = qgTaggerKey_+":mult"; 
     if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
@@ -1189,11 +1190,12 @@ DeepCSVcP->push_back(trialDeepCSVcP);
     int chargedCand = 25;
     int neutralCand = 25;
     //create collection first, to be able to do some sorting
+    //KH std::cout << "prodJets: jet.numberOfDaughters(): " << jet.numberOfDaughters() << std::endl; //KH
     for (unsigned int i = 0; i < jet.numberOfDaughters() && (chargedCand || neutralCand); i++)
     {
         const pat::PackedCandidate* packedCand = dynamic_cast<const pat::PackedCandidate*>(jet.daughter(i));
         if(packedCand)
-        {
+	{
             /// Split to charged and neutral candidates
             if(packedCand->charge()!=0)
             {
@@ -1202,24 +1204,25 @@ DeepCSVcP->push_back(trialDeepCSVcP);
                 TLorentzVector tmpVec;
                 tmpVec.SetPtEtaPhiE(packedCand->pt(), packedCand->eta(), packedCand->phi(), packedCand->energy());
                 pfCandChargedLV.push_back(tmpVec);
+		/* KH */
                 pfCandChargedDxy.push_back(packedCand->dxy());
-                packedCand->dxyError();
+                //KH packedCand->dxyError();
                 pfCandChargedDz.push_back(packedCand->dz());
-                packedCand->pvAssociationQuality();
+                //KH packedCand->pvAssociationQuality();
 
                 pfCandChargedFromPV.push_back(packedCand->fromPV());
 
                 pfCandChargedVertexChi2.push_back(packedCand->vertexChi2());
                 pfCandChargedVertexNdof.push_back(packedCand->vertexNdof());
                 //divided
-                packedCand->vertexNormalizedChi2();
-                packedCand->vertex().rho();
-                packedCand->vertex().phi();
+                //KH packedCand->vertexNormalizedChi2();
+                //KH packedCand->vertex().rho();
+                //KH packedCand->vertex().phi();
                 pfCandChargedVertexMass.push_back(packedCand->vertexRef()->p4().M());
-                packedCand->puppiWeight();
+                //KH packedCand->puppiWeight();
                  
-                packedCand->charge();
-                packedCand->lostInnerHits();
+                //KH packedCand->charge();
+                //KH packedCand->lostInnerHits();
                 
             }
             else // neutral candidates
@@ -1233,7 +1236,7 @@ DeepCSVcP->push_back(trialDeepCSVcP);
                 packedCand->pdgId();
                 pfCandNeutralHCALFrac.push_back(packedCand->hcalFraction());
             }
-        }
+	}
     }
 
     //DO NOT try to use the origional vectors after the move!

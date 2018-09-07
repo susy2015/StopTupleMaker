@@ -154,7 +154,8 @@ else:
      #'/store/mc/RunIIFall17MiniAOD/QCD_Pt_1400to1800_TuneCP5_13TeV_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/06634AB3-14E6-E711-8DA6-0CC47A4D7632.root'
     #'file:/uscms_data/d3/pastika/zinv/dev/CMSSW_9_3_3/src/TopTagger/TopTagger/test/2626BC61-D8CF-E611-87A6-02163E019D2A.root'
     #'/store/mc/RunIISummer16MiniAODv2/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/021F2B84-97BE-E611-A66E-0242AC130005.root'
-'/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
+    #'/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
+    'file:00257B91-1808-E811-BD39-0242AC130002.root'
     #  '/store/mc/RunIISummer16MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/961C1E50-92BE-E611-AFC6-000101000023.root'
     #'/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
     #'/store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver3-v1/80000/CE40C7B7-76EA-E611-BD9F-A0000420FE80.root'
@@ -212,7 +213,7 @@ process.ak4PFJetsCHSNoLep = ak4PFJets.clone(src = 'pfNoElectronCHSNoEle', doArea
 
 ## define the JECs JET Corrections
 #if options.cmsswVersion == "80X":
-jetCorrectionLevels = ('AK4PFchs', cms.vstring([]), 'None')#cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')#cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
 jetCorrLevelLists = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if options.mcInfo == False:
       jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
@@ -333,7 +334,7 @@ addJetCollection(
       genParticles = cms.InputTag('prunedGenParticles'),
       algo = 'AK', rParam = 0.4
 )
-process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2']#, 'QGTaggerNoLep:axis1']
+process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2', 'QGTaggerNoLep:axis1']#, ] #KH adding axis1 back
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
 if "JEC" in options.specialFix:
@@ -1179,6 +1180,8 @@ if options.mcInfo == True:
    #isrJets
    process.ISRJetProducer.debug = cms.bool(options.debug)
    process.stopTreeMaker.varsInt.append(cms.InputTag("ISRJetProducer", "NJetsISR"))
+   #KH
+   process.ISRJetProducer.cleanJetSrc = cms.InputTag("patJetsAK4PFCHSPt10") #KH Changed inputs. Not sure if this needs to be NoLep, which seems to be the default setting.
 
    process.genHT = cms.EDProducer('GenHTProducer')
    process.stopTreeMaker.varsFloat.append(cms.InputTag("genHT", "genHT"))
@@ -1324,6 +1327,80 @@ process.comb_seq = cms.Sequence(
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
 process.ak4Stop_Path = cms.Path(
+                                   #KH-starts
+                                   #
+                                   process.egmGsfElectronIDs *
+                                   process.egmPhotonIDs *
+                                   #
+                                   process.pfCHS *
+                                   process.pfNoMuonCHSNoMu *
+                                   process.pfNoElectronCHSNoEle *
+                                   process.ak4PFJetsCHSNoLep *
+                                   process.patJetPartons *
+                                   process.patJetCorrFactorsAK4PFCHSNoLep *
+                                   process.patJetFlavourAssociationAK4PFCHSNoLep *
+                                   process.patJetPartonMatchAK4PFCHSNoLep *
+                                   process.packedGenParticlesForJetsNoNu *
+                                   process.ak4GenJetsNoNu *
+                                   process.patJetGenJetMatchAK4PFCHSNoLep *
+                                   #
+                                   # Similar set as above, but for the non-NoLep set
+                                   process.myak4PFJetsCHS *
+                                   process.patJetCorrFactorsAK4PFCHS *
+                                   process.patJetFlavourAssociationAK4PFCHS *
+                                   process.patJetPartonMatchAK4PFCHS *
+                                   process.patJetGenJetMatchAK4PFCHS *
+                                   #
+                                   process.pfImpactParameterTagInfosAK4PFCHSNoLep *
+                                   process.inclusiveCandidateVertexFinderCvsL *
+                                   process.candidateVertexMergerCvsL *
+                                   process.candidateVertexArbitratorCvsL *
+                                   process.slimmedSecondaryVerticesCvsL *
+                                   process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHSNoLep *
+                                   process.softPFMuonsTagInfosAK4PFCHSNoLep *
+                                   process.softPFElectronsTagInfosAK4PFCHSNoLep *
+                                   process.softPFMuonBJetTagsAK4PFCHSNoLep *
+                                   process.softPFElectronBJetTagsAK4PFCHSNoLep *
+                                   process.pfCombinedCvsLJetTagsAK4PFCHSNoLep *
+                                   process.pfCombinedCvsBJetTagsAK4PFCHSNoLep *
+                                   process.pfImpactParameterTagInfosAK4PFCHSNoLep *
+                                   process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHSNoLep *
+                                   process.pfDeepCSVTagInfosAK4PFCHSNoLep *
+                                   process.pfSecondaryVertexTagInfosAK4PFCHSNoLep *
+                                   process.QGTaggerNoLep *
+                                   process.pfDeepCSVJetTagsAK4PFCHSNoLep *
+                                   process.pfJetProbabilityBJetTagsAK4PFCHSNoLep *
+                                   process.pfJetBProbabilityBJetTagsAK4PFCHSNoLep *
+                                   process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHSNoLep *
+                                   process.pfCombinedSecondaryVertexV2BJetTagsAK4PFCHSNoLep *
+                                   #
+                                   # Similar set as above, but for the non-NoLep set
+                                   process.pfImpactParameterTagInfosAK4PFCHS *
+                                   process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHS *
+                                   process.softPFMuonsTagInfosAK4PFCHS *
+                                   process.softPFElectronsTagInfosAK4PFCHS *
+                                   process.softPFMuonBJetTagsAK4PFCHS *
+                                   process.softPFElectronBJetTagsAK4PFCHS *
+                                   process.pfCombinedCvsLJetTagsAK4PFCHS *
+                                   process.pfCombinedCvsBJetTagsAK4PFCHS *
+                                   process.pfImpactParameterTagInfosAK4PFCHS *
+                                   process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHS *
+                                   process.pfDeepCSVTagInfosAK4PFCHS *
+                                   process.pfSecondaryVertexTagInfosAK4PFCHS *
+                                   process.QGTagger *
+                                   process.pfDeepCSVJetTagsAK4PFCHS *
+                                   process.pfJetProbabilityBJetTagsAK4PFCHS *
+                                   process.pfJetBProbabilityBJetTagsAK4PFCHS *
+                                   process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHS *
+                                   process.pfCombinedSecondaryVertexV2BJetTagsAK4PFCHS *
+                                   #
+                                   process.patJetsAK4PFCHSNoLep *
+                                   #
+                                   process.QGAK4PFCHS *
+                                   process.patJetsAK4PFCHS *
+                                   #
+                                   process.patJetsAK4PFCHSPt10 * # for ISRJetProducer
+                                   #KH--ends-----------------------------------------------------------
                                    process.comb_seq * 
                                    process.printDecayPythia8 * process.prodGenInfo * process.prodGoodVertices * 
                                    process.prodMuonsNoIso * process.prodElectronsNoIso * process.prodIsoTrks * process.prodJetIDEventFilter *
