@@ -155,8 +155,7 @@ else:
     #'file:/uscms_data/d3/pastika/zinv/dev/CMSSW_9_3_3/src/TopTagger/TopTagger/test/2626BC61-D8CF-E611-87A6-02163E019D2A.root'
     #'/store/mc/RunIISummer16MiniAODv2/TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/021F2B84-97BE-E611-A66E-0242AC130005.root'
     #'/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
-    'file:00257B91-1808-E811-BD39-0242AC130002.root'
-    #  '/store/mc/RunIISummer16MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/961C1E50-92BE-E611-AFC6-000101000023.root'
+    '/store/mc/RunIISummer16MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/961C1E50-92BE-E611-AFC6-000101000023.root'
     #'/store/mc/RunIISpring16MiniAODv2/SMS-T2tt_dM-10to80_genHT-160_genMET-80_mWMin-0p1_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/00000/04817013-539D-E611-BEE9-0025905A612C.root'
     #'/store/data/Run2016H/SingleMuon/MINIAOD/03Feb2017_ver3-v1/80000/CE40C7B7-76EA-E611-BD9F-A0000420FE80.root'
     # '/store/mc/RunIISummer16MiniAODv2/SMS-T2tt_mStop-650_mLSP-350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/2626BC61-D8CF-E611-87A6-02163E019D2A.root'
@@ -1423,8 +1422,7 @@ if "JEC" in options.specialFix:
       
          #process.mt2PFchs.METTag = cms.InputTag("slimmedMETs", "", process.name_())
 
-         process.prodMET.metSrc = cms.InputTag("slimmedMETs")
-
+process.prodMET.metSrc = cms.InputTag("slimmedMETs")
 
 ## ----------------------------------------------------------------------------------------------
 ## ----------------------------------------------------------------------------------------------
