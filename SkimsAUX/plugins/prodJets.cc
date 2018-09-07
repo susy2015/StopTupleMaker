@@ -861,8 +861,10 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
      float puppi_tau3_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau3");
      puppitau3->push_back(puppi_tau3_uf);
 
+     /*KH
      float puppisoftDropMass_uf = puppiJets->at(ip).userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
      puppisoftDropMass->push_back(puppisoftDropMass_uf);
+     KH */
 
       puppiAK8SubjetLVec->push_back(std::vector<TLorentzVector>());
       puppiAK8SubjetMult->push_back(std::vector<float>());
@@ -871,6 +873,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
       puppiAK8SubjetAxis2->push_back(std::vector<float>());
       puppiAK8SubjetBDisc->push_back(std::vector<float>());     
 
+      /* KH
       auto const & subjets = puppiJets->at(ip).subjets("SoftDrop");
       for( auto const & it : subjets)
       {
@@ -894,9 +897,11 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
           puppiAK8SubjetAxis2->back().push_back(axis2);
           puppiAK8SubjetBDisc->back().push_back(subjetBDiscriminator);
       }
+      KH */
 
   }
 
+  /* KH
   for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
      // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
      // Most of the time there are two daughters, sometimes there is only one
@@ -913,6 +918,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
        puppiSubJetsBdisc->push_back(dynamic_cast<const pat::Jet *>(puppiSubJets->at(ip).daughter(id))->bDiscriminator(bTagKeyString_.c_str()));
      }
   }
+  KH */
   //Puppi End ************
   //
 
