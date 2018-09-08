@@ -854,6 +854,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
      perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
      puppiJetsLVec->push_back(perPuppiJetLVec);
 
+     /*KH
      float puppi_tau1_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau1");
      puppitau1->push_back(puppi_tau1_uf);
      float puppi_tau2_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau2");
@@ -861,10 +862,8 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
      float puppi_tau3_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau3");
      puppitau3->push_back(puppi_tau3_uf);
 
-     /*KH
      float puppisoftDropMass_uf = puppiJets->at(ip).userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
      puppisoftDropMass->push_back(puppisoftDropMass_uf);
-     KH */
 
       puppiAK8SubjetLVec->push_back(std::vector<TLorentzVector>());
       puppiAK8SubjetMult->push_back(std::vector<float>());
@@ -873,7 +872,6 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
       puppiAK8SubjetAxis2->push_back(std::vector<float>());
       puppiAK8SubjetBDisc->push_back(std::vector<float>());     
 
-      /* KH
       auto const & subjets = puppiJets->at(ip).subjets("SoftDrop");
       for( auto const & it : subjets)
       {
