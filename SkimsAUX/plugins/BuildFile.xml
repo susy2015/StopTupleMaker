@@ -33,7 +33,7 @@
   <use   name="RecoBTag/DeepFlavour"/>
   <use   name="NNKit/FatJetNN"/>
   <flags   EDM_PLUGIN="1"/>
-  <!--Flags CXXFLAGS="-g -DDEBUG"/-->
+  <Flags CXXFLAGS="-g -DDEBUG"/>
 </library>
 <export>
 </export>

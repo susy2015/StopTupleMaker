@@ -175,12 +175,12 @@ class prodJets : public edm::EDFilter
   std::string cMVAv2NegBJetTags_;
   std::string cMVAv2PosBJetTags_;
 
-  std::string   CvsBCJetTags_;
-  std::string   CvsBNegCJetTags_;
-  std::string   CvsBPosCJetTags_;
-  std::string   CvsLCJetTags_;
-  std::string   CvsLNegCJetTags_;
-  std::string   CvsLPosCJetTags_;
+  std::string   CversusBCJetTags_;
+  std::string   CversusBNegCJetTags_;
+  std::string   CversusBPosCJetTags_;
+  std::string   CversusLCJetTags_;
+  std::string   CversusLNegCJetTags_;
+  std::string   CversusLPosCJetTags_;
 };
 
 void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
@@ -327,12 +327,12 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   cMVAv2NegBJetTags_ = iConfig.getParameter<std::string>("cMVAv2NegBJetTags");
   cMVAv2PosBJetTags_ = iConfig.getParameter<std::string>("cMVAv2PosBJetTags");
 
-  CvsBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
-  CvsBNegCJetTags_             = iConfig.getParameter<std::string>("CvsBNegCJetTags");
-  CvsBPosCJetTags_             = iConfig.getParameter<std::string>("CvsBPosCJetTags");
-  CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
-  CvsLNegCJetTags_             = iConfig.getParameter<std::string>("CvsLNegCJetTags");
-  CvsLPosCJetTags_             = iConfig.getParameter<std::string>("CvsLPosCJetTags");
+  CversusBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
+  CversusBNegCJetTags_             = iConfig.getParameter<std::string>("CvsBNegCJetTags");
+  CversusBPosCJetTags_             = iConfig.getParameter<std::string>("CvsBPosCJetTags");
+  CversusLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
+  CversusLNegCJetTags_             = iConfig.getParameter<std::string>("CvsLNegCJetTags");
+  CversusLPosCJetTags_             = iConfig.getParameter<std::string>("CvsLPosCJetTags");
 
   deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
 
@@ -388,6 +388,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   LooseIsoTrksVec_Tok_=consumes<std::vector<TLorentzVector> >(looseisoTrksLVec_Src_);
   VtxTok_=consumes< std::vector<reco::Vertex> >(vtxSrc_);
   PuppiJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiJetsSrc_);
+
   //PuppiSubJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiSubJetsSrc_);
   //jetTokenDeepAK8_ = consumes<std::vector<pat::Jet> >(iConfig.getUntrackedParameter<edm::InputTag>("jetsDeepAK8", edm::InputTag("slimmedJetsAK8")));
   PuppiSubJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiSubJetsSrc_);
@@ -400,7 +401,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   //produces<std::vector<pat::Jet> >("");
   produces<std::vector<TLorentzVector> >("jetsLVec");
-  produces<std::vector<int> >("recoJetsFlavor");
+  produces<std::vector<float> >("recoJetsFlavor");
   produces<std::vector<float> >("recoJetsCSVv2");
   produces<std::vector<float> >("recoJetsCharge");
   produces<std::vector<float> >("recoJetsJecUnc");
@@ -410,7 +411,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("qgPtD");
   produces<std::vector<float> >("qgAxis2");
   produces<std::vector<float> >("qgAxis1");
-  produces<std::vector<int> >("qgMult");
+  produces<std::vector<float> >("qgMult");
 
   //produce variables needed for Lost Lepton study, added by hua.wei@cern.ch
   produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
@@ -476,7 +477,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("CombinedSvtxN");
   produces<std::vector<float> >("CombinedSvtxP");
 
-produces<std::vector<float> >("DeepCSVb");
+  produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("DeepCSVc");
   produces<std::vector<float> >("DeepCSVl");
   produces<std::vector<float> >("DeepCSVbb");
@@ -525,12 +526,12 @@ produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("cMVAv2Neg");
   produces<std::vector<float> >("cMVAv2Pos");
 
-  produces<std::vector<float> >("CvsB");
-  produces<std::vector<float> >("CvsBNeg");
-  produces<std::vector<float> >("CvsBPos");
-  produces<std::vector<float> >("CvsL");
-  produces<std::vector<float> >("CvsLNeg");
-  produces<std::vector<float> >("CvsLPos");
+  produces<std::vector<float> >("CversusB");
+  produces<std::vector<float> >("CversusBNeg");
+  produces<std::vector<float> >("CversusBPos");
+  produces<std::vector<float> >("CversusL");
+  produces<std::vector<float> >("CversusLNeg");
+  produces<std::vector<float> >("CversusLPos");
 
   produces<std::vector<TLorentzVector> > ("deepAK8LVec");
   produces<std::vector<float> > ("deepAK8btop");
@@ -598,7 +599,7 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //check which ones to keep
   //std::unique_ptr<std::vector<pat::Jet> > prod(new std::vector<pat::Jet>());
   std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
+  std::unique_ptr<std::vector<float> > recoJetsFlavor(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsCharge(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
@@ -664,18 +665,18 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   std::unique_ptr<std::vector<float> >cMVAv2Neg(new std::vector<float>());
   std::unique_ptr<std::vector<float> >cMVAv2Pos(new std::vector<float>());
 
-  std::unique_ptr<std::vector<float> >CvsB(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsBNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsBPos(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsL(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsLNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsLPos(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusBNeg(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusBPos(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusLNeg(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusLPos(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgAxis1(new std::vector<float>());
-  std::unique_ptr<std::vector<int> > qgMult(new std::vector<int>());
+  std::unique_ptr<std::vector<float> > qgMult(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > recoJetschargedHadronEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
@@ -954,7 +955,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
     DeepCSVbP->push_back(trialDeepCSVbP);
 
     float trialDeepCSVcP = jet.bDiscriminator((deepCSVPosBJetTags_+":probc").c_str());
-DeepCSVcP->push_back(trialDeepCSVcP);
+    DeepCSVcP->push_back(trialDeepCSVcP);
 
     float trialDeepCSVlP = jet.bDiscriminator((deepCSVPosBJetTags_+":probudsg").c_str());
     DeepCSVlP->push_back(trialDeepCSVlP);
@@ -1036,18 +1037,18 @@ DeepCSVcP->push_back(trialDeepCSVcP);
     float tri_cMVAv2Pos = jet.bDiscriminator(cMVAv2PosBJetTags_.c_str());
     cMVAv2Pos->push_back(tri_cMVAv2Pos);
 
-    float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
-    CvsB->push_back(tri_CvsB);
-    float tri_CvsBNeg = jet.bDiscriminator(CvsBNegCJetTags_.c_str());
-    CvsBNeg->push_back(tri_CvsBNeg);
-    float tri_CvsBPos = jet.bDiscriminator(CvsBPosCJetTags_.c_str());
-    CvsBPos->push_back(tri_CvsBPos);
-    float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
-    CvsL->push_back(tri_CvsL);
-    float tri_CvsLNeg = jet.bDiscriminator(CvsLNegCJetTags_.c_str());
-    CvsLNeg->push_back(tri_CvsLNeg);
-    float tri_CvsLPos = jet.bDiscriminator(CvsLPosCJetTags_.c_str());
-    CvsLPos->push_back(tri_CvsLPos);
+    float tri_CvsB = jet.bDiscriminator(CversusBCJetTags_.c_str());
+    CversusB->push_back(tri_CvsB);
+    float tri_CvsBNeg = jet.bDiscriminator(CversusBNegCJetTags_.c_str());
+    CversusBNeg->push_back(tri_CvsBNeg);
+    float tri_CvsBPos = jet.bDiscriminator(CversusBPosCJetTags_.c_str());
+    CversusBPos->push_back(tri_CvsBPos);
+    float tri_CvsL = jet.bDiscriminator(CversusLCJetTags_.c_str());
+    CversusL->push_back(tri_CvsL);
+    float tri_CvsLNeg = jet.bDiscriminator(CversusLNegCJetTags_.c_str());
+    CversusLNeg->push_back(tri_CvsLNeg);
+    float tri_CvsLPos = jet.bDiscriminator(CversusLPosCJetTags_.c_str());
+    CversusLPos->push_back(tri_CvsLPos);
 
     float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
     DeepFlavorb->push_back(trialDeepFlavorb);
@@ -1132,7 +1133,7 @@ DeepCSVcP->push_back(trialDeepCSVcP);
 
     float btag = jet.bDiscriminator(bTagKeyString_.c_str());
     recoJetsCSVv2->push_back(btag);
-
+    
     float charge = jet.jetCharge();
     recoJetsCharge->push_back(charge);
 
@@ -1313,8 +1314,11 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   std::unique_ptr<int> nJets (new int);
 
   *nJets = jetsLVec->size();
-
-  // Need to access event info
+  if ( jetsLVec->size() != recoJetsCSVv2->size() ){ 
+  //std::cout<<" nJets"<< jetsLVec->size() <<std::endl;
+   //std::cout<<recoJetsCSVv2->size()<<std::endl;
+  }
+   // Need to access event info
   fatjetNN_->readEvent(iEvent, iSetup);
 
   for (const pat::Jet &fatjet : *puppiJets) 
@@ -1334,11 +1338,13 @@ DeepCSVcP->push_back(trialDeepCSVcP);
       deepAK8bHbb->push_back(nn.get_binarized_score_hbb());
       deepAK8bH4q->push_back(nn.get_binarized_score_h4q());     
       deepAK8raw->push_back(std::vector<float>());
-      
+      //std::cout<< "AK8jet_PT " << fatjet.pt() << " AK8Jet eta "<< fatjet.eta() << " get binarized score "<< nn.get_binarized_score_top()<< " W score "<<nn.get_binarized_score_w() << " Zbb score " << nn.get_binarized_score_zbb() << std::endl;
       for(const auto& pred : nnpreds) deepAK8raw->back().push_back(pred);
       
   }
   
+  //std::cout<< " get binarized score "<< deepAK8btop->at(1)<< " W score "<<deepAK8bW->at(1) << " Zbb score " << deepAK8bZbb->at(1) << std::endl;
+
   iEvent.put(std::move(deepAK8LVec), "deepAK8LVec");
   iEvent.put(std::move(deepAK8btop), "deepAK8btop");
   iEvent.put(std::move(deepAK8bW), "deepAK8bW");
@@ -1350,6 +1356,7 @@ DeepCSVcP->push_back(trialDeepCSVcP);
 
   // store in the event
   // iEvent.put(prod);
+
   iEvent.put(std::move(jetsLVec), "jetsLVec");
   iEvent.put(std::move(recoJetsFlavor), "recoJetsFlavor");
   iEvent.put(std::move(recoJetsCSVv2), "recoJetsCSVv2");
@@ -1456,12 +1463,12 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   iEvent.put(std::move(cMVAv2Neg),"cMVAv2Neg");
   iEvent.put(std::move(cMVAv2Pos),"cMVAv2Pos");
 
-  iEvent.put(std::move(CvsB),"CvsB");
-  iEvent.put(std::move(CvsBNeg),"CvsBNeg");
-  iEvent.put(std::move(CvsBPos),"CvsBPos");
-  iEvent.put(std::move(CvsL),"CvsL");
-  iEvent.put(std::move(CvsLNeg),"CvsLNeg");
-  iEvent.put(std::move(CvsLPos),"CvsLPos");
+  iEvent.put(std::move(CversusB),"CversusB");
+  iEvent.put(std::move(CversusBNeg),"CversusBNeg");
+  iEvent.put(std::move(CversusBPos),"CversusBPos");
+  iEvent.put(std::move(CversusL),"CversusL");
+  iEvent.put(std::move(CversusLNeg),"CversusLNeg");
+  iEvent.put(std::move(CversusLPos),"CversusLPos");
 
   iEvent.put(std::move(chargedPFCandLV), "chargedPFCandLV");
   iEvent.put(std::move(neutralPFCandLV), "neutralPFCandLV");

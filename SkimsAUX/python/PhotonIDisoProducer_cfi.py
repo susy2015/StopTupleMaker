@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V1_TrueVtx_cff']
+my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff']
 
 goodPhotons = cms.EDProducer("PhotonIDisoProducer",
         photonCollection       = cms.untracked.InputTag("slimmedPhotons"),
@@ -8,9 +8,9 @@ goodPhotons = cms.EDProducer("PhotonIDisoProducer",
 #       conversionCollection   = cms.untracked.InputTag("reducedEgamma","reducedConversions",tagname),
 
         #Andres
-        loosePhotonID                = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose"),
-        mediumPhotonID               = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium"),
-        tightPhotonID                = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight"),
+        loosePhotonID                = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose"),
+        mediumPhotonID               = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium"),
+        tightPhotonID                = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight"),
         gammaSrc               = cms.InputTag("slimmedPhotons"),
         conversionCollection   = cms.untracked.InputTag("reducedEgamma","reducedConversions"),
         beamspotCollection     = cms.untracked.InputTag("offlineBeamSpot"),

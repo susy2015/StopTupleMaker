@@ -139,6 +139,31 @@ private:
 
   std::vector<edm::EDGetTokenT<std::vector<TLorentzVector> >>VectorTLorentzVectorTags_;
 
+  // any vector<TLorentzVector> precision varialbes
+  std::vector<edm::InputTag> vectorVectorTLorentzVectorTags_;
+  std::vector<std::string> vectorVectorTLorentzVectorNames_;
+  std::vector<std::vector<std::vector<TLorentzVector> > > vectorVectorTLorentzVector_;
+  std::vector<TString> vectorVectorTLorentzVectorNamesCached_;
+
+  std::vector<edm::EDGetTokenT<std::vector<std::vector<TLorentzVector>> >>VectorVectorTLorentzVectorTags_;
+
+  // any vector<double> precision variables
+  std::vector<edm::InputTag> vectorVectorDoubleTags_;
+  std::vector<std::string> vectorVectorDoubleNames_;
+  std::vector<std::vector<std::vector<double> > > vectorVectorDouble_;
+  std::vector<TString> vectorVectorDoubleNamesCached_;
+
+  std::vector<edm::EDGetTokenT<std::vector<std::vector<double>> >>VectorVectorDoubleTags_;
+  
+  // any vector<float> precision variables
+  
+  std::vector<edm::InputTag> vectorVectorFloatTags_;
+  std::vector<std::string> vectorVectorFloatNames_;
+  std::vector<std::vector<std::vector<float> > > vectorVectorFloat_;
+  std::vector<TString> vectorVectorFloatNamesCached_;
+
+  std::vector<edm::EDGetTokenT<std::vector<std::vector<float>> >>VectorVectorFloatTags_;
+
   TString formBranchName(const edm::InputTag & varTag, const std::vector<std::string> & vectorNames);
 
   std::vector<TString> cachedNames_;

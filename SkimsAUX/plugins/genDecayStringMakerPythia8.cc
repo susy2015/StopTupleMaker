@@ -303,7 +303,15 @@ string genDecayStringMakerPythia8::decay( const reco::Candidate & c,
   
   int id = c.pdgId();
   const ParticleData * pd = pdt_->particle( id );  
-  assert( pd != 0 );
+  
+  
+  if(pd == 0)
+  {
+      std::cout << "No ParticleDataTable entry for particle with pdgID: " << id << std::endl << "Skipping this particle!!!!!!" << std::endl;
+      return "";
+  }
+
+  //assert( pd != 0 );
   out += ( pd->name() + printP4( c ) );
 
   int perIdx = find_idx(c);

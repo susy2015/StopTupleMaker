@@ -69,25 +69,25 @@ PhotonIDisoProducer::PhotonIDisoProducer(const edm::ParameterSet& iConfig):
   ecalRecHitsInputTag_EB_Token_ = consumes<EcalRecHitCollection>(ecalRecHitsInputTag_EB_);
 
   //Andres TLorentz 
-  produces<std::vector<TLorentzVector> >("gammaLVec");
-  produces<std::vector<TLorentzVector> >("gammaLVecGen");
+  produces<std::vector<TLorentzVector> >("photonLVec");
+  produces<std::vector<TLorentzVector> >("photonLVecGen");
   produces<std::vector<TLorentzVector> >("genPartonLVec");
 
   produces< std::vector< pat::Photon > >(); 
-  produces< std::vector< float > >("isEB");
-  produces< std::vector< float > >("genMatched"); 
-  produces< std::vector< float > >("hadTowOverEM"); 
-  produces< std::vector< float > >("sigmaIetaIeta"); 
-  produces< std::vector< float > >("pfChargedIso"); 
-  produces< std::vector< float > >("pfNeutralIso"); 
-  produces< std::vector< float > >("pfGammaIso"); 
-  produces< std::vector< float > >("pfChargedIsoRhoCorr"); 
-  produces< std::vector< float > >("pfNeutralIsoRhoCorr"); 
-  produces< std::vector< float > >("pfGammaIsoRhoCorr"); 
-  produces< std::vector< float > >("hasPixelSeed"); 
+  produces< std::vector< float > >("photonISEB");
+  produces< std::vector< float > >("photonGenMatched"); 
+  produces< std::vector< float > >("photonHadTowOverEM"); 
+  produces< std::vector< float > >("photonSigmaIetaIeta"); 
+  produces< std::vector< float > >("photonPFChargedIso"); 
+  produces< std::vector< float > >("photonPFNeutralIso"); 
+  produces< std::vector< float > >("photonPFGammaIso"); 
+  produces< std::vector< float > >("photonPFChargedIsoRhoCorr"); 
+  produces< std::vector< float > >("photonPFNeutralIsoRhoCorr"); 
+  produces< std::vector< float > >("photonPFGammaIsoRhoCorr"); 
+  produces< std::vector< float > >("photonHasPixelSeed"); 
   produces< std::vector< float > >("passElectronVeto"); 
   //produces< std::vector< bool > >("hadronization");
-  produces< std::vector< bool > >("nonPrompt");
+  produces< std::vector< bool > >("photonNonPrompt");
   produces< std::vector< bool > >("fullID");
   produces< std::vector< bool > >("loosePhotonID");
   produces< std::vector< bool > >("mediumPhotonID");
@@ -125,10 +125,10 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   auto photon_genMatched = std::make_unique<std::vector<float>>();
   auto photon_hadTowOverEM = std::make_unique<std::vector<float>>();
   auto photon_sigmaIetaIeta = std::make_unique<std::vector<float>>();
-  auto photon_pfGammaIso = std::make_unique<std::vector<float>>();
+  auto photonpfGammaIso = std::make_unique<std::vector<float>>();
   auto photon_pfChargedIso = std::make_unique<std::vector<float>>();
   auto photon_pfNeutralIso = std::make_unique<std::vector<float>>();
-  auto photon_pfGammaIsoRhoCorr = std::make_unique<std::vector<float>>();
+  auto photonpfGammaIsoRhoCorr = std::make_unique<std::vector<float>>();
   auto photon_pfChargedIsoRhoCorr = std::make_unique<std::vector<float>>();
   auto photon_pfNeutralIsoRhoCorr = std::make_unique<std::vector<float>>();
   auto photon_hasPixelSeed = std::make_unique<std::vector<float>>();
@@ -141,8 +141,8 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   auto   photon_tightID  = std::make_unique<std::vector<bool>>();
   auto   photon_electronFakes  = std::make_unique<std::vector<bool>>(); 
   auto photon_extraLooseID = std::make_unique<std::vector<bool>>();
-  auto gammaLVec = std::make_unique<std::vector<TLorentzVector> >();
-  auto gammaLVecGen = std::make_unique<std::vector<TLorentzVector> >();
+  auto photonLVec = std::make_unique<std::vector<TLorentzVector> >();
+  auto photonLVecGen = std::make_unique<std::vector<TLorentzVector> >();
   auto genPartonLVec = std::make_unique<std::vector<TLorentzVector> >();
   auto photon_pt = std::make_unique<std::vector<float>>();
   auto photon_eta = std::make_unique<std::vector<float>>();
@@ -175,13 +175,40 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<edm::ValueMap<bool> >   tight_id_decisions_;
   iEvent.getByToken(tightIdToken_,tight_id_decisions_);
 
+  bool isBarrelPhoton=false;
+  bool isEndcapPhoton=false;
+  bool passID=false;
+  bool passIDLoose=false;
+  bool passIso=false;
+  bool passIsoLoose=false;
+  bool passAcc=false;
+  for( View< pat::Photon >::const_iterator iPhoton = photonCands->begin(); iPhoton != photonCands->end(); ++iPhoton){
+  double PhEta=iPhoton->eta();
+
+  if(fabs(PhEta) < 1.4442  ){
+          isBarrelPhoton=true;
+          }
+  
+  else if(fabs(PhEta)>1.566 && fabs(PhEta)<2.5){
+          isEndcapPhoton=true;
+  }
+  else {
+     isBarrelPhoton=false;
+     isEndcapPhoton=false;
+  }
+
+  if(isBarrelPhoton || isEndcapPhoton){
+             passAcc=true;
+         }
+  }
   //Reco Photons
   for(unsigned int ip = 0; ip < photonCands->size(); ip++){
     TLorentzVector perGammaLVec;
     
 	perGammaLVec.SetPtEtaPhiE( photonCands->at(ip).pt(), photonCands->at(ip).eta(), photonCands->at(ip).phi(), photonCands->at(ip).energy() );
-
-	gammaLVec->push_back(perGammaLVec);
+    if( passAcc ){
+	photonLVec->push_back(perGammaLVec);
+    }
   }
 
   //Gen level Photons
@@ -197,7 +224,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	  genPhoton.SetPtEtaPhiE( genParticles->at(ig).pt(), genParticles->at(ig).eta(), genParticles->at(ig).phi(), genParticles->at(ig).energy() );
 
-	  gammaLVecGen->push_back(genPhoton);
+	  photonLVecGen->push_back(genPhoton);
 
 	  }
         if ((abs(genParticles->at(ig).pdgId()) == 1 || abs(genParticles->at(ig).pdgId()) == 2 || abs(genParticles->at(ig).pdgId()) == 3 ||
@@ -265,31 +292,6 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // apply photon selection -- all good photons will be saved
     // use loose selection with no sieie or chiso cuts
 
-    bool isBarrelPhoton=false;
-    bool isEndcapPhoton=false;
-    bool passID=false;
-    bool passIDLoose=false;
-    bool passIso=false;
-    bool passIsoLoose=false;
-    bool passAcc=false;
-    
-    double PhEta=iPhoton->eta();
-
-    if(fabs(PhEta) < 1.4442  ){
-      isBarrelPhoton=true;
-    }
-    else if(fabs(PhEta)>1.566 && fabs(PhEta)<2.5){
-      isEndcapPhoton=true;
-    }
-    else {
-      isBarrelPhoton=false;
-      isEndcapPhoton=false;
-    }
-
-    if(isBarrelPhoton || isEndcapPhoton){
-      passAcc=true;
-    }
-
 
     // apply id cuts
     if(isBarrelPhoton){
@@ -336,10 +338,10 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       photon_hadTowOverEM->push_back( iPhoton->hadTowOverEm() ) ;
       photon_sigmaIetaIeta->push_back( sieie );
       photon_pfChargedIso->push_back(      iPhoton->chargedHadronIso() );
-      photon_pfGammaIso->push_back(        iPhoton->photonIso() );
+      photonpfGammaIso->push_back(        iPhoton->photonIso() );
       photon_pfNeutralIso->push_back(      iPhoton->neutralHadronIso() );
       photon_pfChargedIsoRhoCorr->push_back( chIso  );
-      photon_pfGammaIsoRhoCorr->push_back(   gamIso  );
+      photonpfGammaIsoRhoCorr->push_back(   gamIso  );
       photon_pfNeutralIsoRhoCorr->push_back( nuIso );
       photon_hasPixelSeed->push_back( iPhoton->hasPixelSeed() );
       photon_passElectronVeto->push_back( !hasMatchedPromptElectron(iPhoton->superCluster(),electrons, conversions, beamSpot->position()) );
@@ -402,34 +404,38 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       //}//pure photons
       
   }// end loop over candidate photons
-  iEvent.put(std::move(goodPhotons)); 
-  iEvent.put(std::move(photon_isEB) , "isEB" );
-  iEvent.put(std::move(photon_genMatched) , "genMatched" );
-  iEvent.put(std::move(photon_hadTowOverEM) , "hadTowOverEM" );
-  iEvent.put(std::move(photon_sigmaIetaIeta) , "sigmaIetaIeta" );
-  iEvent.put(std::move(photon_pfChargedIso) , "pfChargedIso" );
-  iEvent.put(std::move(photon_pfNeutralIso) , "pfNeutralIso" );
-  iEvent.put(std::move(photon_pfGammaIso) , "pfGammaIso" );
-  iEvent.put(std::move(photon_pfChargedIsoRhoCorr) , "pfChargedIsoRhoCorr" );
-  iEvent.put(std::move(photon_pfNeutralIsoRhoCorr) , "pfNeutralIsoRhoCorr" );
-  iEvent.put(std::move(photon_pfGammaIsoRhoCorr) , "pfGammaIsoRhoCorr" );
-  iEvent.put(std::move(photon_hasPixelSeed) , "hasPixelSeed" );
-  iEvent.put(std::move(photon_passElectronVeto) , "passElectronVeto" );
-  iEvent.put(std::move(photon_nonPrompt) , "nonPrompt" );
-  iEvent.put(std::move(photon_extraLooseID) , "extraLooseID" );
-  iEvent.put(std::move(photon_fullID) , "fullID" );
+ //if ( photon_tightID->size() != gammaLVec->size() ){
+  //std::cout<<" nJets"<< photon_tightID->size() <<std::endl;
+  //std::cout<<gammaLVec->size()<<std::endl;
+  //}
+  //iEvent.put(std::move(goodPhotons)); 
+  iEvent.put(std::move(photon_isEB) , "photonISEB" );
+  iEvent.put(std::move(photon_genMatched) , "photonGenMatched" );
+  iEvent.put(std::move(photon_hadTowOverEM) , "photonHadTowOverEM" );
+  iEvent.put(std::move(photon_sigmaIetaIeta) , "photonSigmaIetaIeta" );
+  iEvent.put(std::move(photon_pfChargedIso) , "photonPFChargedIso" );
+  iEvent.put(std::move(photon_pfNeutralIso) , "photonPFNeutralIso" );
+  iEvent.put(std::move(photonpfGammaIso) , "photonPFGammaIso" );
+  iEvent.put(std::move(photon_pfChargedIsoRhoCorr) , "photonPFChargedIsoRhoCorr" );
+  iEvent.put(std::move(photon_pfNeutralIsoRhoCorr) , "photonPFNeutralIsoRhoCorr" );
+  iEvent.put(std::move(photonpfGammaIsoRhoCorr) , "photonPFGammaIsoRhoCorr" );
+  iEvent.put(std::move(photon_hasPixelSeed) , "photonHasPixelSeed" );
+  //iEvent.put(std::move(photon_passElectronVeto) , "photon_passElectronVeto" );
+  iEvent.put(std::move(photon_nonPrompt) , "photonNonPrompt" );
+  //iEvent.put(std::move(photon_extraLooseID) , "extraLooseID" );
+  //iEvent.put(std::move(photon_fullID) , "fullID" );
   //iEvent.put(std::move(photon_hadronization) , "hadronization" );
   iEvent.put(std::move(photon_looseID) , "loosePhotonID" );
   iEvent.put(std::move(photon_mediumID) , "mediumPhotonID" );
   iEvent.put(std::move(photon_tightID) , "tightPhotonID" );
   
   //Andres
-  iEvent.put(std::move(photon_pt) , "photonPt" );
-  iEvent.put(std::move(photon_eta) , "photonEta" );
-  iEvent.put(std::move(photon_phi) , "photonPhi" );
+  //iEvent.put(std::move(photon_pt) , "photonPt" );
+  //iEvent.put(std::move(photon_eta) , "photonEta" );
+  //iEvent.put(std::move(photon_phi) , "photonPhi" );
   //Gamma TLorentz
-  iEvent.put(std::move(gammaLVec),"gammaLVec");
-  iEvent.put(std::move(gammaLVecGen),"gammaLVecGen");
+  iEvent.put(std::move(photonLVec),"photonLVec");
+  iEvent.put(std::move(photonLVecGen),"photonLVecGen");
   iEvent.put(std::move(genPartonLVec), "genPartonLVec");
 }
 

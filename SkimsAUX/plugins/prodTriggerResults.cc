@@ -109,36 +109,14 @@ prodTriggerResults::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   const std::vector<std::string> & allNames = trigNames.triggerNames();
 
-  for(unsigned int ip = 0; ip < parsedTrigNamesVec_.size(); ip++){
-     for(unsigned int ia=0; ia<allNames.size(); ia++){
-        if(allNames.at(ia).find(parsedTrigNamesVec_.at(ip)) != std::string::npos) trigNamesVec->push_back(allNames.at(ia));
-     }
+  for (unsigned int i = 0; i < allNames.size(); ++i)
+  {
+    trigNamesVec->push_back(allNames.at(i));
+    passesTrigger = trigResults->accept(trigNames.triggerIndex(allNames.at(i)));
+    passTrigVec->push_back(passesTrigger);
+    trigPrescaleVec->push_back(trigPrescales->getPrescaleForIndex(i));
   }
 
-  std::sort(trigNamesVec->begin(), trigNamesVec->end());
-  trigNamesVec->erase( std::unique( trigNamesVec->begin(), trigNamesVec->end() ), trigNamesVec->end() );
-
-  std::vector<unsigned int> selTrigIdxVec(trigNamesVec->size());
-  for(unsigned int it=0; it<trigNamesVec->size(); it++){
-     for(unsigned int ia=0; ia<allNames.size(); ia++){
-        if( allNames.at(ia) == trigNamesVec->at(it) ) selTrigIdxVec[it] = ia; 
-     }
-  }
-
-  for(unsigned int it=0; it<trigNamesVec->size(); it++){
-     passesTrigger = trigResults->accept(trigNames.triggerIndex(trigNamesVec->at(it)));
-     passTrigVec->push_back(passesTrigger);
-
-     trigPrescaleVec->push_back(trigPrescales->getPrescaleForIndex(selTrigIdxVec[it]));
-  }
-
-  // for (int iHLT = 0 ; iHLT<static_cast<int>(trigResults->size()); ++iHLT) 
-  // {	
-  //   //std::cout << "tname="<< trigNames.triggerName(iHLT)<< std::endl;
-  //   //std::cout << "tndex="<< trigNames.triggerIndex(trigNames.triggerName(iHLT)) << std::endl;
-  //   passesTrigger=trigResults->accept(iHLT);
-  //   passTrigVec->push_back(passesTrigger);
-  // }
   iEvent.put(std::move(passTrigVec),"PassTrigger");
   iEvent.put(std::move(trigPrescaleVec),"TriggerPrescales");
   iEvent.put(std::move(trigNamesVec),"TriggerNames");	
