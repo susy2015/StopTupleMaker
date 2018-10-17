@@ -55,7 +55,13 @@ private:
   std::vector<std::string> varsDoubleNames_;
   std::vector<double> varsDouble_;
   std::vector<TString> varsDoubleNamesCached_;
- 
+
+  std::vector<edm::InputTag> varsFloatTags_;
+  std::vector<std::string> varsFloatNames_;
+  std::vector<float> varsFloat_;
+  std::vector<TString> varsFloatNamesCached_;
+
+  std::vector<edm::EDGetTokenT<float>>VarsFloatTok_; 
   std::vector<edm::EDGetTokenT<double>>VarsDoubleTok_;
   std::vector<edm::EDGetTokenT<int>>VarsIntTok_;
   // any int precision varialbes
@@ -91,6 +97,13 @@ private:
   std::vector<std::string> vectorDoubleNames_;
   std::vector<std::vector<double> > vectorDoubleVector_;
   std::vector<TString> vectorDoubleNamesCached_;
+
+  std::vector<edm::InputTag> vectorFloatTags_;
+  std::vector<std::string> vectorFloatNames_;
+  std::vector<std::vector<float> > vectorFloatVector_;
+  std::vector<TString> vectorFloatNamesCached_;
+
+  std::vector<edm::EDGetTokenT<std::vector<float> >>VectorFloatTok_;
 
   std::vector<edm::EDGetTokenT<std::vector<double> >>VectorDoubleTok_;
 

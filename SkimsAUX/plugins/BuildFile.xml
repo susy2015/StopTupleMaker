@@ -18,7 +18,6 @@
   <use   name="DataFormats/HLTReco"/>
   <use   name="HLTrigger/HLTcore"/>
   <use   name="RecoEgamma/EgammaTools"/>
-  <use   name="recipeAUX/OxbridgeMT2"/>
   <use   name="CondFormats/JetMETObjects"/>
   <use   name="JetMETCorrections/Objects"/>
   <use   name="DataFormats/JetReco"/>
@@ -27,6 +26,11 @@
   <use   name="lhapdf"/>
   <use   name="fastjet"/>
   <use   name="PhysicsTools/Heppy"/>
+  <use name="MagneticField/ParametrizedEngine"/>
+  <use   name="DataFormats/BTauReco"/>
+  <use   name="RecoBTag/BTagTools"/>
+  <use   name="RecoBTau/JetTagComputer"/>
+  <use   name="RecoBTag/DeepFlavour"/>
   <flags   EDM_PLUGIN="1"/>
 </library>
 <export>

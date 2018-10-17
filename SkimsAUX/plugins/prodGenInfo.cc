@@ -95,9 +95,9 @@ prodGenInfo::prodGenInfo(const edm::ParameterSet & iConfig) {
   produces<std::vector<int> >("WtauprongsVec");
   produces<std::vector<int> >("WtaunuVec");
 
-  produces<std::vector<double> >("WemupfActivityVec");
-  produces<std::vector<double> >("WtauemupfActivityVec");
-  produces<std::vector<double> >("WtauprongspfActivityVec");
+  produces<std::vector<float> >("WemupfActivityVec");
+  produces<std::vector<float> >("WtauemupfActivityVec");
+  produces<std::vector<float> >("WtauprongspfActivityVec");
 
   //StopStopPT fr ISR Systematics
   produces< std::vector< TLorentzVector > >("selGenParticle"); 
@@ -139,9 +139,9 @@ bool prodGenInfo::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   std::unique_ptr<std::vector<int> > W_tau_prongsVec(new std::vector<int>());
   std::unique_ptr<std::vector<int> > W_tau_nuVec(new std::vector<int>());
 
-  std::unique_ptr<std::vector<double> > W_emu_pfActivityVec(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > W_tau_emu_pfActivityVec(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > W_tauprongs_pfActivityVec(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > W_emu_pfActivityVec(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > W_tau_emu_pfActivityVec(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > W_tauprongs_pfActivityVec(new std::vector<float>());
 
 
   //StopStopPT fr ISR Systematics  

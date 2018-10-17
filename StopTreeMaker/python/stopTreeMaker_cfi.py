@@ -8,6 +8,9 @@ TreeName          = cms.string('AUX'),
 debug = cms.bool(False),
 # List of InputTags for Float_t variables (Float_t) stored in
 # optional names to store in the tree can be defined  not only will have an effect if the number of input tags for variable is exactly the same as number of optional names!!
+varsFloat        = cms.VInputTag(),
+varsFloatNamesInTree = cms.vstring(),
+#double
 varsDouble        = cms.VInputTag(),
 varsDoubleNamesInTree = cms.vstring(),
 # List of InputTags for Int variables (Int) stored in
@@ -27,6 +30,9 @@ varsStringNamesInTree = cms.vstring(),
 varsTLorentzVector        = cms.VInputTag(),
 varsTLorentzVectorNamesInTree = cms.vstring(),
 
+vectorFloat              = cms.VInputTag(),
+vectorFloatNamesInTree   = cms.vstring(),
+
 vectorDouble              = cms.VInputTag(),
 vectorDoubleNamesInTree   = cms.vstring(),
 
@@ -41,4 +47,10 @@ vectorStringNamesInTree   = cms.vstring(),
 
 vectorTLorentzVector        = cms.VInputTag(),
 vectorTLorentzVectorNamesInTree = cms.vstring(),
+
+vectorVectorTLorentzVector        = cms.VInputTag(),
+vectorVectorTLorentzVectorNamesInTree = cms.vstring(),
+
+vectorVectorDouble        = cms.VInputTag(),
+vectorVectorDoubleNamesInTree = cms.vstring(),
 )

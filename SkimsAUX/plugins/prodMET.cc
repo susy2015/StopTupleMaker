@@ -60,16 +60,16 @@ prodMET::prodMET(const edm::ParameterSet & iConfig) {
   uncUpList = {pat::MET::JetResUp, pat::MET::JetEnUp, pat::MET::MuonEnUp, pat::MET::ElectronEnUp, pat::MET::TauEnUp, pat::MET::UnclusteredEnUp, pat::MET::PhotonEnUp};
   uncDownList = {pat::MET::JetResDown, pat::MET::JetEnDown, pat::MET::MuonEnDown, pat::MET::ElectronEnDown, pat::MET::TauEnDown, pat::MET::UnclusteredEnDown, pat::MET::PhotonEnDown};
 
-  produces<double>("met");
-  produces<double>("metphi");
-  produces<double>("genmet");
-  produces<double>("genmetphi");
-  produces<double>("calomet");
-  produces<double>("calometphi");
-  produces<std::vector<double> >("metMagUp");
-  produces<std::vector<double> >("metMagDown");
-  produces<std::vector<double> >("metPhiUp");
-  produces<std::vector<double> >("metPhiDown");
+  produces<float>("met");
+  produces<float>("metphi");
+  produces<float>("genmet");
+  produces<float>("genmetphi");
+  produces<float>("calomet");
+  produces<float>("calometphi");
+  produces<std::vector<float> >("metMagUp");
+  produces<std::vector<float> >("metMagDown");
+  produces<std::vector<float> >("metPhiUp");
+  produces<std::vector<float> >("metPhiDown");
 }
 
 
@@ -84,19 +84,19 @@ bool prodMET::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   edm::Handle<edm::View<pat::MET> > met;
   iEvent.getByToken(MetTok_, met);
 
-  std::unique_ptr<double> metPtr(new double);
-  std::unique_ptr<double> metphiPtr(new double);
+  std::unique_ptr<float> metPtr(new float);
+  std::unique_ptr<float> metphiPtr(new float);
 
-  std::unique_ptr<double> genmetPtr(new double);
-  std::unique_ptr<double> genmetphiPtr(new double);
+  std::unique_ptr<float> genmetPtr(new float);
+  std::unique_ptr<float> genmetphiPtr(new float);
 
-  std::unique_ptr<double> calometPtr(new double);
-  std::unique_ptr<double> calometphiPtr(new double);
+  std::unique_ptr<float> calometPtr(new float);
+  std::unique_ptr<float> calometphiPtr(new float);
 
-  std::unique_ptr<std::vector<double> > metMagUp_ (new std::vector<double>(uncUpList.size(), 0.));
-  std::unique_ptr<std::vector<double> > metPhiUp_ (new std::vector<double>(uncUpList.size(), 0.));
-  std::unique_ptr<std::vector<double> > metMagDown_ (new std::vector<double>(uncDownList.size(), 0.));
-  std::unique_ptr<std::vector<double> > metPhiDown_ (new std::vector<double>(uncDownList.size(), 0.));
+  std::unique_ptr<std::vector<float> > metMagUp_ (new std::vector<float>(uncUpList.size(), 0.));
+  std::unique_ptr<std::vector<float> > metPhiUp_ (new std::vector<float>(uncUpList.size(), 0.));
+  std::unique_ptr<std::vector<float> > metMagDown_ (new std::vector<float>(uncDownList.size(), 0.));
+  std::unique_ptr<std::vector<float> > metPhiDown_ (new std::vector<float>(uncDownList.size(), 0.));
 
   *metPtr = (*met)[0].pt();
   *metphiPtr = (*met)[0].phi();

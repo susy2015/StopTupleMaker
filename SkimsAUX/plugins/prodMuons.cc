@@ -99,11 +99,11 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
   produces<std::vector<int> >("muonsFlagMedium");
   produces<std::vector<int> >("muonsFlagTight");
   produces<std::vector<TLorentzVector> >("muonsLVec");
-  produces<std::vector<double> >("muonsCharge");
-  produces<std::vector<double> >("muonsMtw");
-  produces<std::vector<double> >("muonsRelIso");
-  produces<std::vector<double> >("muonsMiniIso");
-  produces<std::vector<double> >("muonspfActivity");
+  produces<std::vector<float> >("muonsCharge");
+  produces<std::vector<float> >("muonsMtw");
+  produces<std::vector<float> >("muonsRelIso");
+  produces<std::vector<float> >("muonsMiniIso");
+  produces<std::vector<float> >("muonspfActivity");
   produces<int>("nMuons");
   if( specialFix_ ){
 // 0 : good muon wrt the specialFix  1 : badGlobalMuon  2 : cloneGlobalMuon  3 : badGlobalMuon & cloneGlobalMuon
@@ -147,11 +147,11 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<pat::Muon> > prod(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<pat::Muon> > mu2Clean(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<TLorentzVector> > muonsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<double> > muonsCharge(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsMtw(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsRelIso(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonsMiniIso(new std::vector<double>());
-  std::unique_ptr<std::vector<double> > muonspfActivity(new std::vector<double>());
+  std::unique_ptr<std::vector<float> > muonsCharge(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsMtw(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsRelIso(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonsMiniIso(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > muonspfActivity(new std::vector<float>());
 
   std::unique_ptr<std::vector<int> > muonsIDtype(new std::vector<int>());
   std::unique_ptr<std::vector<int> > muonsFlagLoose(new std::vector<int>());
@@ -355,7 +355,7 @@ bool prodMuons::isTightMuon(const pat::Muon & muon, const reco::Vertex::Point & 
     if( muon.globalTrack()->normalizedChi2() >= 10. ) isTight = false;
     if( muon.globalTrack()->hitPattern().numberOfValidMuonHits() <=0 ) isTight = false;
     if( muon.numberOfMatchedStations() <=1 ) isTight = false;
-    if( muon.innerTrack()->hitPattern().numberOfValidPixelHits() == 0) isTight = false;
+    if( muon.innerTrack()->hitPattern().numberOfValidPixelHits() <= 0) isTight = false;
     if( muon.innerTrack()->hitPattern().trackerLayersWithMeasurement() <=5 ) isTight = false;
     if(debug_) {std::cout << "PassedMuon ID" << std::endl;}
   }
