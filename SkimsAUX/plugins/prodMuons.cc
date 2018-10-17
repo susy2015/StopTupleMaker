@@ -355,7 +355,7 @@ bool prodMuons::isTightMuon(const pat::Muon & muon, const reco::Vertex::Point & 
     if( muon.globalTrack()->normalizedChi2() >= 10. ) isTight = false;
     if( muon.globalTrack()->hitPattern().numberOfValidMuonHits() <=0 ) isTight = false;
     if( muon.numberOfMatchedStations() <=1 ) isTight = false;
-    if( muon.innerTrack()->hitPattern().numberOfValidPixelHits() == 0) isTight = false;
+    if( muon.innerTrack()->hitPattern().numberOfValidPixelHits() <= 0) isTight = false;
     if( muon.innerTrack()->hitPattern().trackerLayersWithMeasurement() <=5 ) isTight = false;
     if(debug_) {std::cout << "PassedMuon ID" << std::endl;}
   }

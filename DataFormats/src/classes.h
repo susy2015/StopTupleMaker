@@ -44,8 +44,14 @@ namespace {
      std::vector<std::vector<double> > vvd;
      edm::Wrapper<std::vector<std::vector<double> > > wvvd;
 
+     std::vector<std::vector<float> > vvf;
+     edm::Wrapper<std::vector<std::vector<float> > > wvvf;
+
      std::vector<std::vector<std::vector<double> > > vvvd;
      edm::Wrapper<std::vector<std::vector<std::vector<double> > > > wvvvd;
+
+     std::vector<std::vector<std::vector<float> > > vvvf;
+     edm::Wrapper<std::vector<std::vector<std::vector<float> > > > wvvvf;
 
 //     std::vector<std::vector<int> > vvi;
 //     edm::Wrapper<std::vector<std::vector<int> > > wvvi;

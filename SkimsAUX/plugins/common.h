@@ -22,14 +22,14 @@ namespace commonFunctions
   }
 
   inline double GetElectronEA(double eta) {
-    double abseta = fabs(eta);
-    if (abseta < 1) return 0.1752;
-    else if (abseta < 1.479) return 0.1862;
-    else if (abseta < 2.0) return 0.1411;
-    else if (abseta < 2.2) return 0.1534;
-    else if (abseta < 2.3) return 0.1903;
-    else if (abseta < 2.4) return 0.2243;
-    else if (abseta < 2.5) return 0.2687;
+    double abseta = fabs(eta);//2017: 0.1566, 0.1626, 0.1073, 0.0854, 0.1051, 0.1204, 0.1524 //2016: 0.1752, 0.1862, 0.1411, 0.1534, 0.1903, 0.2243, 0.2687
+    if (abseta < 1) return 0.1566;
+    else if (abseta < 1.479) return 0.1626;
+    else if (abseta < 2.0) return 0.1073;
+    else if (abseta < 2.2) return 0.0854;
+    else if (abseta < 2.3) return 0.1051;
+    else if (abseta < 2.4) return 0.1204;
+    else if (abseta < 2.5) return 0.1524;
     else return 0;
   }
 

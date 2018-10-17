@@ -1,7 +1,8 @@
 
 #include <memory>
 #include <algorithm>
-
+#include <vector>
+#include <map>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
@@ -21,6 +22,7 @@
 #include "DataFormats/METReco/interface/MET.h"
 
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -63,6 +65,8 @@ class prodJets : public edm::EDFilter
  private:
 
   virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
+
+  void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
   edm::InputTag jetSrc_, jetOtherSrc_;
   // All have to be pat::Jet, otherwise cannot get b-tagging information!
@@ -173,6 +177,91 @@ class prodJets : public edm::EDFilter
   std::string   CvsLPosCJetTags_;
 };
 
+void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
+{
+    totalMult_ = 0;
+    ptD_       = 0;
+    axis1_     = 0;
+    axis2_     = 0;
+
+     if(jet->numberOfDaughters() == 0) return;
+
+     float sum_weight    = 0.0;
+     float sum_dEta      = 0.0;
+     float sum_dPhi      = 0.0;
+     float sum_dEta2     = 0.0;
+     float sum_dPhi2     = 0.0;
+     float sum_dEta_dPhi = 0.0;
+     float sum_pt        = 0.0;
+     bool useQC          = false; // useQualityCuts; hard-coded for now to mimic what jetMet does in 731
+
+     // loop over the jet constituents
+     // (packed candidate situation)
+     for(auto part : jet->getJetConstituentsQuick()) {
+         if(part->charge()){ // charged particles
+             if(isReco) {
+                 auto p = dynamic_cast<const pat::PackedCandidate*>(part);
+                 if(!p){
+                     try { throw; }
+                     catch(...) {
+                         std::cout << "ERROR: QGTagging variables cannot be computed for these jets!" << std::endl
+                             << "       See QuauarGluonTaggingVaiables::compute()"              << std::endl;
+                     } // catch(...)
+                 } // !p
+                 if(!( p->fromPV() > 1 && p->trackHighPurity() )) continue;
+                 if(useQC) {
+                     // currently hard-coded to false above
+                     // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
+                     if( p->dzError()==0 || p->dxyError()==0 ) continue;
+                     if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
+                     if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only      applies to multiplicity
+                 } else ++totalMult_;
+             } else ++totalMult_;
+         } else { // neutral particles
+             if(part->pt() < 1.0) continue;
+             ++totalMult_;
+         } // charged, neutral particles
+
+         float dEta   = part->eta() - jet->eta();
+         float dPhi   = reco::deltaPhi(part->phi(), jet->phi());
+         float partPt = part->pt();
+         float weight = partPt*partPt;
+
+         sum_weight    += weight;
+         sum_pt        += partPt;
+         sum_dEta      += dEta      * weight;
+         sum_dPhi      += dPhi      * weight;
+         sum_dEta2     += dEta*dEta * weight;
+         sum_dEta_dPhi += dEta*dPhi * weight;
+         sum_dPhi2     += dPhi*dPhi * weight;
+     } // jet->getJetConstituentsQuick()
+
+     // calculate axis2 and ptD
+     float a = 0.0;
+     float b = 0.0;
+     float c = 0.0;
+     float ave_dEta  = 0.0;
+     float ave_dPhi  = 0.0;
+     float ave_dEta2 = 0.0;
+     float ave_dPhi2 = 0.0;
+
+     if(sum_weight > 0){
+         ptD_ = sqrt(sum_weight)/sum_pt;
+         ave_dEta  = sum_dEta  / sum_weight;
+         ave_dPhi  = sum_dPhi  / sum_weight;
+         ave_dEta2 = sum_dEta2 / sum_weight;
+         ave_dPhi2 = sum_dPhi2 / sum_weight;
+         a = ave_dEta2 - ave_dEta*ave_dEta;
+         b = ave_dPhi2 - ave_dPhi*ave_dPhi;
+         c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
+     } else ptD_ = 0;
+
+     float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
+     if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
+     else              axis2_ = 0.0;
+     if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
+     else              axis1_ = 0.0;
+}
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
@@ -296,7 +385,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   //produces<std::vector<pat::Jet> >("");
   produces<std::vector<TLorentzVector> >("jetsLVec");
   produces<std::vector<int> >("recoJetsFlavor");
-  produces<std::vector<float> >("recoJetsBtag");
+  produces<std::vector<float> >("recoJetsCSVv2");
   produces<std::vector<float> >("recoJetsCharge");
   produces<std::vector<float> >("recoJetsJecUnc");
   produces<std::vector<float> >("recoJetsJecScaleRawToFull");
@@ -304,17 +393,29 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("qgLikelihood");
   produces<std::vector<float> >("qgPtD");
   produces<std::vector<float> >("qgAxis2");
-  produces<std::vector<int> >("qgMult");
+  produces<std::vector<float> >("qgAxis1");
+  produces<std::vector<float> >("qgMult");
 
   //produce variables needed for Lost Lepton study, added by hua.wei@cern.ch
   produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
   produces<std::vector<float> >("recoJetschargedEmEnergyFraction");
   produces<std::vector<float> >("recoJetsneutralEmEnergyFraction");
-
+  produces<std::vector<float> >("recoJetsHFHadronEnergyFraction");
   produces<std::vector<float> >("recoJetsmuonEnergyFraction");
+  produces<std::vector<float> >("recoJetsneutralEnergyFraction");
+  produces<std::vector<float> >("recoJetsHFEMEnergyFraction");
+  
+  produces<std::vector<float> >("PhotonEnergyFraction");
+  produces<std::vector<float> >("ElectronEnergyFraction");
 
   produces<std::vector<int> >("muMatchedJetIdx");
   produces<std::vector<int> >("eleMatchedJetIdx");
+
+  produces<std::vector<float> >("ChargedHadronMultiplicity");
+  produces<std::vector<float> >("NeutralHadronMultiplicity");
+  produces<std::vector<float> >("PhotonMultiplicity");
+  produces<std::vector<float> >("ElectronMultiplicity");
+  produces<std::vector<float> >("MuonMultiplicity");
 
   produces<std::vector<int> >("trksForIsoVetoMatchedJetIdx");
   produces<std::vector<int> >("looseisoTrksMatchedJetIdx");
@@ -388,12 +489,12 @@ produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("cMVAv2Neg");
   produces<std::vector<float> >("cMVAv2Pos");
 
-  produces<std::vector<float> >("CvsB");
-  produces<std::vector<float> >("CvsBNeg");
-  produces<std::vector<float> >("CvsBPos");
-  produces<std::vector<float> >("CvsL");
-  produces<std::vector<float> >("CvsLNeg");
-  produces<std::vector<float> >("CvsLPos");
+  produces<std::vector<float> >("CversusB");
+  produces<std::vector<float> >("CversusBNeg");
+  produces<std::vector<float> >("CversusBPos");
+  produces<std::vector<float> >("CversusL");
+  produces<std::vector<float> >("CversusLNeg");
+  produces<std::vector<float> >("CversusLPos");
 
 }
 
@@ -450,7 +551,7 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //std::unique_ptr<std::vector<pat::Jet> > prod(new std::vector<pat::Jet>());
   std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
-  std::unique_ptr<std::vector<float> > recoJetsBtag(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsCharge(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsJecScaleRawToFull(new std::vector<float>());
@@ -515,22 +616,34 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   std::unique_ptr<std::vector<float> >cMVAv2Neg(new std::vector<float>());
   std::unique_ptr<std::vector<float> >cMVAv2Pos(new std::vector<float>());
 
-  std::unique_ptr<std::vector<float> >CvsB(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsBNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsBPos(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsL(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsLNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CvsLPos(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusBNeg(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusBPos(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusLNeg(new std::vector<float>());
+  std::unique_ptr<std::vector<float> >CversusLPos(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
-  std::unique_ptr<std::vector<int> > qgMult(new std::vector<int>());
+  std::unique_ptr<std::vector<float> > qgAxis1(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > qgMult(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > recoJetschargedHadronEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsneutralEmEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsmuonEnergyFraction(new std::vector<float>());
+
+  std::unique_ptr<std::vector<float> > recoJetsneutralEnergyFraction(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > recoJetsHFEMEnergyFraction(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > recoJetsHFHadronEnergyFraction(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > PhotonEnergyFraction(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > ElectronEnergyFraction(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > ChargedHadronMultiplicity(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > NeutralHadronMultiplicity(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > PhotonMultiplicity(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > ElectronMultiplicity(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > MuonMultiplicity(new std::vector<float>());
 
   std::unique_ptr<std::vector<int> > muMatchedJetIdx(new std::vector<int>(muLVec_->size(), -1));
   std::unique_ptr<std::vector<int> > eleMatchedJetIdx(new std::vector<int>(eleLVec_->size(), -1));
@@ -700,7 +813,8 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   {
     const pat::Jet& jet = extJets[ij];
 
- float trialDeepCSVb = jet.bDiscriminator((deepCSVBJetTags_+":probb").c_str());
+    float trialDeepCSVb = jet.bDiscriminator((deepCSVBJetTags_+":probb").c_str());
+    //std::cout<<trialDeepCSVb<<std::endl;
     DeepCSVb->push_back(trialDeepCSVb);
 
     float trialDeepCSVc = jet.bDiscriminator((deepCSVBJetTags_+":probc").c_str());
@@ -734,7 +848,7 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
     DeepCSVbP->push_back(trialDeepCSVbP);
 
     float trialDeepCSVcP = jet.bDiscriminator((deepCSVPosBJetTags_+":probc").c_str());
-DeepCSVcP->push_back(trialDeepCSVcP);
+    DeepCSVcP->push_back(trialDeepCSVcP);
 
     float trialDeepCSVlP = jet.bDiscriminator((deepCSVPosBJetTags_+":probudsg").c_str());
     DeepCSVlP->push_back(trialDeepCSVlP);
@@ -817,17 +931,17 @@ DeepCSVcP->push_back(trialDeepCSVcP);
     cMVAv2Pos->push_back(tri_cMVAv2Pos);
 
     float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
-    CvsB->push_back(tri_CvsB);
+    CversusB->push_back(tri_CvsB);
     float tri_CvsBNeg = jet.bDiscriminator(CvsBNegCJetTags_.c_str());
-    CvsBNeg->push_back(tri_CvsBNeg);
+    CversusBNeg->push_back(tri_CvsBNeg);
     float tri_CvsBPos = jet.bDiscriminator(CvsBPosCJetTags_.c_str());
-    CvsBPos->push_back(tri_CvsBPos);
+    CversusBPos->push_back(tri_CvsBPos);
     float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
-    CvsL->push_back(tri_CvsL);
+    CversusL->push_back(tri_CvsL);
     float tri_CvsLNeg = jet.bDiscriminator(CvsLNegCJetTags_.c_str());
-    CvsLNeg->push_back(tri_CvsLNeg);
+    CversusLNeg->push_back(tri_CvsLNeg);
     float tri_CvsLPos = jet.bDiscriminator(CvsLPosCJetTags_.c_str());
-    CvsLPos->push_back(tri_CvsLPos);
+    CversusLPos->push_back(tri_CvsLPos);
 
     float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
     DeepFlavorb->push_back(trialDeepFlavorb);
@@ -899,20 +1013,54 @@ DeepCSVcP->push_back(trialDeepCSVcP);
     if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis2";
     float thisqgAxis2 = jet.userFloat(toGetName.c_str());
     qgAxis2->push_back(thisqgAxis2);
-   
+
+    toGetName = qgTaggerKey_+":axis1";
+    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
+    float thisqgAxis1 = jet.userFloat(toGetName.c_str());
+    //std::cout<<thisqgAxis1<<std::endl;
+    qgAxis1->push_back(thisqgAxis1);
+    //std::cout<<qgAxis1->at(0)<<std::endl;
+
     toGetName = qgTaggerKey_+":mult"; 
     if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
     int thisqgMult = jet.userInt(toGetName.c_str());
     qgMult->push_back(thisqgMult);
 
     float btag = jet.bDiscriminator(bTagKeyString_.c_str());
-    recoJetsBtag->push_back(btag);
+    recoJetsCSVv2->push_back(btag);
 
     float charge = jet.jetCharge();
     recoJetsCharge->push_back(charge);
 
     float chargedHadronEnergyFraction = jet.chargedHadronEnergyFraction();
     recoJetschargedHadronEnergyFraction->push_back( chargedHadronEnergyFraction );
+
+    double neutralHadronEnergyFraction = jet.neutralHadronEnergyFraction();
+    recoJetsneutralEnergyFraction->push_back( neutralHadronEnergyFraction );
+
+    float photonEnergyFraction = jet.photonEnergyFraction();
+    PhotonEnergyFraction->push_back( photonEnergyFraction );
+    
+    float electronEnergyFraction = jet.electronEnergyFraction();
+    ElectronEnergyFraction->push_back( electronEnergyFraction );
+    
+    recoJetsHFHadronEnergyFraction->push_back(jet.HFHadronEnergyFraction());
+    recoJetsHFEMEnergyFraction->push_back(jet.HFEMEnergyFraction());
+    
+    float chargedHadronMultiplicity = jet.chargedHadronMultiplicity();
+    ChargedHadronMultiplicity->push_back( chargedHadronMultiplicity );
+    
+    float neutralHadronMultiplicity = jet.neutralHadronMultiplicity();
+    NeutralHadronMultiplicity->push_back( neutralHadronMultiplicity );
+    
+    float photonMultiplicity = jet.photonMultiplicity();
+    PhotonMultiplicity->push_back( photonMultiplicity );
+    
+    float electronMultiplicity = jet.electronMultiplicity();
+    ElectronMultiplicity->push_back( electronMultiplicity );
+
+    double muonMultiplicity1 = jet.muonMultiplicity();
+    MuonMultiplicity->push_back( muonMultiplicity1 );
 
     float chargedEmEnergyFraction = jet.chargedEmEnergyFraction();
     recoJetschargedEmEnergyFraction->push_back( chargedEmEnergyFraction );
@@ -996,7 +1144,7 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   // iEvent.put(prod);
   iEvent.put(std::move(jetsLVec), "jetsLVec");
   iEvent.put(std::move(recoJetsFlavor), "recoJetsFlavor");
-  iEvent.put(std::move(recoJetsBtag), "recoJetsBtag");
+  iEvent.put(std::move(recoJetsCSVv2), "recoJetsCSVv2");
   iEvent.put(std::move(recoJetsCharge), "recoJetsCharge");
   iEvent.put(std::move(recoJetsJecUnc), "recoJetsJecUnc");
   iEvent.put(std::move(recoJetsJecScaleRawToFull), "recoJetsJecScaleRawToFull");
@@ -1005,6 +1153,7 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   iEvent.put(std::move(qgLikelihood), "qgLikelihood");
   iEvent.put(std::move(qgPtD), "qgPtD");
   iEvent.put(std::move(qgAxis2), "qgAxis2");
+  iEvent.put(std::move(qgAxis1), "qgAxis1");
   iEvent.put(std::move(qgMult), "qgMult");
 
   iEvent.put(std::move(recoJetschargedHadronEnergyFraction), "recoJetschargedHadronEnergyFraction");
@@ -1018,6 +1167,13 @@ DeepCSVcP->push_back(trialDeepCSVcP);
 
   iEvent.put(std::move(trksForIsoVetoMatchedJetIdx), "trksForIsoVetoMatchedJetIdx");
   iEvent.put(std::move(looseisoTrksMatchedJetIdx), "looseisoTrksMatchedJetIdx");
+  
+  iEvent.put(std::move(ChargedHadronMultiplicity), "ChargedHadronMultiplicity");
+  iEvent.put(std::move(NeutralHadronMultiplicity), "NeutralHadronMultiplicity");
+  iEvent.put(std::move(PhotonMultiplicity), "PhotonMultiplicity");
+  iEvent.put(std::move(ElectronMultiplicity), "ElectronMultiplicity");
+  iEvent.put(std::move(MuonMultiplicity), "MuonMultiplicity");
+  
   //PUPPI
   iEvent.put(std::move(puppiJetsLVec), "puppiJetsLVec");
   iEvent.put(std::move(puppiSubJetsLVec), "puppiSubJetsLVec");
@@ -1042,6 +1198,13 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   iEvent.put(std::move(DeepCSVbP),"DeepCSVbP");
   iEvent.put(std::move(DeepCSVcP),"DeepCSVcP");
   iEvent.put(std::move(DeepCSVlP),"DeepCSVlP");
+  iEvent.put(std::move(recoJetsneutralEnergyFraction), "recoJetsneutralEnergyFraction");
+  iEvent.put(std::move(recoJetsHFHadronEnergyFraction), "recoJetsHFHadronEnergyFraction");
+  iEvent.put(std::move(recoJetsHFEMEnergyFraction), "recoJetsHFEMEnergyFraction");
+
+  iEvent.put(std::move(PhotonEnergyFraction), "PhotonEnergyFraction");
+  iEvent.put(std::move(ElectronEnergyFraction), "ElectronEnergyFraction");
+  
   iEvent.put(std::move(DeepCSVbbP),"DeepCSVbbP");
   iEvent.put(std::move(DeepCSVccP),"DeepCSVccP");
 
@@ -1080,12 +1243,12 @@ DeepCSVcP->push_back(trialDeepCSVcP);
   iEvent.put(std::move(cMVAv2Neg),"cMVAv2Neg");
   iEvent.put(std::move(cMVAv2Pos),"cMVAv2Pos");
 
-  iEvent.put(std::move(CvsB),"CvsB");
-  iEvent.put(std::move(CvsBNeg),"CvsBNeg");
-  iEvent.put(std::move(CvsBPos),"CvsBPos");
-  iEvent.put(std::move(CvsL),"CvsL");
-  iEvent.put(std::move(CvsLNeg),"CvsLNeg");
-  iEvent.put(std::move(CvsLPos),"CvsLPos");
+  iEvent.put(std::move(CversusB),"CversusB");
+  iEvent.put(std::move(CversusBNeg),"CversusBNeg");
+  iEvent.put(std::move(CversusBPos),"CversusBPos");
+  iEvent.put(std::move(CversusL),"CversusL");
+  iEvent.put(std::move(CversusLNeg),"CversusLNeg");
+  iEvent.put(std::move(CversusLPos),"CversusLPos");
 
   return true;
 }

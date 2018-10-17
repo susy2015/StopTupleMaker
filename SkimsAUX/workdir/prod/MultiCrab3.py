@@ -17,9 +17,9 @@ from WMCore.Configuration import saveConfigurationFile
 from crab3Config import config as config
 from multiprocessing import Process
 
-workArea = 'crabProdv_Data18_10_1_4_V1_HCAL'
-outDir = '/store/group/lpcsusyhad/Stop_production/Data_10_1_4_V1_reValHCAL/'
-Pubname = 'Data_10_1_4_V1'
+workArea = 'TopTagging_2017_V2'
+outDir = '/store/group/lpcsusyhad/Stop_production/TopTagging_2017_V2/'
+Pubname = 'TopTagging_2017_V2'
 json_25ns = 'Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt'
 #json_2017 ='Cert_294927-302343_13TeV_PromptReco_Collisions17_JSON.txt'
 json_2017 = 'Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt'
@@ -36,7 +36,7 @@ jsonHCALreval = 'Cert_314472-318876_13TeV_PromptReco_Collisions18_JSON.txt'
 #selSubmitKey = 'MET-Run2017B-23Jun2017-v1 MET-Run2017C-PromptReco-v1 MET-Run2017C-PromptReco-v2 MET-Run2017C-PromptReco-v3 MET-Run2017D-PromptReco-v1'
 #selSubmitKeun2018A-v1eMuon-Run2017A-PromptReco-v2 SingleMuon-Run2017A-PromptReco-v3 SingleMuon-Run2017B-04Jul2017-v2 SingleMuon-Run2017B-06Jul2017-v2 SingleMuon-Run2017B-12Sep2017-v1 SingleMuon-Run2017B-22Jun2017-v1 SingleMuon-Run2017B-23Jun2017-v1 SingleMuon-Run2017B-PromptReco-v1 SingleMuon-Run2017B-PromptReco-v2 SingleMuon-Run2017C-12Sep2017-v1 SingleMuon-Run2017C-PromptReco-v1 SingleMuon-Run2017C-PromptReco-v2 SingleMuon-Run2017C-PromptReco-v3 SingleMuon-Run2017D-PromptReco-v1 SingleMuon-Run2017E-PromptReco-v1 SingleMuon-Run2017F-PromptReco-v1 SingleMuon-Run2017G-PromptReco-v1'
 #selSubmitKey  = 'SingleMuon-Run2017B SingleMuon-Run2017C SingleMuon-Run2017D SingleMuon-Run2017E SingleMuon-Run2017F SingleElectron-Run2017B SingleElectron-Run2017C SingleElectron-Run2017D SingleElectron-Run2017E SingleElectron-Run2017F MET-Run2017B-v1 MET-Run2017C-v1 MET-Run2017D-v1 MET-Run2017E-v1 MET-Run2017F-v1 SinglePhoton-Run2017B SinglePhoton-Run2017C SinglePhoton-Run2017D SinglePhoton-Run2017E SinglePhoton-Run2017F'
-selSubmitKey= ' WToENu_HEM'
+selSubmitKey= ' TTJets_amcatnlo'
 #'TTToSemiLeptonic_HEM TTToSemiLeptonic_NoHEM'
 #'METReval METReval_HEmiss SingleMuonReval_HEmiss SingleMuonReval JetHTReval JetHTReval_HEmiss EGammaReval EGammaReval_HEmiss'
 #'RelValSMS-T1tttt_mGl-1500_mLSP-100 RelValNuGun RelValTTbarLepton RelValTTbar' 
@@ -51,6 +51,7 @@ doAutoMonitor = False#True
 jobslist = {
     # TTbar
     'TTJets_Inc'                             : [False, '/TTJets_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],#running
+    'TTJets_amcatnlo'                        :[False, '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],
     'TTJets_SingleLeptFromT'            : [False, '/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAOD-94X_mc2017_realistic_v10-v1/MINIAODSIM', 1],#NotStarted
     'TTJets_SingleLeptFromTbar'              : [False, '/TTJets_SingleLeptFromTbar_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],#Just started
     'TTJets_SingleLeptFromTbar_ext1'         : [False, '/TTJets_SingleLeptFromTbar_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 1],#Just Started
@@ -512,8 +513,8 @@ def SubmitJob(key, value):
           tempconfig.JobType.inputFiles = ['Spring16_25nsFastSimMC_V1.db']
           tempconfig.Data.splitting = 'FileBased'
        else:
-          tempconfig.JobType.pyCfgParams = ['mcInfo=1', 'GlobalTag=80X_mcRun2_asymptotic_2016_TrancheIV_v6', 'specialFix=JEC BADMUON', 'jecDBname=Fall17_17Nov2017_V6_MC']
-          tempconfig.JobType.inputFiles = ['Fall17_17Nov2017_V6_MC.db']
+          tempconfig.JobType.pyCfgParams = ['mcInfo=1', 'GlobalTag=94X_mc2017_realistic_v12', 'specialFix=JEC BADMUON', 'jecDBname=Fall17_17Nov2017_V8_MC']
+          tempconfig.JobType.inputFiles = ['Fall17_17Nov2017_V8_MC.db']
           tempconfig.Data.splitting = 'FileBased'
 
 

@@ -95,9 +95,9 @@ prodJetIDEventFilter::prodJetIDEventFilter(const edm::ParameterSet & iConfig)
    , debug_ (iConfig.getParameter<bool>("debug") )
    , taggingMode_ (iConfig.getParameter<bool>("taggingMode") )
 {
-  produces<bool>("looseJetID");
-  produces<bool>("tightJetID");
-  produces<bool>("tightlepvetoJetID");
+  produces<bool>("AK4looseJetID");
+  produces<bool>("AK4tightJetID");
+  produces<bool>("AK4tightlepvetoJetID");
 }
 
 
@@ -172,9 +172,9 @@ bool prodJetIDEventFilter::filter(edm::Event & iEvent, const edm::EventSetup & i
     }
   }
 
-  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetID))), "looseJetID" );
-  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetIDtight))), "tightJetID" );
-  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetIDtightlepveto))), "tightlepvetoJetID" );
+  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetID))), "AK4looseJetID" );
+  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetIDtight))), "AK4tightJetID" );
+  iEvent.put( std::unique_ptr<bool>(std::move(new bool(goodJetIDtightlepveto))), "AK4tightlepvetoJetID" );
   //default is loose ID, but in general we use tagging mode
   return taggingMode_ || goodJetID;
 }
