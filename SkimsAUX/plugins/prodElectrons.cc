@@ -27,7 +27,10 @@
 
 #include "TLorentzVector.h"
 
-#include "StopTupleMaker/SkimsAUX/plugins/common.h"
+#include "StopTupleMaker/SkimsAUX/plugins/common.h" 
+
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/PatCandidates/interface/VIDCutFlowResult.h"
 
 typedef std::vector< edm::Handle< edm::ValueMap<reco::IsoDeposit> > >   IsoDepositMaps;
 typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepositVals;
@@ -60,10 +63,21 @@ class prodElectrons : public edm::EDFilter
   edm::InputTag looseElectronID;
   edm::InputTag mediumElectronID;
   edm::InputTag tightElectronID;
+
+  edm::InputTag vetoID;
+  edm::InputTag looseID;
+  edm::InputTag mediumID;
+  edm::InputTag tightID;
+
   edm::EDGetTokenT<edm::ValueMap<bool> >  vetoElectronIDTok_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  looseElectronIDTok_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  mediumElectronIDTok_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  tightElectronIDTok_;
+
+  edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > vetoIdFullInfoMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > looseIdFullInfoMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > mediumIdFullInfoMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > tightIdFullInfoMapToken_;
 
   bool doEleVeto_, dod0dz_;
   int doEleIso_; // 0: don't do any isolation; 1: relIso;  2: miniIso
@@ -102,6 +116,11 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   mediumElectronID = iConfig.getParameter<edm::InputTag>("MediumElectronID");
   tightElectronID = iConfig.getParameter<edm::InputTag>("TightElectronID");
 
+  vetoID = iConfig.getParameter<edm::InputTag>("VetoElectronID");
+  looseID = iConfig.getParameter<edm::InputTag>("LooseElectronID");
+  mediumID = iConfig.getParameter<edm::InputTag>("MediumElectronID");
+  tightID = iConfig.getParameter<edm::InputTag>("TightElectronID");
+
   minElePtForElectron2Clean_ = iConfig.getUntrackedParameter<double>("minElePtForElectron2Clean", 10);
   
   ConversionsTok_ = consumes< std::vector<reco::Conversion> >(conversionsSrc_);
@@ -117,11 +136,18 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   mediumElectronIDTok_=consumes<edm::ValueMap<bool> >(mediumElectronID);
   tightElectronIDTok_=consumes<edm::ValueMap<bool> >(tightElectronID);
 
+  vetoIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> >  (vetoID);
+  looseIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> > (looseID);
+  mediumIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> > (mediumID);
+  tightIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> >  (tightID);
+
   produces<std::vector<pat::Electron> >("");
   produces<std::vector<pat::Electron> >("ele2Clean");  
 
   produces<std::vector<int> >("elesFlagVeto");
   produces<std::vector<int> >("elesFlagMedium");
+  produces<std::vector<int> >("elesFlagLoose");
+  produces<std::vector<int> >("elesFlagTight");
   produces<std::vector<TLorentzVector> >("elesLVec");
   produces<std::vector<float> >("elesCharge");
   produces<std::vector<float> >("elesMtw");
@@ -135,7 +161,12 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   produces< std::vector< bool > >("looseElectronID");
   produces< std::vector< bool > >("mediumElectronID");
   produces< std::vector< bool > >("tightElectronID");
- 
+
+  produces< std::vector< bool > >("vetoID");
+  produces< std::vector< bool > >("looseID");
+  produces< std::vector< bool > >("mediumID");
+  produces< std::vector< bool > >("tightID");
+
 }
 
 
@@ -197,6 +228,18 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::unique_ptr<std::vector<int> > elesFlagVeto(new std::vector<int>());
   std::unique_ptr<std::vector<int> > elesFlagMedium(new std::vector<int>());
+  std::unique_ptr<std::vector<int> > elesFlagLoose(new std::vector<int>());
+  std::unique_ptr<std::vector<int> > elesFlagTight(new std::vector<int>());
+
+  edm::Handle<edm::ValueMap<vid::CutFlowResult> > veto_id_cutflow_;
+  edm::Handle<edm::ValueMap<vid::CutFlowResult> > loose_id_cutflow_;
+  edm::Handle<edm::ValueMap<vid::CutFlowResult> > medium_id_cutflow_;
+  edm::Handle<edm::ValueMap<vid::CutFlowResult> > tight_id_cutflow_;
+
+  iEvent.getByToken(vetoIdFullInfoMapToken_,veto_id_cutflow_);
+  iEvent.getByToken(looseIdFullInfoMapToken_,loose_id_cutflow_);
+  iEvent.getByToken(mediumIdFullInfoMapToken_,medium_id_cutflow_);
+  iEvent.getByToken(tightIdFullInfoMapToken_,tight_id_cutflow_);
 
   auto   Electron_vetoID  = std::make_unique<std::vector<bool>>();
   auto   Electron_looseID  = std::make_unique<std::vector<bool>>();
@@ -213,6 +256,18 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool passmedium = (*medium_id_decisions_)[ elePtr ];
     bool passtight = (*tight_id_decisions_)[ elePtr ];
 
+    vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    bool iPassMediumIDOnly_ = mediumIdIsoMasked.cutFlowPassed();
+    
+    vid::CutFlowResult looseIdIsoMasked = (*loose_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    bool iPassLooseIDOnly_ = looseIdIsoMasked.cutFlowPassed();
+    
+    vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    bool iPassVetoIDOnly_ = vetoIdIsoMasked.cutFlowPassed();
+    
+    vid::CutFlowResult tightIdIsoMasked = (*tight_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    bool iPassTightIDOnly_ = tightIdIsoMasked.cutFlowPassed();
+
     float pt = ele->pt();
     if (ele->pt() < minElePt_) continue;
 
@@ -221,9 +276,9 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool isEB = ele->isEB() ? true : false;
 
     bool isVetoID = passElectronID((*ele), vertices, VETO);
-    //bool isLooseID = passElectronID((*ele), vertices, LOOSE);
+    bool isLooseID = passElectronID((*ele), vertices, LOOSE);
     bool isMediumID = passElectronID((*ele), vertices, MEDIUM);
-    //bool isTightID = passElectronID((*ele), vertices, TIGHT);
+    bool isTightID = passElectronID((*ele), vertices, TIGHT);
 
     if( ! (isVetoID || isMediumID) ) continue;
 
@@ -263,16 +318,18 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       if( isVetoID ) elesFlagVeto->push_back(1); else elesFlagVeto->push_back(0); 
       if( isMediumID ) elesFlagMedium->push_back(1); else elesFlagMedium->push_back(0); 
+      if( isLooseID ) elesFlagLoose->push_back(1); else elesFlagLoose->push_back(0);
+      if( isTightID ) elesFlagTight->push_back(1); else elesFlagTight->push_back(0);
 
       elespfActivity->push_back(pfActivity);
     }
     // add eles to clean from jets
     if( isVetoID && miniIso < maxEleMiniIso_ && ele->pt() > minElePtForElectron2Clean_ ) ele2Clean->push_back(*ele);
 
-      Electron_vetoID->push_back(passveto);
-      Electron_looseID->push_back(passloose);
-      Electron_mediumID->push_back(passmedium);
-      Electron_tightID->push_back(passtight);
+      Electron_vetoID->push_back(iPassVetoIDOnly_);//passveto);
+      Electron_looseID->push_back(iPassLooseIDOnly_);//passloose);
+      Electron_mediumID->push_back(iPassMediumIDOnly_);//passmedium);
+      Electron_tightID->push_back(iPassTightIDOnly_);//passtight);
 
   }
 
@@ -289,6 +346,8 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(std::move(ele2Clean), "ele2Clean");
   iEvent.put(std::move(elesFlagVeto), "elesFlagVeto");
   iEvent.put(std::move(elesFlagMedium), "elesFlagMedium");
+  iEvent.put(std::move(elesFlagTight), "elesFlagTight");
+  iEvent.put(std::move(elesFlagLoose), "elesFlagLoose");
   iEvent.put(std::move(elesLVec), "elesLVec");
   iEvent.put(std::move(elesCharge), "elesCharge");
   iEvent.put(std::move(elesMtw), "elesMtw");

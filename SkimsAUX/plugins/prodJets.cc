@@ -401,7 +401,7 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   //produces<std::vector<pat::Jet> >("");
   produces<std::vector<TLorentzVector> >("jetsLVec");
-  produces<std::vector<float> >("recoJetsFlavor");
+  produces<std::vector<int> >("recoJetsFlavor");
   produces<std::vector<float> >("recoJetsCSVv2");
   produces<std::vector<float> >("recoJetsCharge");
   produces<std::vector<float> >("recoJetsJecUnc");
@@ -599,7 +599,7 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //check which ones to keep
   //std::unique_ptr<std::vector<pat::Jet> > prod(new std::vector<pat::Jet>());
   std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<float> > recoJetsFlavor(new std::vector<float>());
+  std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
   std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsCharge(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());

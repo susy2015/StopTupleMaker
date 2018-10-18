@@ -214,7 +214,7 @@ process.ak4PFJetsCHSNoLep = ak4PFJets.clone(src = 'pfNoElectronCHSNoEle', doArea
 
 ## define the JECs JET Corrections
 #if options.cmsswVersion == "80X":
-jetCorrectionLevels = ('AK4PFchs', cms.vstring([]), 'None')#cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')#cms.vstring([]), 'None')#cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
 jetCorrLevelLists = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if options.mcInfo == False:
       jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
@@ -361,7 +361,7 @@ if "JEC" in options.specialFix:
   from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
   updateJetCollection(
       process,
-      jetSource = cms.InputTag('slimmedJets'),
+      jetSource = cms.InputTag('patJetsAK4PFCHS'),#slimmedJets'),
       postfix = 'UpdatedJEC',
       jetCorrections = ('AK4PFchs', jetCorrLevelLists, 'None')
   )
@@ -376,7 +376,7 @@ if "JEC" in options.specialFix:
       #jetColl="updatedPatJetsUpdatedJEC",
       #postfix="Update"
   )
-  #process.fix80XJEC = cms.Sequence( process.patJetCorrFactorsUpdatedJEC + process.updatedPatJetsUpdatedJEC ) ## NS: What is this patJetCorrFactorsUpdatedJEC ??
+  process.fix80XJEC = cms.Sequence( process.patJetCorrFactorsUpdatedJEC + process.updatedPatJetsUpdatedJEC ) ## NS: What is this patJetCorrFactorsUpdatedJEC ??
     
 
 process.load("StopTupleMaker.SkimsAUX.simpleJetSelector_cfi")
@@ -385,32 +385,40 @@ process.selectedPatJetsRA2 = process.simpleJetSelector.clone()
 process.load("PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi")
 
 # PFJets (with CHS)
-process.ak4patJetsPFchsPt10     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt10.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt10.pfJetCut = cms.string('pt > 10')
+#process.ak4patJetsPFchsPt10     = process.selectedPatJetsRA2.clone()
+#process.ak4patJetsPFchsPt10.jetSrc = cms.InputTag('slimmedJets')
+#process.ak4patJetsPFchsPt10.pfJetCut = cms.string('pt > 10')
 
-process.ak4patJetsPFchsPt30     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt30.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt30.pfJetCut = cms.string('pt > 10')
+#process.ak4patJetsPFchsPt30     = process.selectedPatJetsRA2.clone()
+#process.ak4patJetsPFchsPt30.jetSrc = cms.InputTag('slimmedJets')
+#process.ak4patJetsPFchsPt30.pfJetCut = cms.string('pt > 10')
 
-process.ak4patJetsPFchsPt50Eta25     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt50Eta25.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt50Eta25.pfJetCut = cms.string('pt > 50 & abs(eta) < 2.5')
+#process.ak4patJetsPFchsPt50Eta25     = process.selectedPatJetsRA2.clone()
+#process.ak4patJetsPFchsPt50Eta25.jetSrc = cms.InputTag('slimmedJets')
+#process.ak4patJetsPFchsPt50Eta25.pfJetCut = cms.string('pt > 50 & abs(eta) < 2.5')
 
 process.patJetsAK4PFCHSPt10 = process.selectedPatJetsRA2.clone()
 process.patJetsAK4PFCHSPt10.jetSrc = cms.InputTag("patJetsAK4PFCHS")
 process.patJetsAK4PFCHSPt10.pfJetCut = cms.string('pt >= 10')
 
+#process.patJetsAK4PFCHSPt20 = process.selectedPatJetsRA2.clone()
+#process.patJetsAK4PFCHSPt20.jetSrc = cms.InputTag("patJetsAK4PFCHS")
+#process.patJetsAK4PFCHSPt20.pfJetCut = cms.string('pt >= 20')
+
 process.patJetsAK4PFCHSPt10NoLep = process.selectedPatJetsRA2.clone()
 process.patJetsAK4PFCHSPt10NoLep.jetSrc = cms.InputTag("patJetsAK4PFCHSNoLep")
 process.patJetsAK4PFCHSPt10NoLep.pfJetCut = cms.string('pt >= 10')
 
-# PFJets - filters
-process.countak4JetsPFchsPt50Eta25           = process.countPatJets.clone()
-process.countak4JetsPFchsPt50Eta25.src       = cms.InputTag('ak4patJetsPFchsPt50Eta25')
-process.countak4JetsPFchsPt50Eta25.minNumber = cms.uint32(3)
+process.patJetsAK4PFCHSPt20NoLep = process.selectedPatJetsRA2.clone()
+process.patJetsAK4PFCHSPt20NoLep.jetSrc = cms.InputTag("patJetsAK4PFCHSNoLep")
+process.patJetsAK4PFCHSPt20NoLep.pfJetCut = cms.string('pt >= 20')
 
-ra2PFchsJets_task = cms.Sequence(process.ak4patJetsPFchsPt10 * process.ak4patJetsPFchsPt30 * process.ak4patJetsPFchsPt50Eta25 )
+# PFJets - filters
+#process.countak4JetsPFchsPt50Eta25           = process.countPatJets.clone()
+#process.countak4JetsPFchsPt50Eta25.src       = cms.InputTag('ak4patJetsPFchsPt50Eta25')
+#process.countak4JetsPFchsPt50Eta25.minNumber = cms.uint32(3)
+
+#ra2PFchsJets_task = cms.Sequence(process.ak4patJetsPFchsPt10 * process.ak4patJetsPFchsPt30 * process.ak4patJetsPFchsPt50Eta25 )
 #TASKS in 2017/2018 also no multi threading in this version also Seuences in 2017/2018 do not combine as , because of multithreading they use *
 #process.ra2PFchsJets = cms.Sequence( ra2PFchsJets_task )
 
@@ -485,7 +493,8 @@ if options.hltSelection:
       andOr = True
    )
 
-# HT 
+# HT
+'''
 process.load("StopTupleMaker.Skims.htProducer_cfi")
 process.load("StopTupleMaker.Skims.htFilter_cfi")
 process.htPFchs = process.ht.clone()
@@ -500,7 +509,7 @@ process.mhtPFchs = process.mht.clone()
 process.mhtPFchs.JetCollection = cms.InputTag("ak4patJetsPFchsPt30")
 process.mhtPFchsFilter = process.mhtFilter.clone()
 process.mhtPFchsFilter.MHTSource = cms.InputTag("mhtPFchs")
-
+'''
 #MT2
 #process.load("StopTupleMaker.SkimsAUX.mt2Producer_cfi")
 ##process.load("StopTupleMaker.SkimsAUX.mt2Filter_cfi")
@@ -510,12 +519,12 @@ process.mhtPFchsFilter.MHTSource = cms.InputTag("mhtPFchs")
 
 
 # Delta Phi
-process.load("StopTupleMaker.Skims.jetMHTDPhiFilter_cfi")
-process.ak4jetMHTPFchsDPhiFilter = process.jetMHTDPhiFilter.clone()
-process.ak4jetMHTPFchsDPhiFilter.JetSource = cms.InputTag("ak4patJetsPFchsPt30")
-process.ak4jetMHTPFchsDPhiFilter.MHTSource = cms.InputTag("mhtPFchs")
+#process.load("StopTupleMaker.Skims.jetMHTDPhiFilter_cfi")
+#process.ak4jetMHTPFchsDPhiFilter = process.jetMHTDPhiFilter.clone()
+#process.ak4jetMHTPFchsDPhiFilter.JetSource = cms.InputTag("ak4patJetsPFchsPt30")
+#process.ak4jetMHTPFchsDPhiFilter.MHTSource = cms.InputTag("mhtPFchs")
 
-process.ra2Objects_task = cms.Sequence(ra2PFchsJets_task * process.htPFchs * process.mhtPFchs)
+#process.ra2Objects_task = cms.Sequence(ra2PFchsJets_task * process.htPFchs * process.mhtPFchs)
 
 #process.ra2Objects = cms.Sequence( 
 #                                 process.ra2Objects_task
@@ -546,12 +555,14 @@ process.cleanpatseq = cms.Sequence(
 process.dummyCounter = cms.EDProducer("EventCountProducer")
 
 process.load('StopTupleMaker.SkimsAUX.prodJetIDEventFilter_cfi')
-process.prodJetIDEventFilter.JetSource = cms.InputTag("slimmedJets")
-process.prodJetIDEventFilter.MinJetPt  = cms.double(10.0)
-process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
+#process.prodJetIDEventFilter.JetSource = cms.InputTag("slimmedJets")
+#process.prodJetIDEventFilter.MinJetPt  = cms.double(20.0)
+#process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
+process.prodJetIDEventFilter.JetSource = cms.InputTag("patJetsAK4PFCHS")#patJetsAK4PFCHSPt20")
+process.prodJetIDEventFilter.MinJetPt  = cms.double(20.0)
 
 process.prodJetIDEventFilterNoLep = process.prodJetIDEventFilter.clone()
-process.prodJetIDEventFilterNoLep.JetSource = cms.InputTag("patJetsAK4PFCHSPt10NoLep")
+process.prodJetIDEventFilterNoLep.JetSource = cms.InputTag("patJetsAK4PFCHSPt20NoLep")
 
 process.load('StopTupleMaker.SkimsAUX.weightProducer_cfi')
 process.weightProducer.inputPUfileMC   = cms.untracked.string("")
@@ -575,7 +586,7 @@ process.trackIsolation = process.trackIsolationFilter.clone()
 process.trackIsolation.doTrkIsoVeto = cms.bool(False)
 
 process.loosetrackIsolation = process.trackIsolation.clone()
-#process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
+process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
 process.loosetrackIsolation.isoCut            = cms.double(0.5)
 
 #process.refalltrackIsolation = process.trackIsolation.clone()
@@ -590,20 +601,20 @@ process.load("StopTupleMaker.SkimsAUX.jetMHTDPhiForSkimsRA2_cfi")
 process.ak4stopJetsPFchsPt30 = process.stopJetsPFchsPt30.clone(jetSrc = "slimmedJets")
 process.ak4stopJetsPFchsPt50Eta24 = process.stopJetsPFchsPt50Eta24.clone(jetSrc = "slimmedJets")
 
-process.ak4nJetsForSkimsStop = process.nJetsForSkimsRA2.clone()
-process.ak4nJetsForSkimsStop.JetSource = cms.InputTag("ak4stopJetsPFchsPt30")
+#process.ak4nJetsForSkimsStop = process.nJetsForSkimsRA2.clone()
+#process.ak4nJetsForSkimsStop.JetSource = cms.InputTag("ak4stopJetsPFchsPt30")
 process.ak4jetMHTDPhiForSkimsStop = process.jetMHTDPhiForSkimsRA2.clone()
 process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETs")
 process.ak4jetMHTDPhiForSkimsStop.JetSource = cms.InputTag("ak4stopJetsPFchsPt30")
 
-process.ak4stophtPFchs = process.htPFchs.clone()
-process.ak4stophtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt50Eta24")
+#process.ak4stophtPFchs = process.htPFchs.clone()
+#process.ak4stophtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt50Eta24")
 
-process.ak4stopmhtPFchs = process.mhtPFchs.clone()
-process.ak4stopmhtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt30")
+#process.ak4stopmhtPFchs = process.mhtPFchs.clone()
+#process.ak4stopmhtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt30")
 #
 
-process.prepareCutvars_task = cms.Sequence(process.ak4stopJetsPFchsPt30 * process.ak4stopJetsPFchsPt50Eta24 * process.ak4nJetsForSkimsStop * process.ak4jetMHTDPhiForSkimsStop * process.ak4stophtPFchs * process.ak4stopmhtPFchs )
+process.prepareCutvars_task = cms.Sequence(process.ak4stopJetsPFchsPt30 * process.ak4stopJetsPFchsPt50Eta24  * process.ak4jetMHTDPhiForSkimsStop)# * process.ak4nJetsForSkimsStop * process.ak4stophtPFchs * process.ak4stopmhtPFchs )
 
 #process.prepareCutvars_seq = cms.Sequence( process.prepareCutvars_task )
 
@@ -648,20 +659,20 @@ process.stopCount2BJets.minNumber = cms.uint32(2)
 #process.type3topTagger.taggingMode = cms.untracked.bool(True)
 #process.type3topTagger.jetSrc = cms.InputTag("stopJetsPFchsPt30")
 
-process.metPFchsFilter = process.mhtPFchsFilter.clone()
-if options.usePhiCorrMET == True:
-   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
-else:
-   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
+#process.metPFchsFilter = process.mhtPFchsFilter.clone()
+#if options.usePhiCorrMET == True:
+#   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
+#else:
+#   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
 
-process.met175PFchsFilter = process.metPFchsFilter.clone()
-process.met175PFchsFilter.MinMHT = cms.double(175)
+#process.met175PFchsFilter = process.metPFchsFilter.clone()
+#process.met175PFchsFilter.MinMHT = cms.double(175)
 
-process.met200PFchsFilter = process.metPFchsFilter.clone()
-process.met200PFchsFilter.MinMHT = cms.double(200)
+#process.met200PFchsFilter = process.metPFchsFilter.clone()
+#process.met200PFchsFilter.MinMHT = cms.double(200)
 
-process.met350PFchsFilter = process.metPFchsFilter.clone()
-process.met350PFchsFilter.MinMHT = cms.double(350)
+#process.met350PFchsFilter = process.metPFchsFilter.clone()
+#process.met350PFchsFilter.MinMHT = cms.double(350)
 
 process.TFileService = cms.Service("TFileService",
    fileName = cms.string('stopFlatNtuples.root')
@@ -757,9 +768,9 @@ process.prodJets.deepCSVBJetTags= cms.string('pfDeepCSVJetTags')
 
 process.prodJets.debug = cms.bool(options.debug)
 #Jetsrc JetToolBox
-process.prodJets.jetSrc = cms.InputTag('QGAK4PFCHS')
-process.prodJets.jetOtherSrc = cms.InputTag('patJetsAK4PFCHS')
-process.prodJets.qgTaggerKey = cms.string('QGTagger')
+process.prodJets.jetSrc = cms.InputTag('patJetsAK4PFCHSPt10')#QGAK4PFCHS')
+process.prodJets.jetOtherSrc = cms.InputTag('patJetsAK4PFCHSPt10')#patJetsAK4PFCHS')
+process.prodJets.qgTaggerKey = cms.string('QGTaggerOther')#QGTagger')
 process.prodJets.puppiJetsSrc = cms.InputTag('packedPatJetsAK8PFPuppiSoftDrop')
 process.prodJets.NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi')
 
@@ -801,7 +812,7 @@ process.stopTreeMaker.vectorString.append(cms.InputTag("triggerProducer", "Trigg
 #process.stopTreeMaker.varsInt.append(cms.InputTag("prodFilterOutScraping"))
 process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "AK4looseJetID"))
 process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "AK4tightJetID"))
-process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "AK4tightlepvetoJetID"))
+#process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilter", "AK4tightlepvetoJetID"))
 
 process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilterNoLep", "AK4looseJetID"))
 process.stopTreeMaker.varsBoolNamesInTree.append("prodJetIDEventFilterNoLep:AK4looseJetID|AK4NoLeplooseJetID")
@@ -809,8 +820,8 @@ process.stopTreeMaker.varsBoolNamesInTree.append("prodJetIDEventFilterNoLep:AK4l
 process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilterNoLep", "AK4tightJetID"))
 process.stopTreeMaker.varsBoolNamesInTree.append("prodJetIDEventFilterNoLep:AK4tightJetID|AK4NoLeptightJetID")
 
-process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilterNoLep", "AK4tightlepvetoJetID"))
-process.stopTreeMaker.varsBoolNamesInTree.append("prodJetIDEventFilterNoLep:AK4tightlepvetoJetID|AK4NoLeptightlepvetoJetID")
+#process.stopTreeMaker.varsBool.append(cms.InputTag("prodJetIDEventFilterNoLep", "AK4tightlepvetoJetID"))
+#process.stopTreeMaker.varsBoolNamesInTree.append("prodJetIDEventFilterNoLep:AK4tightlepvetoJetID|AK4NoLeptightlepvetoJetID")
 
 process.stopTreeMaker.varsInt.append(cms.InputTag("METFilters"))
 process.stopTreeMaker.varsInt.append(cms.InputTag("CSCTightHaloFilter")) # 74X txt files are ready for the 2015 working point, use this and not the flag in miniAOD 
@@ -948,7 +959,7 @@ process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","tight
 #process.stopTreeMaker.varsInt.append(cms.InputTag("prodJets", "nJets"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "jetsLVec"))
 #process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenJets", "genjetsLVec"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsFlavor"))
+process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "recoJetsFlavor"))
 
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsJecUnc"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsJecScaleRawToFull"))
@@ -1051,7 +1062,7 @@ if options.addJetsForZinv == True:
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgAxis1"))
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "qgMult"))
 
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetsFlavor"))
+   process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJetsNoLep", "recoJetsFlavor"))
 
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "recoJetschargedHadronEnergyFraction"))
    process.stopTreeMaker.vectorFloatNamesInTree.append("prodJetsNoLep:recoJetschargedHadronEnergyFraction|prodJetsNoLep_recoJetschargedHadronEnergyFraction")
@@ -1185,15 +1196,15 @@ process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodIsoTrks:loosei
 process.stopTreeMaker.varsInt.extend([cms.InputTag("prodIsoTrks:loosenIsoTrks"), cms.InputTag("prodIsoTrks:nIsoTrksForVeto")])
 process.stopTreeMaker.varsIntNamesInTree.extend(["prodIsoTrks:loosenIsoTrks|loose_nIsoTrks", "prodIsoTrks:nIsoTrksForVeto|nIsoTrks_CUT"])
 
-process.stopTreeMaker.varsFloat.extend([cms.InputTag("ak4stopmhtPFchs:mht"), cms.InputTag("ak4stopmhtPFchs:mhtphi")])
+#process.stopTreeMaker.varsFloat.extend([cms.InputTag("ak4stopmhtPFchs:mht"), cms.InputTag("ak4stopmhtPFchs:mhtphi")])
 
 #process.stopTreeMaker.varsDouble.append(cms.InputTag("mt2PFchs:mt2"))
 
-process.stopTreeMaker.varsFloat.append(cms.InputTag("ak4stophtPFchs"))
+#process.stopTreeMaker.varsFloat.append(cms.InputTag("ak4stophtPFchs"))
 #process.stopTreeMaker.varsFloatNamesInTree.append("ak4stophtPFchs|ht")
 
-process.stopTreeMaker.varsInt.append(cms.InputTag("ak4nJetsForSkimsStop:nJets"))
-process.stopTreeMaker.varsIntNamesInTree.append("ak4nJetsForSkimsStop:nJets|nJets_CUT")
+#process.stopTreeMaker.varsInt.append(cms.InputTag("ak4nJetsForSkimsStop:nJets"))
+#process.stopTreeMaker.varsIntNamesInTree.append("ak4nJetsForSkimsStop:nJets|nJets_CUT")
 
 process.stopTreeMaker.varsFloat.extend([cms.InputTag("prodMET:met"), cms.InputTag("prodMET:metphi")])
 
@@ -1218,8 +1229,8 @@ else:
    process.stopTreeMaker.varsFloat.extend([cms.InputTag("prodMET:calomet"), cms.InputTag("prodMET:calometphi")])
    process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodMET:metMagUp"), cms.InputTag("prodMET:metMagDown"), cms.InputTag("prodMET:metPhiUp"), cms.InputTag("prodMET:metPhiDown")])
 
-process.stopTreeMaker.varsFloat.extend([cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi0"), cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi1"), cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi2")])
-process.stopTreeMaker.varsFloatNamesInTree.extend(["ak4jetMHTDPhiForSkimsStop:dPhi0|dPhi0_CUT", "ak4jetMHTDPhiForSkimsStop:dPhi1|dPhi1_CUT", "ak4jetMHTDPhiForSkimsStop:dPhi2|dPhi2_CUT"])
+#process.stopTreeMaker.varsFloat.extend([cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi0"), cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi1"), cms.InputTag("ak4jetMHTDPhiForSkimsStop:dPhi2")])
+#process.stopTreeMaker.varsFloatNamesInTree.extend(["ak4jetMHTDPhiForSkimsStop:dPhi0|dPhi0_CUT", "ak4jetMHTDPhiForSkimsStop:dPhi1|dPhi1_CUT", "ak4jetMHTDPhiForSkimsStop:dPhi2|dPhi2_CUT"])
 
 process.stopTreeMaker.varsInt.extend([cms.InputTag("prodEventInfo:vtxSize"), cms.InputTag("prodEventInfo:npv"), cms.InputTag("prodEventInfo:nm1"), cms.InputTag("prodEventInfo:n0"), cms.InputTag("prodEventInfo:np1")])
 process.stopTreeMaker.varsFloat.extend([cms.InputTag("prodEventInfo:trunpv"), cms.InputTag("prodEventInfo:avgnpv"), cms.InputTag("prodEventInfo:storedWeight")])
@@ -1270,11 +1281,11 @@ process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
 
 if options.mcInfo == False:
 
-	process.comb_task = cms.Sequence(   process.cleanpatseq_task * process.prodMuons  * process.prodElectrons * process.goodPhotons * process.QGTagger * process.QGTaggerOther * process.QGTaggerNoLep * process.weightProducer * process.trackIsolation * process.loosetrackIsolation * process.prodIsoTrks * process.stopBJets * process.ra2Objects_task * process.prepareCutvars_task#, process.genHT
+	process.comb_task = cms.Sequence(   process.cleanpatseq_task * process.prodMuons  * process.prodElectrons * process.goodPhotons * process.QGTagger * process.QGTaggerOther * process.QGTaggerNoLep * process.weightProducer * process.trackIsolation * process.loosetrackIsolation * process.prodIsoTrks * process.stopBJets * process.prepareCutvars_task#, process.genHT * process.ra2Objects_task
 ) #process.hltFilte process.QGAK4PFCHSr process.stopPFJets
 
 else:
-	process.comb_task = cms.Sequence(   process.cleanpatseq_task * process.prodMuons  * process.prodElectrons * process.goodPhotons * process.QGTagger * process.QGTaggerOther * process.QGTaggerNoLep * process.weightProducer * process.trackIsolation * process.loosetrackIsolation * process.prodIsoTrks * process.stopBJets * process.ra2Objects_task * process.prepareCutvars_task * process.genHT * process.PDFWeights * process.ISRJetProducer * process.prodGenJets
+	process.comb_task = cms.Sequence(   process.cleanpatseq_task * process.prodMuons  * process.prodElectrons * process.goodPhotons * process.QGTagger * process.QGTaggerOther * process.QGTaggerNoLep * process.weightProducer * process.trackIsolation * process.loosetrackIsolation * process.prodIsoTrks * process.stopBJets * process.prepareCutvars_task  * process.PDFWeights * process.ISRJetProducer * process.prodGenJets #* process.ra2Objects_task * process.genHT
 )
 
 # Other sequence
@@ -1309,7 +1320,7 @@ process.ak4Stop_Path = cms.Path(
 
 #if options.selSMSpts == True:
 #   process.ak4Stop_Path.replace(process.hltFilter, process.hltFilter*process.smsModelFilter)
-
+'''
 if "JEC" in options.specialFix:
    if options.cmsswVersion == "80X":
 
@@ -1336,14 +1347,14 @@ if "JEC" in options.specialFix:
       process.stopJetsPFchsPt70Eta24.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
       process.stopJetsPFchsPt70eta2p5.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
    
-      process.updatedPatJetsUpdatedJECPt30 = process.selectedPatJetsRA2.clone()
-      process.updatedPatJetsUpdatedJECPt30.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.updatedPatJetsUpdatedJECPt30.pfJetCut = cms.string('pt >= 20')
+      #process.updatedPatJetsUpdatedJECPt30 = process.selectedPatJetsRA2.clone()
+      #process.updatedPatJetsUpdatedJECPt30.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
+      #process.updatedPatJetsUpdatedJECPt30.pfJetCut = cms.string('pt >= 20')
       
       #process.mt2PFchs.JetTag = cms.InputTag("updatedPatJetsUpdatedJECPt30")
 
       if "BADMUON" in options.specialFix and options.mcInfo == False:
-         process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
+         #process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
          process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETsMuEGClean")
          process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
       
@@ -1364,7 +1375,7 @@ if "JEC" in options.specialFix:
       
          #process.mt2PFchs.METTag = cms.InputTag("slimmedMETsMuEGClean")
       else:
-         process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
+         #process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
          process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
          process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
       
@@ -1383,7 +1394,7 @@ if "JEC" in options.specialFix:
          #process.type3topTagger.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
       
          #process.mt2PFchs.METTag = cms.InputTag("slimmedMETs", "", process.name_())
-
+'''
 process.prodMET.metSrc = cms.InputTag("slimmedMETs")
 
 #process.myTask = cms.Task()
