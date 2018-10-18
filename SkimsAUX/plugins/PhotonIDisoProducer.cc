@@ -175,15 +175,19 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<edm::ValueMap<bool> >   tight_id_decisions_;
   iEvent.getByToken(tightIdToken_,tight_id_decisions_);
 
-  bool isBarrelPhoton=false;
-  bool isEndcapPhoton=false;
-  bool passID=false;
-  bool passIDLoose=false;
-  bool passIso=false;
-  bool passIsoLoose=false;
-  bool passAcc=false;
-  for( View< pat::Photon >::const_iterator iPhoton = photonCands->begin(); iPhoton != photonCands->end(); ++iPhoton){
-  double PhEta=iPhoton->eta();
+  
+  //for( View< pat::Photon >::const_iterator iPhoton = photonCands->begin(); iPhoton != photonCands->end(); ++iPhoton){
+ /*
+      bool isBarrelPhoton=false;
+ bool isEndcapPhoton=false;
+ bool passID=false;
+ bool passIDLoose=false;
+ bool passIso=false;
+ bool passIsoLoose=false;
+ bool passAcc=false;
+
+ double PhEta=iPhoton->eta();
+ 
 
   if(fabs(PhEta) < 1.4442  ){
           isBarrelPhoton=true;
@@ -210,7 +214,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	photonLVec->push_back(perGammaLVec);
     }
   }
-
+*/
   //Gen level Photons
   if (genParticles.isValid()){
     for(unsigned int ig = 0; ig < genParticles->size(); ig++) {
@@ -275,7 +279,6 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::cout << "photon eta: " << iPhoton->eta() << std::endl;
       std::cout << "photon phi: " << iPhoton->phi() << std::endl;
     }
-
     //ID decisions
     const edm::Ptr<pat::Photon> phoPtr(photonCands, iPhoton - photonCands->begin() );
     bool passloose = (*loose_id_decisions_)[ phoPtr ];
@@ -291,9 +294,35 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // apply photon selection -- all good photons will be saved
     // use loose selection with no sieie or chiso cuts
+    bool isBarrelPhoton=false;
+    bool isEndcapPhoton=false;
+    bool passID=false;
+    bool passIDLoose=false;
+    bool passIso=false;
+    bool passIsoLoose=false;
+    bool passAcc=false;
 
+    double PhEta=iPhoton->eta();
+
+    if(fabs(PhEta) < 1.4442  ){
+         isBarrelPhoton=true;
+                    }
+    
+    else if(fabs(PhEta)>1.566 && fabs(PhEta)<2.5){
+                    isEndcapPhoton=true;
+           }
+    else {
+        isBarrelPhoton=false;
+        isEndcapPhoton=false;
+        }
+    
+     if(isBarrelPhoton || isEndcapPhoton){
+              passAcc=true;
+            }
+       //}
 
     // apply id cuts
+  /*
     if(isBarrelPhoton){
       if(iPhoton->hadTowOverEm() < 0.105 && !hasMatchedPromptElectron(iPhoton->superCluster(),electrons, conversions, beamSpot->position()) && sieie < 0.0103){//id criterias barrel
         passID=true;
@@ -328,10 +357,14 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
         passIsoLoose=true;
       }
     }
-    
+    */
     // check if photon is a good loose photon
     //if( passAcc && passIDLoose && passIsoLoose && iPhoton->pt() > 100.0){
     if( passAcc ){//&& iPhoton->pt() > 100.0){ 
+      TLorentzVector perGammaLVec; 
+      perGammaLVec.SetPtEtaPhiE( iPhoton->pt(), iPhoton->eta(), iPhoton->phi(), iPhoton->energy() );
+      photonLVec->push_back(perGammaLVec);
+      
       goodPhotons->push_back( *iPhoton );
       photon_isEB->push_back( iPhoton->isEB() );
       photon_genMatched->push_back( iPhoton->genPhoton() != NULL );
@@ -351,8 +384,8 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       photon_looseID->push_back(passloose);
       photon_mediumID->push_back(passmedium);
       photon_tightID->push_back(passtight);
-      photon_fullID->push_back(passID&&passIso);
-      photon_extraLooseID->push_back(passIDLoose&&passIsoLoose);
+      //photon_fullID->push_back(passID&&passIso);
+      //photon_extraLooseID->push_back(passIDLoose&&passIsoLoose);
       }
       //Andres pt with cut applied at 100 GeV
       //photon_pt->push_back( iPhoton->pt() );
