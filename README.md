@@ -27,11 +27,14 @@ git clone -b master git@github.com:susy2015/StopTupleMaker.git
 scram b -j9
 
 
-you also need Fall17_17Nov2017_V8_MC.db
+you also need Fall17_17Nov2017_V8_MC.db You can get this from the Jet db link below
 Cert_314472-317080_13TeV_PromptReco_Collisions18_JSON.txt 
 Cert_314472-318876_13TeV_PromptReco_Collisions18_JSON.txt  
 Fall17_17Nov2017BCDEF_V6_DATA.db                          
 Fall17_17Nov2017_V8_MC.db
+
+Jet db: https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC
+Global Tag: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideFrontierConditions#Global_Tags_for_2018_data_taking Need for running on crab.
 ```
 
 To produce ntuples with crab submission (google doc for production signup is https://docs.google.com/spreadsheets/d/17Hpp5S-UkiKvuugKxqbW0-3aLhiJrJP8MEEyHce_Lzw/edit#gid=0):
