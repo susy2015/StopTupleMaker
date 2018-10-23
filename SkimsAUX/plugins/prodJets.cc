@@ -68,30 +68,24 @@ class prodJets : public edm::EDFilter
 
   void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
-    edm::InputTag jetSrc_;
-  // All have to be pat::Jet, otherwise cannot get b-tagging information!
+  edm::InputTag jetSrc_;
   std::string bTagKeyString_;
   bool debug_;
-
-  bool isData_;
 
   double jetPtCut_miniAOD_, genMatch_dR_;
 
   edm::EDGetTokenT<std::vector<pat::Jet> >JetTok_;
+
   edm::EDGetTokenT<std::vector<TLorentzVector> >GenDecayLVec_Tok_;
   edm::EDGetTokenT<std::vector<int> >GenDecayMomRefVec_Tok_;
+
   edm::EDGetTokenT<std::vector<TLorentzVector> >EleLVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >MuLVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >TrksForIsoVetolVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >LooseIsoTrksVec_Tok_;
+
   edm::EDGetTokenT<std::vector<pat::Jet>> PuppiJetsSrc_Tok_;
   edm::EDGetTokenT<std::vector<pat::Jet>> PuppiSubJetsSrc_Tok_;
-
-  edm::InputTag genDecayLVec_Src_;
-  edm::Handle<std::vector<TLorentzVector> > genDecayLVec_;
-
-  edm::InputTag genDecayMomRefVec_Src_;
-  edm::Handle<std::vector<int> > genDecayMomRefVec_;
 
   edm::InputTag eleLVec_Src_, muLVec_Src_;
   edm::Handle<std::vector<TLorentzVector> > eleLVec_, muLVec_;
@@ -210,8 +204,6 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
-  isData_ = true;
-
   jetSrc_      = iConfig.getParameter<edm::InputTag>("jetSrc");
   bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
 
@@ -230,10 +222,6 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   jetPtCut_miniAOD_ = iConfig.getUntrackedParameter<double>("jetPtCut_miniAOD", 10);
   genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
-
-  genDecayLVec_Src_ = iConfig.getParameter<edm::InputTag>("genDecayLVec");
-
-  genDecayMomRefVec_Src_ = iConfig.getParameter<edm::InputTag>("genDecayMomRefVec");
 
   eleLVec_Src_ = iConfig.getParameter<edm::InputTag>("eleLVec");
   muLVec_Src_ = iConfig.getParameter<edm::InputTag>("muLVec");
@@ -255,8 +243,6 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
   JetTok_ = consumes<std::vector<pat::Jet> >(jetSrc_);
-  GenDecayLVec_Tok_=consumes<std::vector<TLorentzVector> >(genDecayLVec_Src_);
-  GenDecayMomRefVec_Tok_=consumes<std::vector<int> >(genDecayMomRefVec_Src_);
   EleLVec_Tok_=consumes<std::vector<TLorentzVector> >(eleLVec_Src_);
   MuLVec_Tok_=consumes<std::vector<TLorentzVector> >(muLVec_Src_);
   TrksForIsoVetolVec_Tok_=consumes<std::vector<TLorentzVector> >(trksForIsoVetoLVec_Src_);
@@ -342,8 +328,6 @@ prodJets::~prodJets()
 
 bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) 
 {
-  if( !iEvent.isRealData() ) isData_ = false;
-
   edm::Handle<std::vector<pat::Jet> > jets; 
   iEvent.getByToken(JetTok_, jets);
 
@@ -352,12 +336,6 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
   JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   std::unique_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
-
-  if( !isData_ )
-  {
-    iEvent.getByToken(GenDecayLVec_Tok_, genDecayLVec_);
-    iEvent.getByToken(GenDecayMomRefVec_Tok_, genDecayMomRefVec_);
-  }
 
   iEvent.getByToken(EleLVec_Tok_, eleLVec_);
   iEvent.getByToken(MuLVec_Tok_, muLVec_);
@@ -371,7 +349,6 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByToken(PuppiSubJetsSrc_Tok_, puppiSubJets);
 
   //check which ones to keep
-  //std::unique_ptr<std::vector<pat::Jet> > prod(new std::vector<pat::Jet>());
   std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
   std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
@@ -408,12 +385,12 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsneutralEmEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsmuonEnergyFraction(new std::vector<float>());
-
   std::unique_ptr<std::vector<float> > recoJetsneutralEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsHFEMEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsHFHadronEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > PhotonEnergyFraction(new std::vector<float>());
   std::unique_ptr<std::vector<float> > ElectronEnergyFraction(new std::vector<float>());
+
   std::unique_ptr<std::vector<float> > ChargedHadronMultiplicity(new std::vector<float>());
   std::unique_ptr<std::vector<float> > NeutralHadronMultiplicity(new std::vector<float>());
   std::unique_ptr<std::vector<float> > PhotonMultiplicity(new std::vector<float>());
@@ -528,13 +505,13 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     jetsLVec->push_back(perJetLVec);
 
     //Additional jec qualities
-    std::vector<std::string> availableJECSets   = jet.availableJECSets();
-    std::vector<std::string> availableJECLevels = jet.availableJECLevels(jet.currentJECSet());
     float scaleRawToFull = jet.jecFactor(jet.currentJECLevel(), "none", jet.currentJECSet())/jet.jecFactor("Uncorrected", "none", jet.currentJECSet());
     //double scaleRawToFull = jet.jecFactor(availableJECLevels.back())/jet.jecFactor("Uncorrected");
     recoJetsJecScaleRawToFull->push_back(scaleRawToFull);
     if( debug_ && ij==0 )
     {
+      std::vector<std::string> availableJECSets   = jet.availableJECSets();
+      std::vector<std::string> availableJECLevels = jet.availableJECLevels(jet.currentJECSet());
       std::cout<<"\nAvailable JEC sets:"<<"   current : "<<jet.currentJECSet().c_str()<<std::endl;
       for(unsigned int ia=0; ia<availableJECSets.size(); ia++)
       {
