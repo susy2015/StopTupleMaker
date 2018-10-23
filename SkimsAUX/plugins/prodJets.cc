@@ -69,6 +69,9 @@ private:
     std::string deepCSVBJetTags_;
     std::string deepFlavorBJetTags_;
 
+    std::string CvsBCJetTags_;
+    std::string CvsLCJetTags_;
+
     std::string jetType_;
 
     std::string NjettinessAK8Puppi_label_;
@@ -76,9 +79,6 @@ private:
 
     std::string jetPBJetTags_;
     std::string jetBPBJetTags_;
-
-    std::string CvsBCJetTags_;
-    std::string CvsLCJetTags_;
 
     edm::EDGetTokenT<std::vector<pat::Jet> > JetTok_;
 
@@ -180,33 +180,29 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
+    //Global parameters 
+    debug_                    = iConfig.getParameter<bool>("debug");
+
+    genMatch_dR_              = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
+
+    deltaRcon_                = iConfig.getUntrackedParameter<double>("deltaRcon", 0.01);
+
+    jetType_                  = iConfig.getParameter<std::string>("jetType");
+
+    qgTaggerKey_              = iConfig.getParameter<std::string>("qgTaggerKey");
     
-    bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
-
-    jetPBJetTags_        = iConfig.getParameter<std::string>("jetPBJetTags");
-
-    jetBPBJetTags_        = iConfig.getParameter<std::string>("jetBPBJetTags");
-
-    deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
-
-    deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
+    bTagKeyString_            = iConfig.getParameter<std::string>("bTagKeyString");
+    deepCSVBJetTags_          = iConfig.getParameter<std::string>("deepCSVBJetTags");
+    deepFlavorBJetTags_       = iConfig.getParameter<std::string>("deepFlavorBJetTags");
 
     CvsBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
     CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
 
-    debug_       = iConfig.getParameter<bool>("debug");
-
-    genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
-
-    deltaRcon_ = iConfig.getUntrackedParameter<double>("deltaRcon", 0.01);
-
-    jetType_ = iConfig.getParameter<std::string>("jetType");
-
-    qgTaggerKey_ = iConfig.getParameter<std::string>("qgTaggerKey");
-  
+    jetPBJetTags_             = iConfig.getParameter<std::string>("jetPBJetTags");
+    jetBPBJetTags_            = iConfig.getParameter<std::string>("jetBPBJetTags");
 
     NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
-    ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
+    ak8PFJetsPuppi_label_     = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
 
     //Consumes statements and input tags
@@ -315,6 +311,7 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     iEvent.getByToken(TrksForIsoVetolVec_Tok_, trksForIsoVetoLVec);
     iEvent.getByToken(LooseIsoTrksVec_Tok_,looseisoTrksLVec);
 
+    //Declare smart pointers and output vectors 
     //Basic jet properties 
     std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
     std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
@@ -541,14 +538,13 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
 
 void prodJets::produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup)
 {
-    //PUPPI
+    //PUPPI AK8 jets and subjets
     edm::Handle<std::vector<pat::Jet> > puppiJets;
     edm::Handle<std::vector<pat::Jet> > puppiSubJets; 
     iEvent.getByToken(PuppiJetsSrc_Tok_, puppiJets);
     iEvent.getByToken(PuppiSubJetsSrc_Tok_, puppiSubJets);
 
-
-    //PUPPI
+    //Create smart pointer for output vectors 
     std::unique_ptr<std::vector<TLorentzVector> > puppiJetsLVec(new std::vector<TLorentzVector>());
     std::unique_ptr<std::vector<TLorentzVector> > puppiSubJetsLVec(new std::vector<TLorentzVector>());
     std::unique_ptr<std::vector<float> > puppiSubJetsBdisc(new std::vector<float>());
@@ -557,7 +553,7 @@ void prodJets::produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup
     std::unique_ptr<std::vector<float> > puppitau2(new std::vector<float>());
     std::unique_ptr<std::vector<float> > puppitau3(new std::vector<float>());
 
-    
+    //Get AK8 jet variables 
     for(unsigned int ip = 0; ip < puppiJets->size(); ip++){
         TLorentzVector perPuppiJetLVec;
         perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
@@ -574,6 +570,7 @@ void prodJets::produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup
         puppisoftDropMass->push_back(puppisoftDropMass_uf);
     }
 
+    //Get KA8 subjet variables 
     for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
         // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
         // Most of the time there are two daughters, sometimes there is only one
