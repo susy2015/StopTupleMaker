@@ -66,6 +66,9 @@ class prodJets : public edm::EDFilter
 
   virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
 
+  void produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
+  void produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
+
   void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
   edm::InputTag jetSrc_;
@@ -88,16 +91,12 @@ class prodJets : public edm::EDFilter
   edm::EDGetTokenT<std::vector<pat::Jet>> PuppiSubJetsSrc_Tok_;
 
   edm::InputTag eleLVec_Src_, muLVec_Src_;
-  edm::Handle<std::vector<TLorentzVector> > eleLVec_, muLVec_;
 
   edm::InputTag trksForIsoVetoLVec_Src_, looseisoTrksLVec_Src_;
-  edm::Handle<std::vector<TLorentzVector> > trksForIsoVetoLVec_, looseisoTrksLVec_;
   double deltaRcon_;
 
   //PUPPI sources
   edm::InputTag puppiJetsSrc_, puppiSubJetsSrc_;
-  edm::Handle<std::vector<pat::Jet> > puppiJets;
-  edm::Handle<std::vector<pat::Jet> > puppiSubJets; 
  
   std::string jetType_;
   std::string qgTaggerKey_;
@@ -325,428 +324,438 @@ prodJets::~prodJets()
 {
 }
 
+void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup)
+{
+    //Get AK4 jets
+    edm::Handle<std::vector<pat::Jet> > jets; 
+    iEvent.getByToken(JetTok_, jets);
+
+    //get the JEC uncertainties
+    edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+    iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
+    JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+    std::unique_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
+
+    edm::Handle<std::vector<TLorentzVector> > eleLVec, muLVec;
+    iEvent.getByToken(EleLVec_Tok_, eleLVec);
+    iEvent.getByToken(MuLVec_Tok_, muLVec);
+
+    edm::Handle<std::vector<TLorentzVector> > trksForIsoVetoLVec, looseisoTrksLVec;
+    iEvent.getByToken(TrksForIsoVetolVec_Tok_, trksForIsoVetoLVec);
+    iEvent.getByToken(LooseIsoTrksVec_Tok_,looseisoTrksLVec);
+
+    //check which ones to keep
+    std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
+    std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
+    std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsCharge(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsJecScaleRawToFull(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > JetProba(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > JetBprob(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > DeepCSVb(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepCSVc(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepCSVl(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepCSVbb(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepCSVcc(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > DeepFlavorb(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepFlavorbb(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepFlavorlepb(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepFlavorc(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepFlavoruds(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > DeepFlavorg(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
+    std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > qgAxis1(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > qgMult(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > recoJetschargedHadronEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsneutralEmEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsmuonEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsneutralEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsHFEMEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > recoJetsHFHadronEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > PhotonEnergyFraction(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > ElectronEnergyFraction(new std::vector<float>());
+
+    std::unique_ptr<std::vector<float> > ChargedHadronMultiplicity(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > NeutralHadronMultiplicity(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > PhotonMultiplicity(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > ElectronMultiplicity(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > MuonMultiplicity(new std::vector<float>());
+
+    std::unique_ptr<std::vector<int> > muMatchedJetIdx(new std::vector<int>(muLVec->size(), -1));
+    std::unique_ptr<std::vector<int> > eleMatchedJetIdx(new std::vector<int>(eleLVec->size(), -1));
+
+    std::unique_ptr<std::vector<int> > trksForIsoVetoMatchedJetIdx(new std::vector<int>(trksForIsoVetoLVec->size(), -1));
+    std::unique_ptr<std::vector<int> > looseisoTrksMatchedJetIdx(new std::vector<int>(looseisoTrksLVec->size(), -1));
+
+    int cntJetLowPt = 0;
+    for(unsigned int ij=0; ij < jets->size(); ij++)
+    {
+        const pat::Jet& jet = (*jets)[ij];
+
+        float trialDeepCSVb = jet.bDiscriminator((deepCSVBJetTags_+":probb").c_str());
+        //std::cout<<trialDeepCSVb<<std::endl;
+        DeepCSVb->push_back(trialDeepCSVb);
+
+        float trialDeepCSVc = jet.bDiscriminator((deepCSVBJetTags_+":probc").c_str());
+        DeepCSVc->push_back(trialDeepCSVc);
+
+        float trialDeepCSVl = jet.bDiscriminator((deepCSVBJetTags_+":probudsg").c_str());
+        DeepCSVl->push_back(trialDeepCSVl);
+
+        float trialDeepCSVbb = jet.bDiscriminator((deepCSVBJetTags_+":probbb").c_str());
+        DeepCSVbb->push_back(trialDeepCSVbb);
+
+        float trialDeepCSVcc = jet.bDiscriminator((deepCSVBJetTags_+":probcc").c_str());
+        DeepCSVcc->push_back(trialDeepCSVcc);
+
+        float Proba = jet.bDiscriminator(jetPBJetTags_.c_str());
+        JetProba->push_back(Proba);
+
+        float Bprob = jet.bDiscriminator(jetBPBJetTags_.c_str());
+        JetBprob->push_back(Bprob);
+
+        float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
+        CversusB->push_back(tri_CvsB);
+        float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
+        CversusL->push_back(tri_CvsL);
+
+        float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
+        DeepFlavorb->push_back(trialDeepFlavorb);
+
+        float trialDeepFlavorbb = jet.bDiscriminator((deepFlavorBJetTags_+":probbb").c_str());
+        DeepFlavorbb->push_back(trialDeepFlavorbb);
+
+        float trialDeepFlavorlepb = jet.bDiscriminator((deepFlavorBJetTags_+":problepb").c_str());
+        DeepFlavorlepb->push_back(trialDeepFlavorlepb);
+
+        float trialDeepFlavorc = jet.bDiscriminator((deepFlavorBJetTags_+":probc").c_str());
+        DeepFlavorc->push_back(trialDeepFlavorc);
+
+        float trialDeepFlavoruds = jet.bDiscriminator((deepFlavorBJetTags_+":probuds").c_str());
+        DeepFlavoruds->push_back(trialDeepFlavoruds);
+
+        float trialDeepFlavorg = jet.bDiscriminator((deepFlavorBJetTags_+":probg").c_str());
+        DeepFlavorg->push_back(trialDeepFlavorg);
+        TLorentzVector perJetLVec;
+        perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
+        jetsLVec->push_back(perJetLVec);
+
+        //Additional jec qualities
+        float scaleRawToFull = jet.jecFactor(jet.currentJECLevel(), "none", jet.currentJECSet())/jet.jecFactor("Uncorrected", "none", jet.currentJECSet());
+        //double scaleRawToFull = jet.jecFactor(availableJECLevels.back())/jet.jecFactor("Uncorrected");
+        recoJetsJecScaleRawToFull->push_back(scaleRawToFull);
+        if( debug_ && ij==0 )
+        {
+            std::vector<std::string> availableJECSets   = jet.availableJECSets();
+            std::vector<std::string> availableJECLevels = jet.availableJECLevels(jet.currentJECSet());
+            std::cout<<"\nAvailable JEC sets:"<<"   current : "<<jet.currentJECSet().c_str()<<std::endl;
+            for(unsigned int ia=0; ia<availableJECSets.size(); ia++)
+            {
+                std::cout<<"ia : "<<ia<<"  --> "<<availableJECSets[ia].c_str()<<std::endl;
+            }
+            std::cout<<"\nAvailable JEC levels:"<<"   current : "<<jet.currentJECLevel().c_str()<<std::endl;
+            for(unsigned int ia=0; ia<availableJECLevels.size(); ia++)
+            {
+                std::cout<<"ia : "<<ia<<"  --> "<<availableJECLevels[ia].c_str()<<std::endl;
+            }
+            std::cout<<"scaleRawToFull : "<<scaleRawToFull<<"  current : "<<jet.jecFactor(availableJECLevels.back())<<"  uncor : "<<jet.jecFactor("Uncorrected")<<std::endl;
+        }
+
+        //get JEC unc for this jet, using corrected pT
+        jecUnc->setJetEta(jet.eta());
+        jecUnc->setJetPt(jet.pt());
+
+        float uncertainty = jecUnc->getUncertainty(true);
+        //safety check if uncertainty is not available for a jet
+        if( uncertainty==-999. ) uncertainty = 0;
+        recoJetsJecUnc->push_back(uncertainty);
+
+        if( perJetLVec.Pt() < jetPtCut_miniAOD_ && ij < jets->size() ) cntJetLowPt ++;
+
+        int flavor = jet.partonFlavour();
+        recoJetsFlavor->push_back(flavor);
+
+        std::string toGetName = qgTaggerKey_+":qgLikelihood";
+        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:qgLikelihood";
+        float thisqgLikelihood = jet.userFloat(toGetName.c_str());
+        qgLikelihood->push_back(thisqgLikelihood);
+ 
+        toGetName = qgTaggerKey_+":ptD";
+        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:ptD";
+        float thisqgPtD = jet.userFloat(toGetName.c_str());
+        qgPtD->push_back(thisqgPtD);
+   
+        toGetName = qgTaggerKey_+":axis2"; 
+        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis2";
+        float thisqgAxis2 = jet.userFloat(toGetName.c_str());
+        qgAxis2->push_back(thisqgAxis2);
+
+        toGetName = qgTaggerKey_+":axis1";
+        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
+        float thisqgAxis1 = jet.userFloat(toGetName.c_str());
+        //std::cout<<thisqgAxis1<<std::endl;
+        qgAxis1->push_back(thisqgAxis1);
+        //std::cout<<qgAxis1->at(0)<<std::endl;
+
+        toGetName = qgTaggerKey_+":mult"; 
+        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
+        int thisqgMult = jet.userInt(toGetName.c_str());
+        qgMult->push_back(thisqgMult);
+
+        float btag = jet.bDiscriminator(bTagKeyString_.c_str());
+        recoJetsCSVv2->push_back(btag);
+
+        float charge = jet.jetCharge();
+        recoJetsCharge->push_back(charge);
+
+        float chargedHadronEnergyFraction = jet.chargedHadronEnergyFraction();
+        recoJetschargedHadronEnergyFraction->push_back( chargedHadronEnergyFraction );
+
+        double neutralHadronEnergyFraction = jet.neutralHadronEnergyFraction();
+        recoJetsneutralEnergyFraction->push_back( neutralHadronEnergyFraction );
+
+        float photonEnergyFraction = jet.photonEnergyFraction();
+        PhotonEnergyFraction->push_back( photonEnergyFraction );
+    
+        float electronEnergyFraction = jet.electronEnergyFraction();
+        ElectronEnergyFraction->push_back( electronEnergyFraction );
+    
+        recoJetsHFHadronEnergyFraction->push_back(jet.HFHadronEnergyFraction());
+        recoJetsHFEMEnergyFraction->push_back(jet.HFEMEnergyFraction());
+    
+        float chargedHadronMultiplicity = jet.chargedHadronMultiplicity();
+        ChargedHadronMultiplicity->push_back( chargedHadronMultiplicity );
+    
+        float neutralHadronMultiplicity = jet.neutralHadronMultiplicity();
+        NeutralHadronMultiplicity->push_back( neutralHadronMultiplicity );
+    
+        float photonMultiplicity = jet.photonMultiplicity();
+        PhotonMultiplicity->push_back( photonMultiplicity );
+    
+        float electronMultiplicity = jet.electronMultiplicity();
+        ElectronMultiplicity->push_back( electronMultiplicity );
+
+        double muonMultiplicity1 = jet.muonMultiplicity();
+        MuonMultiplicity->push_back( muonMultiplicity1 );
+
+        float chargedEmEnergyFraction = jet.chargedEmEnergyFraction();
+        recoJetschargedEmEnergyFraction->push_back( chargedEmEnergyFraction );
+
+        float neutralEmEnergyFraction = jet.neutralEmEnergyFraction();
+        recoJetsneutralEmEnergyFraction->push_back( neutralEmEnergyFraction );
+
+        float muonEnergyFraction = jet.muonEnergyFraction();
+        recoJetsmuonEnergyFraction->push_back( muonEnergyFraction );
+
+        //std::cout << chargedEmEnergyFraction << std::endl;
+
+        //const std::vector<reco::PFCandidatePtr> & constituents = jet.getPFConstituents();
+        //const unsigned int numConstituents = constituents.size();
+        const unsigned int numConstituents = jet.numberOfDaughters();
+
+        for(unsigned int im=0; im < muLVec->size(); im++)
+        {
+            float muEta = muLVec->at(im).Eta(), muPhi = muLVec->at(im).Phi();
+            float mindRmuonCon = 999.;
+            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+            {
+                //const reco::PFCandidatePtr& constituent = constituents[iCon];
+                const reco::Candidate * constituent = jet.daughter(iCon);
+                float dRmuonCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
+                if( mindRmuonCon > dRmuonCon ){ mindRmuonCon = dRmuonCon; }
+            }
+            if( mindRmuonCon < deltaRcon_ ) (*muMatchedJetIdx)[im] = ij;
+        }
+
+        for(unsigned int ie=0; ie < eleLVec->size(); ie++)
+        {
+            float eleEta = eleLVec->at(ie).Eta(), elePhi = eleLVec->at(ie).Phi();
+            float mindReleCon = 999.;
+            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+            {
+                //const reco::PFCandidatePtr& constituent = constituents[iCon];
+                const reco::Candidate * constituent = jet.daughter(iCon);
+                float dReleCon = reco::deltaR(constituent->eta(), constituent->phi(), eleEta, elePhi);
+                if( mindReleCon > dReleCon ){ mindReleCon = dReleCon; }
+            }
+            if( mindReleCon < deltaRcon_ ) (*eleMatchedJetIdx)[ie] = ij;
+        }
+
+        for(unsigned int it=0; it < trksForIsoVetoLVec->size(); it++)
+        {
+            float trkEta = trksForIsoVetoLVec->at(it).Eta(), trkPhi = trksForIsoVetoLVec->at(it).Phi();
+            float mindRtrkCon = 999.;
+            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+            {
+                //          const reco::PFCandidatePtr& constituent = constituents[iCon];
+                const reco::Candidate * constituent = jet.daughter(iCon);
+                float dRtrkCon = reco::deltaR(constituent->eta(), constituent->phi(), trkEta, trkPhi);
+                if( mindRtrkCon > dRtrkCon ){ mindRtrkCon = dRtrkCon; }
+            }
+            if( mindRtrkCon < deltaRcon_ ) (*trksForIsoVetoMatchedJetIdx)[it] = ij;
+        }
+
+        for(unsigned int ist=0; ist < looseisoTrksLVec->size(); ist++)
+        {
+            float isotrkEta = looseisoTrksLVec->at(ist).Eta(), isotrkPhi = looseisoTrksLVec->at(ist).Phi();
+            float mindRisotrkCon = 999.;
+            for(unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+            {
+                //const reco::PFCandidatePtr& constituent = constituents[iCon];
+                const reco::Candidate * constituent = jet.daughter(iCon);
+                float dRisotrkCon = reco::deltaR(constituent->eta(), constituent->phi(), isotrkEta, isotrkPhi);
+                if( mindRisotrkCon > dRisotrkCon ){ mindRisotrkCon = dRisotrkCon; }
+            }
+            if( mindRisotrkCon < deltaRcon_ ) (*looseisoTrksMatchedJetIdx)[ist] = ij;
+        }
+    }
+
+    if( cntJetLowPt ) std::cout<<"WARNING ... NON ZERO ("<<cntJetLowPt<<") number of jets with pt < "<<jetPtCut_miniAOD_<<std::endl;
+
+    std::unique_ptr<int> nJets (new int);
+
+    *nJets = jetsLVec->size();
+
+
+    // store in the event
+    iEvent.put(std::move(jetsLVec), "jetsLVec");
+    iEvent.put(std::move(recoJetsFlavor), "recoJetsFlavor");
+    iEvent.put(std::move(recoJetsCSVv2), "recoJetsCSVv2");
+    iEvent.put(std::move(recoJetsCharge), "recoJetsCharge");
+    iEvent.put(std::move(recoJetsJecUnc), "recoJetsJecUnc");
+    iEvent.put(std::move(recoJetsJecScaleRawToFull), "recoJetsJecScaleRawToFull");
+    iEvent.put(std::move(nJets), "nJets");
+
+    iEvent.put(std::move(qgLikelihood), "qgLikelihood");
+    iEvent.put(std::move(qgPtD), "qgPtD");
+    iEvent.put(std::move(qgAxis2), "qgAxis2");
+    iEvent.put(std::move(qgAxis1), "qgAxis1");
+    iEvent.put(std::move(qgMult), "qgMult");
+
+    iEvent.put(std::move(recoJetschargedHadronEnergyFraction), "recoJetschargedHadronEnergyFraction");
+    iEvent.put(std::move(recoJetschargedEmEnergyFraction), "recoJetschargedEmEnergyFraction");
+    iEvent.put(std::move(recoJetsneutralEmEnergyFraction), "recoJetsneutralEmEnergyFraction");
+
+    iEvent.put(std::move(recoJetsmuonEnergyFraction), "recoJetsmuonEnergyFraction");
+
+    iEvent.put(std::move(muMatchedJetIdx), "muMatchedJetIdx");
+    iEvent.put(std::move(eleMatchedJetIdx), "eleMatchedJetIdx");
+
+    iEvent.put(std::move(trksForIsoVetoMatchedJetIdx), "trksForIsoVetoMatchedJetIdx");
+    iEvent.put(std::move(looseisoTrksMatchedJetIdx), "looseisoTrksMatchedJetIdx");
+  
+    iEvent.put(std::move(ChargedHadronMultiplicity), "ChargedHadronMultiplicity");
+    iEvent.put(std::move(NeutralHadronMultiplicity), "NeutralHadronMultiplicity");
+    iEvent.put(std::move(PhotonMultiplicity), "PhotonMultiplicity");
+    iEvent.put(std::move(ElectronMultiplicity), "ElectronMultiplicity");
+    iEvent.put(std::move(MuonMultiplicity), "MuonMultiplicity");
+  
+    iEvent.put(std::move(DeepCSVb),"DeepCSVb");
+    iEvent.put(std::move(DeepCSVc),"DeepCSVc");
+    iEvent.put(std::move(DeepCSVl),"DeepCSVl");
+    iEvent.put(std::move(DeepCSVbb),"DeepCSVbb");
+    iEvent.put(std::move(DeepCSVcc),"DeepCSVcc");
+
+    iEvent.put(std::move(recoJetsneutralEnergyFraction), "recoJetsneutralEnergyFraction");
+    iEvent.put(std::move(recoJetsHFHadronEnergyFraction), "recoJetsHFHadronEnergyFraction");
+    iEvent.put(std::move(recoJetsHFEMEnergyFraction), "recoJetsHFEMEnergyFraction");
+
+    iEvent.put(std::move(PhotonEnergyFraction), "PhotonEnergyFraction");
+    iEvent.put(std::move(ElectronEnergyFraction), "ElectronEnergyFraction");
+  
+    iEvent.put(std::move(DeepFlavorb), "DeepFlavorb");
+    iEvent.put(std::move(DeepFlavorbb), "DeepFlavorbb");
+    iEvent.put(std::move(DeepFlavorlepb), "DeepFlavorlepb");
+    iEvent.put(std::move(DeepFlavorc), "DeepFlavorc");
+    iEvent.put(std::move(DeepFlavoruds), "DeepFlavoruds");
+    iEvent.put(std::move(DeepFlavorg), "DeepFlavorg");
+
+    iEvent.put(std::move(CversusB),"CversusB");
+    iEvent.put(std::move(CversusL),"CversusL");
+
+}
+
+void prodJets::produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup)
+{
+    //PUPPI
+    edm::Handle<std::vector<pat::Jet> > puppiJets;
+    edm::Handle<std::vector<pat::Jet> > puppiSubJets; 
+    iEvent.getByToken(PuppiJetsSrc_Tok_, puppiJets);
+    iEvent.getByToken(PuppiSubJetsSrc_Tok_, puppiSubJets);
+
+
+    //PUPPI
+    std::unique_ptr<std::vector<TLorentzVector> > puppiJetsLVec(new std::vector<TLorentzVector>());
+    std::unique_ptr<std::vector<TLorentzVector> > puppiSubJetsLVec(new std::vector<TLorentzVector>());
+    std::unique_ptr<std::vector<float> > puppiSubJetsBdisc(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppisoftDropMass(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppitau1(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppitau2(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppitau3(new std::vector<float>());
+
+    
+    for(unsigned int ip = 0; ip < puppiJets->size(); ip++){
+        TLorentzVector perPuppiJetLVec;
+        perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
+        puppiJetsLVec->push_back(perPuppiJetLVec);
+
+        float puppi_tau1_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau1");
+        puppitau1->push_back(puppi_tau1_uf);
+        float puppi_tau2_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau2");
+        puppitau2->push_back(puppi_tau2_uf);
+        float puppi_tau3_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau3");
+        puppitau3->push_back(puppi_tau3_uf);
+
+        float puppisoftDropMass_uf = puppiJets->at(ip).userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
+        puppisoftDropMass->push_back(puppisoftDropMass_uf);
+    }
+
+    for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
+        // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
+        // Most of the time there are two daughters, sometimes there is only one
+        // Not all of the puppiJets have a matching puppiSubJets jet
+
+        TLorentzVector perPuppiSubJetLVec;
+        for(unsigned int id=0; id<puppiSubJets->at(ip).numberOfDaughters(); ++id){
+            perPuppiSubJetLVec.SetPtEtaPhiE( puppiSubJets->at(ip).daughter(id)->pt(), 
+                                             puppiSubJets->at(ip).daughter(id)->eta(), 
+                                             puppiSubJets->at(ip).daughter(id)->phi(), 
+                                             puppiSubJets->at(ip).daughter(id)->energy() );
+            puppiSubJetsLVec->push_back(perPuppiSubJetLVec);
+            // btag info is not available for reco::Candidates, so must cast it to a pat::Jet
+            puppiSubJetsBdisc->push_back(dynamic_cast<const pat::Jet *>(puppiSubJets->at(ip).daughter(id))->bDiscriminator(bTagKeyString_.c_str()));
+        }
+    }
+
+    //put variables back into event
+    iEvent.put(std::move(puppiJetsLVec), "puppiJetsLVec");
+    iEvent.put(std::move(puppiSubJetsLVec), "puppiSubJetsLVec");
+    iEvent.put(std::move(puppiSubJetsBdisc), "puppiSubJetsBdisc");
+    iEvent.put(std::move(puppisoftDropMass),"puppisoftDropMass");
+    iEvent.put(std::move(puppitau1),"puppitau1");
+    iEvent.put(std::move(puppitau2),"puppitau2");
+    iEvent.put(std::move(puppitau3),"puppitau3");
+
+}
 
 bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) 
 {
-  edm::Handle<std::vector<pat::Jet> > jets; 
-  iEvent.getByToken(JetTok_, jets);
-
-  //get the JEC uncertainties
-  edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-  iSetup.get<JetCorrectionsRecord>().get(jetType_, JetCorParColl);
-  JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
-  std::unique_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
-
-  iEvent.getByToken(EleLVec_Tok_, eleLVec_);
-  iEvent.getByToken(MuLVec_Tok_, muLVec_);
-
-  iEvent.getByToken(TrksForIsoVetolVec_Tok_, trksForIsoVetoLVec_);
-  iEvent.getByToken(LooseIsoTrksVec_Tok_,looseisoTrksLVec_);
-
-  std::vector<pat::Jet> extJets = (*jets);
-  //PUPPI
-  iEvent.getByToken(PuppiJetsSrc_Tok_, puppiJets);
-  iEvent.getByToken(PuppiSubJetsSrc_Tok_, puppiSubJets);
-
-  //check which ones to keep
-  std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
-  std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsCharge(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsJecScaleRawToFull(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > JetProba(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > JetBprob(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > DeepCSVb(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVc(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVl(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVbb(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVcc(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > DeepFlavorb(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepFlavorbb(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepFlavorlepb(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepFlavorc(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepFlavoruds(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepFlavorg(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > qgAxis1(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > qgMult(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > recoJetschargedHadronEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsneutralEmEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsmuonEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsneutralEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsHFEMEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > recoJetsHFHadronEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > PhotonEnergyFraction(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > ElectronEnergyFraction(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > ChargedHadronMultiplicity(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > NeutralHadronMultiplicity(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > PhotonMultiplicity(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > ElectronMultiplicity(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > MuonMultiplicity(new std::vector<float>());
-
-  std::unique_ptr<std::vector<int> > muMatchedJetIdx(new std::vector<int>(muLVec_->size(), -1));
-  std::unique_ptr<std::vector<int> > eleMatchedJetIdx(new std::vector<int>(eleLVec_->size(), -1));
-
-  std::unique_ptr<std::vector<int> > trksForIsoVetoMatchedJetIdx(new std::vector<int>(trksForIsoVetoLVec_->size(), -1));
-  std::unique_ptr<std::vector<int> > looseisoTrksMatchedJetIdx(new std::vector<int>(looseisoTrksLVec_->size(), -1));
-
-  //PUPPI
-  std::unique_ptr<std::vector<TLorentzVector> > puppiJetsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<TLorentzVector> > puppiSubJetsLVec(new std::vector<TLorentzVector>());
-  std::unique_ptr<std::vector<float> > puppiSubJetsBdisc(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > puppisoftDropMass(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > puppitau1(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > puppitau2(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > puppitau3(new std::vector<float>());
-
-
-
-  //PUPPI
-
-  for(unsigned int ip = 0; ip < puppiJets->size(); ip++){
-     TLorentzVector perPuppiJetLVec;
-     perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
-     puppiJetsLVec->push_back(perPuppiJetLVec);
-
-     float puppi_tau1_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau1");
-     puppitau1->push_back(puppi_tau1_uf);
-     float puppi_tau2_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau2");
-     puppitau2->push_back(puppi_tau2_uf);
-     float puppi_tau3_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau3");
-     puppitau3->push_back(puppi_tau3_uf);
-
-     float puppisoftDropMass_uf = puppiJets->at(ip).userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
-     puppisoftDropMass->push_back(puppisoftDropMass_uf);
-  }
-
-  for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
-     // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
-     // Most of the time there are two daughters, sometimes there is only one
-     // Not all of the puppiJets have a matching puppiSubJets jet
-
-     TLorentzVector perPuppiSubJetLVec;
-     for(unsigned int id=0; id<puppiSubJets->at(ip).numberOfDaughters(); ++id){
-       perPuppiSubJetLVec.SetPtEtaPhiE( puppiSubJets->at(ip).daughter(id)->pt(), 
-					puppiSubJets->at(ip).daughter(id)->eta(), 
-					puppiSubJets->at(ip).daughter(id)->phi(), 
-					puppiSubJets->at(ip).daughter(id)->energy() );
-       puppiSubJetsLVec->push_back(perPuppiSubJetLVec);
-       // btag info is not available for reco::Candidates, so must cast it to a pat::Jet
-       puppiSubJetsBdisc->push_back(dynamic_cast<const pat::Jet *>(puppiSubJets->at(ip).daughter(id))->bDiscriminator(bTagKeyString_.c_str()));
-     }
-  }
-  //Puppi End ************
-  //
-
-  int cntJetLowPt = 0;
-  for(unsigned int ij=0; ij < extJets.size(); ij++)
-  {
-    const pat::Jet& jet = extJets[ij];
-
-    float trialDeepCSVb = jet.bDiscriminator((deepCSVBJetTags_+":probb").c_str());
-    //std::cout<<trialDeepCSVb<<std::endl;
-    DeepCSVb->push_back(trialDeepCSVb);
-
-    float trialDeepCSVc = jet.bDiscriminator((deepCSVBJetTags_+":probc").c_str());
-    DeepCSVc->push_back(trialDeepCSVc);
-
-    float trialDeepCSVl = jet.bDiscriminator((deepCSVBJetTags_+":probudsg").c_str());
-    DeepCSVl->push_back(trialDeepCSVl);
-
-    float trialDeepCSVbb = jet.bDiscriminator((deepCSVBJetTags_+":probbb").c_str());
-    DeepCSVbb->push_back(trialDeepCSVbb);
-
-    float trialDeepCSVcc = jet.bDiscriminator((deepCSVBJetTags_+":probcc").c_str());
-    DeepCSVcc->push_back(trialDeepCSVcc);
-
-    float Proba = jet.bDiscriminator(jetPBJetTags_.c_str());
-    JetProba->push_back(Proba);
-
-    float Bprob = jet.bDiscriminator(jetBPBJetTags_.c_str());
-    JetBprob->push_back(Bprob);
-
-    float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
-    CversusB->push_back(tri_CvsB);
-    float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
-    CversusL->push_back(tri_CvsL);
-
-    float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
-    DeepFlavorb->push_back(trialDeepFlavorb);
-
-    float trialDeepFlavorbb = jet.bDiscriminator((deepFlavorBJetTags_+":probbb").c_str());
-    DeepFlavorbb->push_back(trialDeepFlavorbb);
-
-    float trialDeepFlavorlepb = jet.bDiscriminator((deepFlavorBJetTags_+":problepb").c_str());
-    DeepFlavorlepb->push_back(trialDeepFlavorlepb);
-
-    float trialDeepFlavorc = jet.bDiscriminator((deepFlavorBJetTags_+":probc").c_str());
-    DeepFlavorc->push_back(trialDeepFlavorc);
-
-    float trialDeepFlavoruds = jet.bDiscriminator((deepFlavorBJetTags_+":probuds").c_str());
-    DeepFlavoruds->push_back(trialDeepFlavoruds);
-
-    float trialDeepFlavorg = jet.bDiscriminator((deepFlavorBJetTags_+":probg").c_str());
-    DeepFlavorg->push_back(trialDeepFlavorg);
-    TLorentzVector perJetLVec;
-    perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
-    jetsLVec->push_back(perJetLVec);
-
-    //Additional jec qualities
-    float scaleRawToFull = jet.jecFactor(jet.currentJECLevel(), "none", jet.currentJECSet())/jet.jecFactor("Uncorrected", "none", jet.currentJECSet());
-    //double scaleRawToFull = jet.jecFactor(availableJECLevels.back())/jet.jecFactor("Uncorrected");
-    recoJetsJecScaleRawToFull->push_back(scaleRawToFull);
-    if( debug_ && ij==0 )
-    {
-      std::vector<std::string> availableJECSets   = jet.availableJECSets();
-      std::vector<std::string> availableJECLevels = jet.availableJECLevels(jet.currentJECSet());
-      std::cout<<"\nAvailable JEC sets:"<<"   current : "<<jet.currentJECSet().c_str()<<std::endl;
-      for(unsigned int ia=0; ia<availableJECSets.size(); ia++)
-      {
-         std::cout<<"ia : "<<ia<<"  --> "<<availableJECSets[ia].c_str()<<std::endl;
-      }
-      std::cout<<"\nAvailable JEC levels:"<<"   current : "<<jet.currentJECLevel().c_str()<<std::endl;
-      for(unsigned int ia=0; ia<availableJECLevels.size(); ia++)
-      {
-        std::cout<<"ia : "<<ia<<"  --> "<<availableJECLevels[ia].c_str()<<std::endl;
-      }
-      std::cout<<"scaleRawToFull : "<<scaleRawToFull<<"  current : "<<jet.jecFactor(availableJECLevels.back())<<"  uncor : "<<jet.jecFactor("Uncorrected")<<std::endl;
-    }
-
-    //get JEC unc for this jet, using corrected pT
-    jecUnc->setJetEta(jet.eta());
-    jecUnc->setJetPt(jet.pt());
-
-    float uncertainty = jecUnc->getUncertainty(true);
-    //safety check if uncertainty is not available for a jet
-    if( uncertainty==-999. ) uncertainty = 0;
-    recoJetsJecUnc->push_back(uncertainty);
-
-    if( perJetLVec.Pt() < jetPtCut_miniAOD_ && ij < jets->size() ) cntJetLowPt ++;
-
-    int flavor = jet.partonFlavour();
-    recoJetsFlavor->push_back(flavor);
-
-    std::string toGetName = qgTaggerKey_+":qgLikelihood";
-    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:qgLikelihood";
-    float thisqgLikelihood = jet.userFloat(toGetName.c_str());
-    qgLikelihood->push_back(thisqgLikelihood);
- 
-    toGetName = qgTaggerKey_+":ptD";
-    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:ptD";
-    float thisqgPtD = jet.userFloat(toGetName.c_str());
-    qgPtD->push_back(thisqgPtD);
-   
-    toGetName = qgTaggerKey_+":axis2"; 
-    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis2";
-    float thisqgAxis2 = jet.userFloat(toGetName.c_str());
-    qgAxis2->push_back(thisqgAxis2);
-
-    toGetName = qgTaggerKey_+":axis1";
-    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
-    float thisqgAxis1 = jet.userFloat(toGetName.c_str());
-    //std::cout<<thisqgAxis1<<std::endl;
-    qgAxis1->push_back(thisqgAxis1);
-    //std::cout<<qgAxis1->at(0)<<std::endl;
-
-    toGetName = qgTaggerKey_+":mult"; 
-    if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
-    int thisqgMult = jet.userInt(toGetName.c_str());
-    qgMult->push_back(thisqgMult);
-
-    float btag = jet.bDiscriminator(bTagKeyString_.c_str());
-    recoJetsCSVv2->push_back(btag);
-
-    float charge = jet.jetCharge();
-    recoJetsCharge->push_back(charge);
-
-    float chargedHadronEnergyFraction = jet.chargedHadronEnergyFraction();
-    recoJetschargedHadronEnergyFraction->push_back( chargedHadronEnergyFraction );
-
-    double neutralHadronEnergyFraction = jet.neutralHadronEnergyFraction();
-    recoJetsneutralEnergyFraction->push_back( neutralHadronEnergyFraction );
-
-    float photonEnergyFraction = jet.photonEnergyFraction();
-    PhotonEnergyFraction->push_back( photonEnergyFraction );
-    
-    float electronEnergyFraction = jet.electronEnergyFraction();
-    ElectronEnergyFraction->push_back( electronEnergyFraction );
-    
-    recoJetsHFHadronEnergyFraction->push_back(jet.HFHadronEnergyFraction());
-    recoJetsHFEMEnergyFraction->push_back(jet.HFEMEnergyFraction());
-    
-    float chargedHadronMultiplicity = jet.chargedHadronMultiplicity();
-    ChargedHadronMultiplicity->push_back( chargedHadronMultiplicity );
-    
-    float neutralHadronMultiplicity = jet.neutralHadronMultiplicity();
-    NeutralHadronMultiplicity->push_back( neutralHadronMultiplicity );
-    
-    float photonMultiplicity = jet.photonMultiplicity();
-    PhotonMultiplicity->push_back( photonMultiplicity );
-    
-    float electronMultiplicity = jet.electronMultiplicity();
-    ElectronMultiplicity->push_back( electronMultiplicity );
-
-    double muonMultiplicity1 = jet.muonMultiplicity();
-    MuonMultiplicity->push_back( muonMultiplicity1 );
-
-    float chargedEmEnergyFraction = jet.chargedEmEnergyFraction();
-    recoJetschargedEmEnergyFraction->push_back( chargedEmEnergyFraction );
-
-    float neutralEmEnergyFraction = jet.neutralEmEnergyFraction();
-    recoJetsneutralEmEnergyFraction->push_back( neutralEmEnergyFraction );
-
-    float muonEnergyFraction = jet.muonEnergyFraction();
-    recoJetsmuonEnergyFraction->push_back( muonEnergyFraction );
-
-    //std::cout << chargedEmEnergyFraction << std::endl;
-
-    //const std::vector<reco::PFCandidatePtr> & constituents = jet.getPFConstituents();
-    //const unsigned int numConstituents = constituents.size();
-    const unsigned int numConstituents = jet.numberOfDaughters();
-
-    for(unsigned int im=0; im < muLVec_->size(); im++)
-    {
-      float muEta = muLVec_->at(im).Eta(), muPhi = muLVec_->at(im).Phi();
-      float mindRmuonCon = 999.;
-      for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-      {
-        //const reco::PFCandidatePtr& constituent = constituents[iCon];
-        const reco::Candidate * constituent = jet.daughter(iCon);
-        float dRmuonCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
-        if( mindRmuonCon > dRmuonCon ){ mindRmuonCon = dRmuonCon; }
-      }
-      if( mindRmuonCon < deltaRcon_ ) (*muMatchedJetIdx)[im] = ij;
-    }
-
-    for(unsigned int ie=0; ie < eleLVec_->size(); ie++)
-    {
-      float eleEta = eleLVec_->at(ie).Eta(), elePhi = eleLVec_->at(ie).Phi();
-      float mindReleCon = 999.;
-      for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-      {
-        //const reco::PFCandidatePtr& constituent = constituents[iCon];
-        const reco::Candidate * constituent = jet.daughter(iCon);
-        float dReleCon = reco::deltaR(constituent->eta(), constituent->phi(), eleEta, elePhi);
-        if( mindReleCon > dReleCon ){ mindReleCon = dReleCon; }
-      }
-      if( mindReleCon < deltaRcon_ ) (*eleMatchedJetIdx)[ie] = ij;
-    }
-
-    for(unsigned int it=0; it < trksForIsoVetoLVec_->size(); it++)
-    {
-      float trkEta = trksForIsoVetoLVec_->at(it).Eta(), trkPhi = trksForIsoVetoLVec_->at(it).Phi();
-      float mindRtrkCon = 999.;
-      for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-      {
-        //          const reco::PFCandidatePtr& constituent = constituents[iCon];
-        const reco::Candidate * constituent = jet.daughter(iCon);
-        float dRtrkCon = reco::deltaR(constituent->eta(), constituent->phi(), trkEta, trkPhi);
-        if( mindRtrkCon > dRtrkCon ){ mindRtrkCon = dRtrkCon; }
-      }
-      if( mindRtrkCon < deltaRcon_ ) (*trksForIsoVetoMatchedJetIdx)[it] = ij;
-    }
-
-    for(unsigned int ist=0; ist < looseisoTrksLVec_->size(); ist++)
-    {
-      float isotrkEta = looseisoTrksLVec_->at(ist).Eta(), isotrkPhi = looseisoTrksLVec_->at(ist).Phi();
-      float mindRisotrkCon = 999.;
-      for(unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-      {
-        //const reco::PFCandidatePtr& constituent = constituents[iCon];
-        const reco::Candidate * constituent = jet.daughter(iCon);
-        float dRisotrkCon = reco::deltaR(constituent->eta(), constituent->phi(), isotrkEta, isotrkPhi);
-        if( mindRisotrkCon > dRisotrkCon ){ mindRisotrkCon = dRisotrkCon; }
-      }
-      if( mindRisotrkCon < deltaRcon_ ) (*looseisoTrksMatchedJetIdx)[ist] = ij;
-    }
-  }
-
-  if( cntJetLowPt ) std::cout<<"WARNING ... NON ZERO ("<<cntJetLowPt<<") number of jets with pt < "<<jetPtCut_miniAOD_<<std::endl;
-
-  std::unique_ptr<int> nJets (new int);
-
-  *nJets = jetsLVec->size();
-
-  // store in the event
-  // iEvent.put(prod);
-  iEvent.put(std::move(jetsLVec), "jetsLVec");
-  iEvent.put(std::move(recoJetsFlavor), "recoJetsFlavor");
-  iEvent.put(std::move(recoJetsCSVv2), "recoJetsCSVv2");
-  iEvent.put(std::move(recoJetsCharge), "recoJetsCharge");
-  iEvent.put(std::move(recoJetsJecUnc), "recoJetsJecUnc");
-  iEvent.put(std::move(recoJetsJecScaleRawToFull), "recoJetsJecScaleRawToFull");
-  iEvent.put(std::move(nJets), "nJets");
-
-  iEvent.put(std::move(qgLikelihood), "qgLikelihood");
-  iEvent.put(std::move(qgPtD), "qgPtD");
-  iEvent.put(std::move(qgAxis2), "qgAxis2");
-  iEvent.put(std::move(qgAxis1), "qgAxis1");
-  iEvent.put(std::move(qgMult), "qgMult");
-
-  iEvent.put(std::move(recoJetschargedHadronEnergyFraction), "recoJetschargedHadronEnergyFraction");
-  iEvent.put(std::move(recoJetschargedEmEnergyFraction), "recoJetschargedEmEnergyFraction");
-  iEvent.put(std::move(recoJetsneutralEmEnergyFraction), "recoJetsneutralEmEnergyFraction");
-
-  iEvent.put(std::move(recoJetsmuonEnergyFraction), "recoJetsmuonEnergyFraction");
-
-  iEvent.put(std::move(muMatchedJetIdx), "muMatchedJetIdx");
-  iEvent.put(std::move(eleMatchedJetIdx), "eleMatchedJetIdx");
-
-  iEvent.put(std::move(trksForIsoVetoMatchedJetIdx), "trksForIsoVetoMatchedJetIdx");
-  iEvent.put(std::move(looseisoTrksMatchedJetIdx), "looseisoTrksMatchedJetIdx");
-  
-  iEvent.put(std::move(ChargedHadronMultiplicity), "ChargedHadronMultiplicity");
-  iEvent.put(std::move(NeutralHadronMultiplicity), "NeutralHadronMultiplicity");
-  iEvent.put(std::move(PhotonMultiplicity), "PhotonMultiplicity");
-  iEvent.put(std::move(ElectronMultiplicity), "ElectronMultiplicity");
-  iEvent.put(std::move(MuonMultiplicity), "MuonMultiplicity");
-  
-  //PUPPI
-  iEvent.put(std::move(puppiJetsLVec), "puppiJetsLVec");
-  iEvent.put(std::move(puppiSubJetsLVec), "puppiSubJetsLVec");
-  iEvent.put(std::move(puppiSubJetsBdisc), "puppiSubJetsBdisc");
-  iEvent.put(std::move(puppisoftDropMass),"puppisoftDropMass");
-  iEvent.put(std::move(puppitau1),"puppitau1");
-  iEvent.put(std::move(puppitau2),"puppitau2");
-  iEvent.put(std::move(puppitau3),"puppitau3");
-
-  iEvent.put(std::move(DeepCSVb),"DeepCSVb");
-  iEvent.put(std::move(DeepCSVc),"DeepCSVc");
-  iEvent.put(std::move(DeepCSVl),"DeepCSVl");
-  iEvent.put(std::move(DeepCSVbb),"DeepCSVbb");
-  iEvent.put(std::move(DeepCSVcc),"DeepCSVcc");
-
-  iEvent.put(std::move(recoJetsneutralEnergyFraction), "recoJetsneutralEnergyFraction");
-  iEvent.put(std::move(recoJetsHFHadronEnergyFraction), "recoJetsHFHadronEnergyFraction");
-  iEvent.put(std::move(recoJetsHFEMEnergyFraction), "recoJetsHFEMEnergyFraction");
-
-  iEvent.put(std::move(PhotonEnergyFraction), "PhotonEnergyFraction");
-  iEvent.put(std::move(ElectronEnergyFraction), "ElectronEnergyFraction");
-  
-  iEvent.put(std::move(DeepFlavorb), "DeepFlavorb");
-  iEvent.put(std::move(DeepFlavorbb), "DeepFlavorbb");
-  iEvent.put(std::move(DeepFlavorlepb), "DeepFlavorlepb");
-  iEvent.put(std::move(DeepFlavorc), "DeepFlavorc");
-  iEvent.put(std::move(DeepFlavoruds), "DeepFlavoruds");
-  iEvent.put(std::move(DeepFlavorg), "DeepFlavorg");
-
-  iEvent.put(std::move(CversusB),"CversusB");
-  iEvent.put(std::move(CversusL),"CversusL");
-
-  return true;
+    produceAK4JetVariables(iEvent, iSetup);
+    produceAK8JetVariables(iEvent, iSetup);
+        
+    return true;
 }
 
 
