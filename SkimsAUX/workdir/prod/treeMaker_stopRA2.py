@@ -959,18 +959,6 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVl"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbb"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcc"))
 
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbN"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcN"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVlN"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbbN"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVccN"))
-
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbP"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVcP"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVlP"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVbbP"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVccP"))
-
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "CversusL"));
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "CversusB"));
 
@@ -1053,19 +1041,6 @@ if options.addJetsForZinv == True:
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcc"))
       
        
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbN"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcN"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVlN"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbbN"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVccN"))
-             
-              
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbP"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVcP"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVlP"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVbbP"))
-   process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "DeepCSVccP"))
-
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "CversusL"));
    process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "CversusB"));
 

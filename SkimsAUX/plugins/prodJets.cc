@@ -89,48 +89,41 @@ class prodJets : public edm::EDFilter
       }
   }
 
-  edm::InputTag jetSrc_;
-  std::string bTagKeyString_;
+  //Member variables  
   bool debug_;
 
   double genMatch_dR_;
 
-  edm::EDGetTokenT<std::vector<pat::Jet> >JetTok_;
-
-  edm::EDGetTokenT<std::vector<TLorentzVector> >GenDecayLVec_Tok_;
-  edm::EDGetTokenT<std::vector<int> >GenDecayMomRefVec_Tok_;
-
-  edm::EDGetTokenT<std::vector<TLorentzVector> >EleLVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> >MuLVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> >TrksForIsoVetolVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> >LooseIsoTrksVec_Tok_;
-
-  edm::EDGetTokenT<std::vector<pat::Jet>> PuppiJetsSrc_Tok_;
-  edm::EDGetTokenT<std::vector<pat::Jet>> PuppiSubJetsSrc_Tok_;
-
-  edm::InputTag eleLVec_Src_, muLVec_Src_;
-
-  edm::InputTag trksForIsoVetoLVec_Src_, looseisoTrksLVec_Src_;
   double deltaRcon_;
 
-  //PUPPI sources
-  edm::InputTag puppiJetsSrc_, puppiSubJetsSrc_;
- 
-  std::string jetType_;
   std::string qgTaggerKey_;
+
+  std::string bTagKeyString_;
+  std::string deepCSVBJetTags_;
+  std::string deepFlavorBJetTags_;
+
+  std::string jetType_;
+
   std::string NjettinessAK8Puppi_label_;
   std::string ak8PFJetsPuppi_label_;
 
   std::string jetPBJetTags_;
-
   std::string jetBPBJetTags_;
 
-  std::string deepCSVBJetTags_;
 
-  std::string deepFlavorBJetTags_;
+  std::string CvsBCJetTags_;
+  std::string CvsLCJetTags_;
 
-  std::string   CvsBCJetTags_;
-  std::string   CvsLCJetTags_;
+  edm::EDGetTokenT<std::vector<pat::Jet> > JetTok_;
+
+  edm::EDGetTokenT<std::vector<TLorentzVector> > EleLVec_Tok_;
+  edm::EDGetTokenT<std::vector<TLorentzVector> > MuLVec_Tok_;
+  edm::EDGetTokenT<std::vector<TLorentzVector> > TrksForIsoVetolVec_Tok_;
+  edm::EDGetTokenT<std::vector<TLorentzVector> > LooseIsoTrksVec_Tok_;
+
+  edm::EDGetTokenT<std::vector<pat::Jet> > PuppiJetsSrc_Tok_;
+  edm::EDGetTokenT<std::vector<pat::Jet> > PuppiSubJetsSrc_Tok_;
+ 
 };
 
 void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
@@ -221,7 +214,6 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
-  jetSrc_      = iConfig.getParameter<edm::InputTag>("jetSrc");
   bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
 
   jetPBJetTags_        = iConfig.getParameter<std::string>("jetPBJetTags");
@@ -239,34 +231,30 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
 
-  eleLVec_Src_ = iConfig.getParameter<edm::InputTag>("eleLVec");
-  muLVec_Src_ = iConfig.getParameter<edm::InputTag>("muLVec");
-  
-  trksForIsoVetoLVec_Src_ = iConfig.getParameter<edm::InputTag>("trksForIsoVetoLVec");
-  looseisoTrksLVec_Src_ = iConfig.getParameter<edm::InputTag>("looseisoTrksLVec");
-
   deltaRcon_ = iConfig.getUntrackedParameter<double>("deltaRcon", 0.01);
 
   jetType_ = iConfig.getParameter<std::string>("jetType");
 
   qgTaggerKey_ = iConfig.getParameter<std::string>("qgTaggerKey");
   
-  //Puppi source
-  puppiJetsSrc_ = iConfig.getParameter<edm::InputTag>("puppiJetsSrc");
-  puppiSubJetsSrc_ = iConfig.getParameter<edm::InputTag>("puppiSubJetsSrc");
 
   NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
   ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
-  JetTok_ = consumes<std::vector<pat::Jet> >(jetSrc_);
-  EleLVec_Tok_=consumes<std::vector<TLorentzVector> >(eleLVec_Src_);
-  MuLVec_Tok_=consumes<std::vector<TLorentzVector> >(muLVec_Src_);
-  TrksForIsoVetolVec_Tok_=consumes<std::vector<TLorentzVector> >(trksForIsoVetoLVec_Src_);
-  LooseIsoTrksVec_Tok_=consumes<std::vector<TLorentzVector> >(looseisoTrksLVec_Src_);
-  PuppiJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiJetsSrc_);
-  PuppiSubJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiSubJetsSrc_);
 
-  //produces<std::vector<pat::Jet> >("");
+  //Consumes statements and input tags
+  JetTok_                 = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "jetSrc"             ) );
+  PuppiJetsSrc_Tok_       = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiJetsSrc"       ) );
+  PuppiSubJetsSrc_Tok_    = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiSubJetsSrc"    ) );
+  EleLVec_Tok_            = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "eleLVec"            ) );
+  MuLVec_Tok_             = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "muLVec"             ) );
+  TrksForIsoVetolVec_Tok_ = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "trksForIsoVetoLVec" ) );
+  LooseIsoTrksVec_Tok_    = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "looseisoTrksLVec"   ) );
+
+
+  //Produces statements 
+
+  //AK4 jet variables 
   produces<std::vector<TLorentzVector> >("jetsLVec");
   produces<std::vector<int> >("recoJetsFlavor");
   produces<std::vector<float> >("recoJetsCSVv2");
@@ -274,49 +262,6 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("recoJetsJecUnc");
   produces<std::vector<float> >("recoJetsJecScaleRawToFull");
   produces<int>("nJets");
-  produces<std::vector<float> >("qgLikelihood");
-  produces<std::vector<float> >("qgPtD");
-  produces<std::vector<float> >("qgAxis2");
-  produces<std::vector<float> >("qgAxis1");
-  produces<std::vector<float> >("qgMult");
-
-  //produce variables needed for Lost Lepton study, added by hua.wei@cern.ch
-  produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
-  produces<std::vector<float> >("recoJetschargedEmEnergyFraction");
-  produces<std::vector<float> >("recoJetsneutralEmEnergyFraction");
-  produces<std::vector<float> >("recoJetsHFHadronEnergyFraction");
-  produces<std::vector<float> >("recoJetsmuonEnergyFraction");
-  produces<std::vector<float> >("recoJetsneutralEnergyFraction");
-  produces<std::vector<float> >("recoJetsHFEMEnergyFraction");
-  
-  produces<std::vector<float> >("PhotonEnergyFraction");
-  produces<std::vector<float> >("ElectronEnergyFraction");
-
-  produces<std::vector<int> >("muMatchedJetIdx");
-  produces<std::vector<int> >("eleMatchedJetIdx");
-
-  produces<std::vector<float> >("ChargedHadronMultiplicity");
-  produces<std::vector<float> >("NeutralHadronMultiplicity");
-  produces<std::vector<float> >("PhotonMultiplicity");
-  produces<std::vector<float> >("ElectronMultiplicity");
-  produces<std::vector<float> >("MuonMultiplicity");
-
-  produces<std::vector<int> >("trksForIsoVetoMatchedJetIdx");
-  produces<std::vector<int> >("looseisoTrksMatchedJetIdx");
-
-  //PUPPI
-  produces<std::vector<TLorentzVector> >("puppiJetsLVec");
-  produces<std::vector<TLorentzVector> >("puppiSubJetsLVec");
-  produces<std::vector<float> >("puppisoftDropMass");
-  produces<std::vector<float> >("puppitau1");
-  produces<std::vector<float> >("puppitau2");
-  produces<std::vector<float> >("puppitau3");
-  produces<std::vector<float> >("puppiSubJetsBdisc");
-
-  produces<std::vector<float> >("JetProba");
-  produces<std::vector<float> >("JetBprob");
-
-  produces<std::vector<float> >("CombinedSvtx");
 
   produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("DeepCSVc");
@@ -333,6 +278,46 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   produces<std::vector<float> >("CversusB");
   produces<std::vector<float> >("CversusL");
+
+  produces<std::vector<float> >("qgLikelihood");
+  produces<std::vector<float> >("qgPtD");
+  produces<std::vector<float> >("qgAxis2");
+  produces<std::vector<float> >("qgAxis1");
+  produces<std::vector<float> >("qgMult");
+
+  produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
+  produces<std::vector<float> >("recoJetschargedEmEnergyFraction");
+  produces<std::vector<float> >("recoJetsneutralEmEnergyFraction");
+  produces<std::vector<float> >("recoJetsHFHadronEnergyFraction");
+  produces<std::vector<float> >("recoJetsmuonEnergyFraction");
+  produces<std::vector<float> >("recoJetsneutralEnergyFraction");
+  produces<std::vector<float> >("recoJetsHFEMEnergyFraction");  
+  produces<std::vector<float> >("PhotonEnergyFraction");
+  produces<std::vector<float> >("ElectronEnergyFraction");
+
+  produces<std::vector<float> >("ChargedHadronMultiplicity");
+  produces<std::vector<float> >("NeutralHadronMultiplicity");
+  produces<std::vector<float> >("PhotonMultiplicity");
+  produces<std::vector<float> >("ElectronMultiplicity");
+  produces<std::vector<float> >("MuonMultiplicity");
+
+  produces<std::vector<int> >("trksForIsoVetoMatchedJetIdx");
+  produces<std::vector<int> >("looseisoTrksMatchedJetIdx");
+
+  produces<std::vector<float> >("JetProba");
+  produces<std::vector<float> >("JetBprob");
+
+  produces<std::vector<int> >("muMatchedJetIdx");
+  produces<std::vector<int> >("eleMatchedJetIdx");
+
+  //AK8 jet variables 
+  produces<std::vector<TLorentzVector> >("puppiJetsLVec");
+  produces<std::vector<TLorentzVector> >("puppiSubJetsLVec");
+  produces<std::vector<float> >("puppisoftDropMass");
+  produces<std::vector<float> >("puppitau1");
+  produces<std::vector<float> >("puppitau2");
+  produces<std::vector<float> >("puppitau3");
+  produces<std::vector<float> >("puppiSubJetsBdisc");
 
 }
 
@@ -353,15 +338,17 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
     std::unique_ptr<JetCorrectionUncertainty> jecUnc( new JetCorrectionUncertainty(JetCorPar) );
 
+    //get the electron and muon collections saved to the tuples
     edm::Handle<std::vector<TLorentzVector> > eleLVec, muLVec;
     iEvent.getByToken(EleLVec_Tok_, eleLVec);
     iEvent.getByToken(MuLVec_Tok_, muLVec);
 
+    //get the isotrack collections saved to the tuples 
     edm::Handle<std::vector<TLorentzVector> > trksForIsoVetoLVec, looseisoTrksLVec;
     iEvent.getByToken(TrksForIsoVetolVec_Tok_, trksForIsoVetoLVec);
     iEvent.getByToken(LooseIsoTrksVec_Tok_,looseisoTrksLVec);
 
-    //check which ones to keep
+    //Basic jet properties 
     std::unique_ptr<std::vector<TLorentzVector> > jetsLVec(new std::vector<TLorentzVector>());
     std::unique_ptr<std::vector<int> > recoJetsFlavor(new std::vector<int>());
     std::unique_ptr<std::vector<float> > recoJetsCSVv2(new std::vector<float>());
@@ -369,15 +356,18 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
     std::unique_ptr<std::vector<float> > recoJetsJecScaleRawToFull(new std::vector<float>());
 
+    //Jet porbabilities 
     std::unique_ptr<std::vector<float> > JetProba(new std::vector<float>());
     std::unique_ptr<std::vector<float> > JetBprob(new std::vector<float>());
 
+    //DeepCSV jet tagger
     std::unique_ptr<std::vector<float> > DeepCSVb(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepCSVc(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepCSVl(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepCSVbb(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepCSVcc(new std::vector<float>());
 
+    //DeepFlavour jet tagger
     std::unique_ptr<std::vector<float> > DeepFlavorb(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepFlavorbb(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepFlavorlepb(new std::vector<float>());
@@ -385,15 +375,18 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     std::unique_ptr<std::vector<float> > DeepFlavoruds(new std::vector<float>());
     std::unique_ptr<std::vector<float> > DeepFlavorg(new std::vector<float>());
 
-    std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
-    std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
+    //Legacy charm tagger
+    std::unique_ptr<std::vector<float> > CversusB(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > CversusL(new std::vector<float>());
 
+    //quark-gluon liklihood jet shape variables
     std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
     std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
-    std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
     std::unique_ptr<std::vector<float> > qgAxis1(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > qgAxis2(new std::vector<float>());
     std::unique_ptr<std::vector<float> > qgMult(new std::vector<float>());
 
+    //PF energy fraction vectors 
     std::unique_ptr<std::vector<float> > recoJetschargedHadronEnergyFraction(new std::vector<float>());
     std::unique_ptr<std::vector<float> > recoJetschargedEmEnergyFraction(new std::vector<float>());
     std::unique_ptr<std::vector<float> > recoJetsneutralEmEnergyFraction(new std::vector<float>());
@@ -404,15 +397,16 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     std::unique_ptr<std::vector<float> > PhotonEnergyFraction(new std::vector<float>());
     std::unique_ptr<std::vector<float> > ElectronEnergyFraction(new std::vector<float>());
 
+    //PF object multiplicity vectors 
     std::unique_ptr<std::vector<float> > ChargedHadronMultiplicity(new std::vector<float>());
     std::unique_ptr<std::vector<float> > NeutralHadronMultiplicity(new std::vector<float>());
     std::unique_ptr<std::vector<float> > PhotonMultiplicity(new std::vector<float>());
     std::unique_ptr<std::vector<float> > ElectronMultiplicity(new std::vector<float>());
     std::unique_ptr<std::vector<float> > MuonMultiplicity(new std::vector<float>());
 
+    //Matching vectors, for dR matching between jets and other objects  
     std::unique_ptr<std::vector<int> > muMatchedJetIdx(new std::vector<int>(muLVec->size(), -1));
     std::unique_ptr<std::vector<int> > eleMatchedJetIdx(new std::vector<int>(eleLVec->size(), -1));
-
     std::unique_ptr<std::vector<int> > trksForIsoVetoMatchedJetIdx(new std::vector<int>(trksForIsoVetoLVec->size(), -1));
     std::unique_ptr<std::vector<int> > looseisoTrksMatchedJetIdx(new std::vector<int>(looseisoTrksLVec->size(), -1));
 
@@ -420,57 +414,36 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     {
         const pat::Jet& jet = (*jets)[ij];
 
-        float trialDeepCSVb = jet.bDiscriminator((deepCSVBJetTags_+":probb").c_str());
-        //std::cout<<trialDeepCSVb<<std::endl;
-        DeepCSVb->push_back(trialDeepCSVb);
-
-        float trialDeepCSVc = jet.bDiscriminator((deepCSVBJetTags_+":probc").c_str());
-        DeepCSVc->push_back(trialDeepCSVc);
-
-        float trialDeepCSVl = jet.bDiscriminator((deepCSVBJetTags_+":probudsg").c_str());
-        DeepCSVl->push_back(trialDeepCSVl);
-
-        float trialDeepCSVbb = jet.bDiscriminator((deepCSVBJetTags_+":probbb").c_str());
-        DeepCSVbb->push_back(trialDeepCSVbb);
-
-        float trialDeepCSVcc = jet.bDiscriminator((deepCSVBJetTags_+":probcc").c_str());
-        DeepCSVcc->push_back(trialDeepCSVcc);
-
-        float Proba = jet.bDiscriminator(jetPBJetTags_.c_str());
-        JetProba->push_back(Proba);
-
-        float Bprob = jet.bDiscriminator(jetBPBJetTags_.c_str());
-        JetBprob->push_back(Bprob);
-
-        float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
-        CversusB->push_back(tri_CvsB);
-        float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
-        CversusL->push_back(tri_CvsL);
-
-        float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
-        DeepFlavorb->push_back(trialDeepFlavorb);
-
-        float trialDeepFlavorbb = jet.bDiscriminator((deepFlavorBJetTags_+":probbb").c_str());
-        DeepFlavorbb->push_back(trialDeepFlavorbb);
-
-        float trialDeepFlavorlepb = jet.bDiscriminator((deepFlavorBJetTags_+":problepb").c_str());
-        DeepFlavorlepb->push_back(trialDeepFlavorlepb);
-
-        float trialDeepFlavorc = jet.bDiscriminator((deepFlavorBJetTags_+":probc").c_str());
-        DeepFlavorc->push_back(trialDeepFlavorc);
-
-        float trialDeepFlavoruds = jet.bDiscriminator((deepFlavorBJetTags_+":probuds").c_str());
-        DeepFlavoruds->push_back(trialDeepFlavoruds);
-
-        float trialDeepFlavorg = jet.bDiscriminator((deepFlavorBJetTags_+":probg").c_str());
-        DeepFlavorg->push_back(trialDeepFlavorg);
+        //Create TLorentz vector for the jet 
         TLorentzVector perJetLVec;
         perJetLVec.SetPtEtaPhiE( jet.pt(), jet.eta(), jet.phi(), jet.energy() );
         jetsLVec->push_back(perJetLVec);
 
+        //Get DeepCSV values
+        DeepCSVb  ->push_back( jet.bDiscriminator(deepCSVBJetTags_+":probb")    );
+        DeepCSVc  ->push_back( jet.bDiscriminator(deepCSVBJetTags_+":probc")    );
+        DeepCSVl  ->push_back( jet.bDiscriminator(deepCSVBJetTags_+":probudsg") );
+        DeepCSVbb ->push_back( jet.bDiscriminator(deepCSVBJetTags_+":probbb")   );
+        DeepCSVcc ->push_back( jet.bDiscriminator(deepCSVBJetTags_+":probcc")   );
+
+        //JetProb values
+        JetProba ->push_back( jet.bDiscriminator(jetPBJetTags_)  );
+        JetBprob ->push_back( jet.bDiscriminator(jetBPBJetTags_) );
+
+        //Legacy charm tagger (for SUS-16-049 BDT resolved tagger)
+        CversusB ->push_back( jet.bDiscriminator(CvsBCJetTags_) );
+        CversusL ->push_back( jet.bDiscriminator(CvsLCJetTags_) );
+
+        //deepFlavor
+        DeepFlavorb    ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":probb")    );
+        DeepFlavorbb   ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":probbb")   );
+        DeepFlavorlepb ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":problepb") );
+        DeepFlavorc    ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":probc")    );
+        DeepFlavoruds  ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":probuds")  );
+        DeepFlavorg    ->push_back( jet.bDiscriminator(deepFlavorBJetTags_+":probg")    );
+
         //Additional jec qualities
         float scaleRawToFull = jet.jecFactor(jet.currentJECLevel(), "none", jet.currentJECSet())/jet.jecFactor("Uncorrected", "none", jet.currentJECSet());
-        //double scaleRawToFull = jet.jecFactor(availableJECLevels.back())/jet.jecFactor("Uncorrected");
         recoJetsJecScaleRawToFull->push_back(scaleRawToFull);
         if( debug_ && ij==0 )
         {
@@ -498,78 +471,39 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
         if( uncertainty==-999. ) uncertainty = 0;
         recoJetsJecUnc->push_back(uncertainty);
 
-        int flavor = jet.partonFlavour();
-        recoJetsFlavor->push_back(flavor);
+        //jet parton flavor 
+        recoJetsFlavor ->push_back( jet.partonFlavour() );
 
-        std::string toGetName = qgTaggerKey_+":qgLikelihood";
-        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:qgLikelihood";
-        float thisqgLikelihood = jet.userFloat(toGetName.c_str());
-        qgLikelihood->push_back(thisqgLikelihood);
- 
-        toGetName = qgTaggerKey_+":ptD";
-        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:ptD";
-        float thisqgPtD = jet.userFloat(toGetName.c_str());
-        qgPtD->push_back(thisqgPtD);
-   
-        toGetName = qgTaggerKey_+":axis2"; 
-        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis2";
-        float thisqgAxis2 = jet.userFloat(toGetName.c_str());
-        qgAxis2->push_back(thisqgAxis2);
+        //quark-gluon liklihood jet shape variables 
+        qgLikelihood   ->push_back( jet.userFloat(qgTaggerKey_+":qgLikelihood") );
+        qgPtD          ->push_back( jet.userFloat(qgTaggerKey_+":ptD")          );
+        qgAxis1        ->push_back( jet.userFloat(qgTaggerKey_+":axis1")        );
+        qgAxis2        ->push_back( jet.userFloat(qgTaggerKey_+":axis2")        );
+        qgMult         ->push_back( jet.userInt(  qgTaggerKey_+":mult")         );
 
-        toGetName = qgTaggerKey_+":axis1";
-        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
-        float thisqgAxis1 = jet.userFloat(toGetName.c_str());
-        qgAxis1->push_back(thisqgAxis1);
+        //CSVv2 b-tag discriminator 
+        recoJetsCSVv2 ->push_back( jet.bDiscriminator(bTagKeyString_) );
 
-        toGetName = qgTaggerKey_+":mult"; 
-        if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
-        int thisqgMult = jet.userInt(toGetName.c_str());
-        qgMult->push_back(thisqgMult);
+        //Jet charge 
+        recoJetsCharge ->push_back( jet.jetCharge() );
 
-        float btag = jet.bDiscriminator(bTagKeyString_.c_str());
-        recoJetsCSVv2->push_back(btag);
+        //PF energy fractions for the jet 
+        recoJetschargedHadronEnergyFraction ->push_back( jet.chargedHadronEnergyFraction() );
+        recoJetsneutralEnergyFraction       ->push_back( jet.neutralHadronEnergyFraction() );
+        recoJetschargedEmEnergyFraction     ->push_back( jet.chargedEmEnergyFraction()     );
+        recoJetsneutralEmEnergyFraction     ->push_back( jet.neutralEmEnergyFraction()     );
+        recoJetsmuonEnergyFraction          ->push_back( jet.muonEnergyFraction()          );
+        PhotonEnergyFraction                ->push_back( jet.photonEnergyFraction()        );
+        ElectronEnergyFraction              ->push_back( jet.electronEnergyFraction()      );
+        recoJetsHFHadronEnergyFraction      ->push_back( jet.HFHadronEnergyFraction()      );
+        recoJetsHFEMEnergyFraction          ->push_back( jet.HFEMEnergyFraction()          );
 
-        float charge = jet.jetCharge();
-        recoJetsCharge->push_back(charge);
-
-        float chargedHadronEnergyFraction = jet.chargedHadronEnergyFraction();
-        recoJetschargedHadronEnergyFraction->push_back( chargedHadronEnergyFraction );
-
-        double neutralHadronEnergyFraction = jet.neutralHadronEnergyFraction();
-        recoJetsneutralEnergyFraction->push_back( neutralHadronEnergyFraction );
-
-        float photonEnergyFraction = jet.photonEnergyFraction();
-        PhotonEnergyFraction->push_back( photonEnergyFraction );
-    
-        float electronEnergyFraction = jet.electronEnergyFraction();
-        ElectronEnergyFraction->push_back( electronEnergyFraction );
-    
-        recoJetsHFHadronEnergyFraction->push_back(jet.HFHadronEnergyFraction());
-        recoJetsHFEMEnergyFraction->push_back(jet.HFEMEnergyFraction());
-    
-        float chargedHadronMultiplicity = jet.chargedHadronMultiplicity();
-        ChargedHadronMultiplicity->push_back( chargedHadronMultiplicity );
-    
-        float neutralHadronMultiplicity = jet.neutralHadronMultiplicity();
-        NeutralHadronMultiplicity->push_back( neutralHadronMultiplicity );
-    
-        float photonMultiplicity = jet.photonMultiplicity();
-        PhotonMultiplicity->push_back( photonMultiplicity );
-    
-        float electronMultiplicity = jet.electronMultiplicity();
-        ElectronMultiplicity->push_back( electronMultiplicity );
-
-        double muonMultiplicity1 = jet.muonMultiplicity();
-        MuonMultiplicity->push_back( muonMultiplicity1 );
-
-        float chargedEmEnergyFraction = jet.chargedEmEnergyFraction();
-        recoJetschargedEmEnergyFraction->push_back( chargedEmEnergyFraction );
-
-        float neutralEmEnergyFraction = jet.neutralEmEnergyFraction();
-        recoJetsneutralEmEnergyFraction->push_back( neutralEmEnergyFraction );
-
-        float muonEnergyFraction = jet.muonEnergyFraction();
-        recoJetsmuonEnergyFraction->push_back( muonEnergyFraction );
+        //PF particle type multiplicities 
+        ChargedHadronMultiplicity ->push_back( jet.chargedHadronMultiplicity() );
+        NeutralHadronMultiplicity ->push_back( jet.neutralHadronMultiplicity() );
+        PhotonMultiplicity        ->push_back( jet.photonMultiplicity()        );
+        ElectronMultiplicity      ->push_back( jet.electronMultiplicity()      );
+        MuonMultiplicity          ->push_back( jet.muonMultiplicity()          );
         
         //calculate matching vectors
         drMatchObject(muLVec,             jet, ij, muMatchedJetIdx);
