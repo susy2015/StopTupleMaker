@@ -259,6 +259,7 @@ process.QGTaggerNoLep = process.QGTagger.clone()
 process.QGTaggerNoLep.srcJets = cms.InputTag("ak4PFJetsCHSNoLep")
 
 #if options.cmsswVersion == "80X":
+'''
 addJetCollection(
       process,
       postfix = "",
@@ -290,7 +291,7 @@ addJetCollection(
 )
 process.patJetsAK4PFCHS.userData.userFloats.src += ['QGTaggerOther:qgLikelihood','QGTaggerOther:ptD', 'QGTaggerOther:axis2', 'QGTaggerOther:axis1']
 process.patJetsAK4PFCHS.userData.userInts.src += ['QGTaggerOther:mult']
-   
+'''   
 addJetCollection(
       process,
       postfix = "",
@@ -758,7 +759,7 @@ process.prodJets.jetBPPosBJetTags= cms.string('jetBPPosBJetTags')
 process.prodJets.debug = cms.bool(options.debug)
 #Jetsrc JetToolBox
 process.prodJets.jetSrc = cms.InputTag('QGAK4PFCHS')
-process.prodJets.jetOtherSrc = cms.InputTag('patJetsAK4PFCHS')
+process.prodJets.jetOtherSrc = cms.InputTag('slimmedJets')#patJetsAK4PFCHS')
 process.prodJets.qgTaggerKey = cms.string('QGTagger')
 
 process.prodJetsNoLep = process.prodJets.clone()
@@ -851,34 +852,28 @@ from RecoEgamma.PhotonIdentification.egmPhotonIDs_cff import *
 loadEgmIdSequence(process, DataFormat.MiniAOD)
 
 # Set ID tags
-process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose")#egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose")
-process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium")#egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium")
-process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight")#egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight")
+process.goodPhotons.loosePhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose")
+process.goodPhotons.mediumPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium")
+process.goodPhotons.tightPhotonID = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight")
             
 process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "loosePhotonID"))
 process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "mediumPhotonID"))
 process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "tightPhotonID"))
                                                   
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfGammaIso"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "isEB"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "genMatched"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "hadTowOverEM"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "sigmaIetaIeta"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfChargedIso"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfNeutralIso"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfChargedIsoRhoCorr"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfNeutralIsoRhoCorr"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "pfGammaIsoRhoCorr"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "hasPixelSeed"))
-#process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "passElectronVeto"))
-#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "hadronization"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "nonPrompt"))
-#process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "fullID"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPt"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonEta"))
-process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPhi"))
-process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVec"))
-process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "gammaLVecGen"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFGammaIso"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonISEB"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonGenMatched"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonHadTowOverEM"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonSigmaIetaIeta"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFChargedIso"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFNeutralIso"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFChargedIsoRhoCorr"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFNeutralIsoRhoCorr"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonPFGammaIsoRhoCorr"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("goodPhotons", "photonHasPixelSeed"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("goodPhotons", "photonNonPrompt"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "photonLVec"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "photonLVecGen"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("goodPhotons", "genPartonLVec"))
 
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodSecondaryVertex", "svPT"))
