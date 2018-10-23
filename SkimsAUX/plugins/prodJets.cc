@@ -1,59 +1,26 @@
-
 #include <memory>
-#include <algorithm>
 #include <vector>
-#include <map>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/Event.h"
-#include "DataFormats/Common/interface/Handle.h"
-#include "DataFormats/Common/interface/View.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "JetMETCorrections/Objects/interface/JetCorrector.h"
-
-#include "DataFormats/JetReco/interface/BasicJet.h"
-#include "DataFormats/JetReco/interface/BasicJetCollection.h"
-
-#include "DataFormats/METReco/interface/MET.h"
-
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-#include "CommonTools/Utils/interface/PtComparator.h"
+
+#include "DataFormats/Common/interface/Handle.h"
+#include "DataFormats/Common/interface/View.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 
 #include "TLorentzVector.h"
-
-#include "DataFormats/BTauReco/interface/TaggingVariable.h"
-#include "DataFormats/BTauReco/interface/ShallowTagInfo.h"
-
-#include "DataFormats/BTauReco/interface/TaggingVariable.h"
-#include "DataFormats/BTauReco/interface/CandIPTagInfo.h"
-#include "DataFormats/BTauReco/interface/CandSoftLeptonTagInfo.h"
-#include "DataFormats/BTauReco/interface/BoostedDoubleSVTagInfo.h"
-#include "DataFormats/BTauReco/interface/TrackIPTagInfo.h"
-#include "DataFormats/BTauReco/interface/IPTagInfo.h"
-#include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-
-#include "RecoBTau/JetTagComputer/interface/GenericMVAJetTagComputer.h"
-#include "RecoBTau/JetTagComputer/interface/GenericMVAJetTagComputerWrapper.h"
-#include "RecoBTau/JetTagComputer/interface/JetTagComputer.h"
-#include "RecoBTau/JetTagComputer/interface/JetTagComputerRecord.h"
-#include "RecoBTag/SecondaryVertex/interface/CombinedSVComputer.h"
-#include "RecoBTag/SecondaryVertex/interface/TrackKinematics.h"
-#include "RecoBTag/SecondaryVertex/interface/V0Filter.h"
-#include "RecoBTag/ImpactParameter/plugins/IPProducer.h"
-#include "RecoVertex/VertexPrimitives/interface/ConvertToFromReco.h"
 
 class prodJets : public edm::EDFilter 
 {
