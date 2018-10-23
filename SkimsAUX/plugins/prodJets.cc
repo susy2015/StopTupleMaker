@@ -73,21 +73,21 @@ private:
 
     template<typename T>
     void drMatchObject(const T& objLVec, const pat::Jet& jet, unsigned int ij, std::unique_ptr<std::vector<int> >& matchVec)
+    {
+        const unsigned int numConstituents = jet.numberOfDaughters();
+        for(unsigned int im=0; im < objLVec->size(); im++)
         {
-            const unsigned int numConstituents = jet.numberOfDaughters();
-            for(unsigned int im=0; im < objLVec->size(); im++)
+            float muEta = (*objLVec)[im].Eta(), muPhi = (*objLVec)[im].Phi();
+            float mindRobjCon = 999.;
+            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
             {
-                float muEta = (*objLVec)[im].Eta(), muPhi = (*objLVec)[im].Phi();
-                float mindRobjCon = 999.;
-                for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-                {
-                    const reco::Candidate * constituent = jet.daughter(iCon);
-                    float dRobjCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
-                    if( mindRobjCon > dRobjCon ){ mindRobjCon = dRobjCon; }
-                }
-                if( mindRobjCon < deltaRcon_ ) (*matchVec)[im] = ij;
+                const reco::Candidate * constituent = jet.daughter(iCon);
+                float dRobjCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
+                if( mindRobjCon > dRobjCon ){ mindRobjCon = dRobjCon; }
             }
+            if( mindRobjCon < deltaRcon_ ) (*matchVec)[im] = ij;
         }
+    }
 
     //Member variables  
     bool debug_;
@@ -109,7 +109,6 @@ private:
 
     std::string jetPBJetTags_;
     std::string jetBPBJetTags_;
-
 
     std::string CvsBCJetTags_;
     std::string CvsLCJetTags_;
