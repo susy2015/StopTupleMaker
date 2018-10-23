@@ -71,11 +71,29 @@ class prodJets : public edm::EDFilter
 
   void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
+  template<typename T>
+  void drMatchObject(const T& objLVec, const pat::Jet& jet, unsigned int ij, std::unique_ptr<std::vector<int> >& matchVec)
+  {
+      const unsigned int numConstituents = jet.numberOfDaughters();
+      for(unsigned int im=0; im < objLVec->size(); im++)
+      {
+          float muEta = (*objLVec)[im].Eta(), muPhi = (*objLVec)[im].Phi();
+          float mindRobjCon = 999.;
+          for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+          {
+              const reco::Candidate * constituent = jet.daughter(iCon);
+              float dRobjCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
+              if( mindRobjCon > dRobjCon ){ mindRobjCon = dRobjCon; }
+          }
+          if( mindRobjCon < deltaRcon_ ) (*matchVec)[im] = ij;
+      }
+  }
+
   edm::InputTag jetSrc_;
   std::string bTagKeyString_;
   bool debug_;
 
-  double jetPtCut_miniAOD_, genMatch_dR_;
+  double genMatch_dR_;
 
   edm::EDGetTokenT<std::vector<pat::Jet> >JetTok_;
 
@@ -219,7 +237,6 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
   debug_       = iConfig.getParameter<bool>("debug");
 
-  jetPtCut_miniAOD_ = iConfig.getUntrackedParameter<double>("jetPtCut_miniAOD", 10);
   genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
 
   eleLVec_Src_ = iConfig.getParameter<edm::InputTag>("eleLVec");
@@ -399,7 +416,6 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
     std::unique_ptr<std::vector<int> > trksForIsoVetoMatchedJetIdx(new std::vector<int>(trksForIsoVetoLVec->size(), -1));
     std::unique_ptr<std::vector<int> > looseisoTrksMatchedJetIdx(new std::vector<int>(looseisoTrksLVec->size(), -1));
 
-    int cntJetLowPt = 0;
     for(unsigned int ij=0; ij < jets->size(); ij++)
     {
         const pat::Jet& jet = (*jets)[ij];
@@ -482,8 +498,6 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
         if( uncertainty==-999. ) uncertainty = 0;
         recoJetsJecUnc->push_back(uncertainty);
 
-        if( perJetLVec.Pt() < jetPtCut_miniAOD_ && ij < jets->size() ) cntJetLowPt ++;
-
         int flavor = jet.partonFlavour();
         recoJetsFlavor->push_back(flavor);
 
@@ -505,9 +519,7 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
         toGetName = qgTaggerKey_+":axis1";
         if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:axis1";
         float thisqgAxis1 = jet.userFloat(toGetName.c_str());
-        //std::cout<<thisqgAxis1<<std::endl;
         qgAxis1->push_back(thisqgAxis1);
-        //std::cout<<qgAxis1->at(0)<<std::endl;
 
         toGetName = qgTaggerKey_+":mult"; 
         if( ij >= jets->size() && qgTaggerKey_ == "QGTagger" ) toGetName = qgTaggerKey_+"Other:mult";
@@ -558,76 +570,15 @@ void prodJets::produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup
 
         float muonEnergyFraction = jet.muonEnergyFraction();
         recoJetsmuonEnergyFraction->push_back( muonEnergyFraction );
-
-        //std::cout << chargedEmEnergyFraction << std::endl;
-
-        //const std::vector<reco::PFCandidatePtr> & constituents = jet.getPFConstituents();
-        //const unsigned int numConstituents = constituents.size();
-        const unsigned int numConstituents = jet.numberOfDaughters();
-
-        for(unsigned int im=0; im < muLVec->size(); im++)
-        {
-            float muEta = muLVec->at(im).Eta(), muPhi = muLVec->at(im).Phi();
-            float mindRmuonCon = 999.;
-            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-            {
-                //const reco::PFCandidatePtr& constituent = constituents[iCon];
-                const reco::Candidate * constituent = jet.daughter(iCon);
-                float dRmuonCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
-                if( mindRmuonCon > dRmuonCon ){ mindRmuonCon = dRmuonCon; }
-            }
-            if( mindRmuonCon < deltaRcon_ ) (*muMatchedJetIdx)[im] = ij;
-        }
-
-        for(unsigned int ie=0; ie < eleLVec->size(); ie++)
-        {
-            float eleEta = eleLVec->at(ie).Eta(), elePhi = eleLVec->at(ie).Phi();
-            float mindReleCon = 999.;
-            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-            {
-                //const reco::PFCandidatePtr& constituent = constituents[iCon];
-                const reco::Candidate * constituent = jet.daughter(iCon);
-                float dReleCon = reco::deltaR(constituent->eta(), constituent->phi(), eleEta, elePhi);
-                if( mindReleCon > dReleCon ){ mindReleCon = dReleCon; }
-            }
-            if( mindReleCon < deltaRcon_ ) (*eleMatchedJetIdx)[ie] = ij;
-        }
-
-        for(unsigned int it=0; it < trksForIsoVetoLVec->size(); it++)
-        {
-            float trkEta = trksForIsoVetoLVec->at(it).Eta(), trkPhi = trksForIsoVetoLVec->at(it).Phi();
-            float mindRtrkCon = 999.;
-            for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-            {
-                //          const reco::PFCandidatePtr& constituent = constituents[iCon];
-                const reco::Candidate * constituent = jet.daughter(iCon);
-                float dRtrkCon = reco::deltaR(constituent->eta(), constituent->phi(), trkEta, trkPhi);
-                if( mindRtrkCon > dRtrkCon ){ mindRtrkCon = dRtrkCon; }
-            }
-            if( mindRtrkCon < deltaRcon_ ) (*trksForIsoVetoMatchedJetIdx)[it] = ij;
-        }
-
-        for(unsigned int ist=0; ist < looseisoTrksLVec->size(); ist++)
-        {
-            float isotrkEta = looseisoTrksLVec->at(ist).Eta(), isotrkPhi = looseisoTrksLVec->at(ist).Phi();
-            float mindRisotrkCon = 999.;
-            for(unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-            {
-                //const reco::PFCandidatePtr& constituent = constituents[iCon];
-                const reco::Candidate * constituent = jet.daughter(iCon);
-                float dRisotrkCon = reco::deltaR(constituent->eta(), constituent->phi(), isotrkEta, isotrkPhi);
-                if( mindRisotrkCon > dRisotrkCon ){ mindRisotrkCon = dRisotrkCon; }
-            }
-            if( mindRisotrkCon < deltaRcon_ ) (*looseisoTrksMatchedJetIdx)[ist] = ij;
-        }
+        
+        //calculate matching vectors
+        drMatchObject(muLVec,             jet, ij, muMatchedJetIdx);
+        drMatchObject(eleLVec,            jet, ij, eleMatchedJetIdx);
+        drMatchObject(trksForIsoVetoLVec, jet, ij, trksForIsoVetoMatchedJetIdx);
+        drMatchObject(looseisoTrksLVec,   jet, ij, looseisoTrksMatchedJetIdx);
     }
 
-    if( cntJetLowPt ) std::cout<<"WARNING ... NON ZERO ("<<cntJetLowPt<<") number of jets with pt < "<<jetPtCut_miniAOD_<<std::endl;
-
-    std::unique_ptr<int> nJets (new int);
-
-    *nJets = jetsLVec->size();
-
+    std::unique_ptr<int> nJets (new int(jetsLVec->size()));
 
     // store in the event
     iEvent.put(std::move(jetsLVec), "jetsLVec");
