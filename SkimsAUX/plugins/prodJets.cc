@@ -57,72 +57,72 @@
 
 class prodJets : public edm::EDFilter 
 {
- public:
+public:
 
-  explicit prodJets(const edm::ParameterSet & iConfig);
-  ~prodJets();
+    explicit prodJets(const edm::ParameterSet & iConfig);
+    ~prodJets();
 
- private:
+private:
 
-  virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
+    virtual bool filter(edm::Event & iEvent, const edm::EventSetup & iSetup);
 
-  void produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
-  void produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
+    void produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
+    void produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
 
-  void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
+    void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
-  template<typename T>
-  void drMatchObject(const T& objLVec, const pat::Jet& jet, unsigned int ij, std::unique_ptr<std::vector<int> >& matchVec)
-  {
-      const unsigned int numConstituents = jet.numberOfDaughters();
-      for(unsigned int im=0; im < objLVec->size(); im++)
-      {
-          float muEta = (*objLVec)[im].Eta(), muPhi = (*objLVec)[im].Phi();
-          float mindRobjCon = 999.;
-          for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
-          {
-              const reco::Candidate * constituent = jet.daughter(iCon);
-              float dRobjCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
-              if( mindRobjCon > dRobjCon ){ mindRobjCon = dRobjCon; }
-          }
-          if( mindRobjCon < deltaRcon_ ) (*matchVec)[im] = ij;
-      }
-  }
+    template<typename T>
+    void drMatchObject(const T& objLVec, const pat::Jet& jet, unsigned int ij, std::unique_ptr<std::vector<int> >& matchVec)
+        {
+            const unsigned int numConstituents = jet.numberOfDaughters();
+            for(unsigned int im=0; im < objLVec->size(); im++)
+            {
+                float muEta = (*objLVec)[im].Eta(), muPhi = (*objLVec)[im].Phi();
+                float mindRobjCon = 999.;
+                for (unsigned int iCon = 0; iCon < numConstituents; ++iCon)
+                {
+                    const reco::Candidate * constituent = jet.daughter(iCon);
+                    float dRobjCon = reco::deltaR(constituent->eta(), constituent->phi(), muEta, muPhi);
+                    if( mindRobjCon > dRobjCon ){ mindRobjCon = dRobjCon; }
+                }
+                if( mindRobjCon < deltaRcon_ ) (*matchVec)[im] = ij;
+            }
+        }
 
-  //Member variables  
-  bool debug_;
+    //Member variables  
+    bool debug_;
 
-  double genMatch_dR_;
+    double genMatch_dR_;
 
-  double deltaRcon_;
+    double deltaRcon_;
 
-  std::string qgTaggerKey_;
+    std::string qgTaggerKey_;
 
-  std::string bTagKeyString_;
-  std::string deepCSVBJetTags_;
-  std::string deepFlavorBJetTags_;
+    std::string bTagKeyString_;
+    std::string deepCSVBJetTags_;
+    std::string deepFlavorBJetTags_;
 
-  std::string jetType_;
+    std::string jetType_;
 
-  std::string NjettinessAK8Puppi_label_;
-  std::string ak8PFJetsPuppi_label_;
+    std::string NjettinessAK8Puppi_label_;
+    std::string ak8PFJetsPuppi_label_;
 
-  std::string jetPBJetTags_;
-  std::string jetBPBJetTags_;
+    std::string jetPBJetTags_;
+    std::string jetBPBJetTags_;
 
 
-  std::string CvsBCJetTags_;
-  std::string CvsLCJetTags_;
+    std::string CvsBCJetTags_;
+    std::string CvsLCJetTags_;
 
-  edm::EDGetTokenT<std::vector<pat::Jet> > JetTok_;
+    edm::EDGetTokenT<std::vector<pat::Jet> > JetTok_;
 
-  edm::EDGetTokenT<std::vector<TLorentzVector> > EleLVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> > MuLVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> > TrksForIsoVetolVec_Tok_;
-  edm::EDGetTokenT<std::vector<TLorentzVector> > LooseIsoTrksVec_Tok_;
+    edm::EDGetTokenT<std::vector<TLorentzVector> > EleLVec_Tok_;
+    edm::EDGetTokenT<std::vector<TLorentzVector> > MuLVec_Tok_;
+    edm::EDGetTokenT<std::vector<TLorentzVector> > TrksForIsoVetolVec_Tok_;
+    edm::EDGetTokenT<std::vector<TLorentzVector> > LooseIsoTrksVec_Tok_;
 
-  edm::EDGetTokenT<std::vector<pat::Jet> > PuppiJetsSrc_Tok_;
-  edm::EDGetTokenT<std::vector<pat::Jet> > PuppiSubJetsSrc_Tok_;
+    edm::EDGetTokenT<std::vector<pat::Jet> > PuppiJetsSrc_Tok_;
+    edm::EDGetTokenT<std::vector<pat::Jet> > PuppiSubJetsSrc_Tok_;
  
 };
 
@@ -133,191 +133,192 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
     axis1_     = 0;
     axis2_     = 0;
 
-     if(jet->numberOfDaughters() == 0) return;
+    if(jet->numberOfDaughters() == 0) return;
 
-     float sum_weight    = 0.0;
-     float sum_dEta      = 0.0;
-     float sum_dPhi      = 0.0;
-     float sum_dEta2     = 0.0;
-     float sum_dPhi2     = 0.0;
-     float sum_dEta_dPhi = 0.0;
-     float sum_pt        = 0.0;
-     bool useQC          = false; // useQualityCuts; hard-coded for now to mimic what jetMet does in 731
+    float sum_weight    = 0.0;
+    float sum_dEta      = 0.0;
+    float sum_dPhi      = 0.0;
+    float sum_dEta2     = 0.0;
+    float sum_dPhi2     = 0.0;
+    float sum_dEta_dPhi = 0.0;
+    float sum_pt        = 0.0;
+    bool useQC          = false; // useQualityCuts; hard-coded for now to mimic what jetMet does in 731
 
-     // loop over the jet constituents
-     // (packed candidate situation)
-     for(auto part : jet->getJetConstituentsQuick()) {
-         if(part->charge()){ // charged particles
-             if(isReco) {
-                 auto p = dynamic_cast<const pat::PackedCandidate*>(part);
-                 if(!p){
-                     try { throw; }
-                     catch(...) {
-                         std::cout << "ERROR: QGTagging variables cannot be computed for these jets!" << std::endl
-                             << "       See QuauarGluonTaggingVaiables::compute()"              << std::endl;
-                     } // catch(...)
-                 } // !p
-                 if(!( p->fromPV() > 1 && p->trackHighPurity() )) continue;
-                 if(useQC) {
-                     // currently hard-coded to false above
-                     // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
-                     if( p->dzError()==0 || p->dxyError()==0 ) continue;
-                     if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
-                     if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only      applies to multiplicity
-                 } else ++totalMult_;
-             } else ++totalMult_;
-         } else { // neutral particles
-             if(part->pt() < 1.0) continue;
-             ++totalMult_;
-         } // charged, neutral particles
+    // loop over the jet constituents
+    // (packed candidate situation)
+    for(auto part : jet->getJetConstituentsQuick()) {
+        if(part->charge()){ // charged particles
+            if(isReco) {
+                auto p = dynamic_cast<const pat::PackedCandidate*>(part);
+                if(!p){
+                    try { throw; }
+                    catch(...) {
+                        std::cout << "ERROR: QGTagging variables cannot be computed for these jets!" << std::endl
+                                  << "       See QuauarGluonTaggingVaiables::compute()"              << std::endl;
+                    } // catch(...)
+                } // !p
+                if(!( p->fromPV() > 1 && p->trackHighPurity() )) continue;
+                if(useQC) {
+                    // currently hard-coded to false above
+                    // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
+                    if( p->dzError()==0 || p->dxyError()==0 ) continue;
+                    if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
+                    if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only      applies to multiplicity
+                } else ++totalMult_;
+            } else ++totalMult_;
+        } else { // neutral particles
+            if(part->pt() < 1.0) continue;
+            ++totalMult_;
+        } // charged, neutral particles
 
-         float dEta   = part->eta() - jet->eta();
-         float dPhi   = reco::deltaPhi(part->phi(), jet->phi());
-         float partPt = part->pt();
-         float weight = partPt*partPt;
+        float dEta   = part->eta() - jet->eta();
+        float dPhi   = reco::deltaPhi(part->phi(), jet->phi());
+        float partPt = part->pt();
+        float weight = partPt*partPt;
 
-         sum_weight    += weight;
-         sum_pt        += partPt;
-         sum_dEta      += dEta      * weight;
-         sum_dPhi      += dPhi      * weight;
-         sum_dEta2     += dEta*dEta * weight;
-         sum_dEta_dPhi += dEta*dPhi * weight;
-         sum_dPhi2     += dPhi*dPhi * weight;
-     } // jet->getJetConstituentsQuick()
+        sum_weight    += weight;
+        sum_pt        += partPt;
+        sum_dEta      += dEta      * weight;
+        sum_dPhi      += dPhi      * weight;
+        sum_dEta2     += dEta*dEta * weight;
+        sum_dEta_dPhi += dEta*dPhi * weight;
+        sum_dPhi2     += dPhi*dPhi * weight;
+    } // jet->getJetConstituentsQuick()
 
-     // calculate axis2 and ptD
-     float a = 0.0;
-     float b = 0.0;
-     float c = 0.0;
-     float ave_dEta  = 0.0;
-     float ave_dPhi  = 0.0;
-     float ave_dEta2 = 0.0;
-     float ave_dPhi2 = 0.0;
+    // calculate axis2 and ptD
+    float a = 0.0;
+    float b = 0.0;
+    float c = 0.0;
+    float ave_dEta  = 0.0;
+    float ave_dPhi  = 0.0;
+    float ave_dEta2 = 0.0;
+    float ave_dPhi2 = 0.0;
 
-     if(sum_weight > 0){
-         ptD_ = sqrt(sum_weight)/sum_pt;
-         ave_dEta  = sum_dEta  / sum_weight;
-         ave_dPhi  = sum_dPhi  / sum_weight;
-         ave_dEta2 = sum_dEta2 / sum_weight;
-         ave_dPhi2 = sum_dPhi2 / sum_weight;
-         a = ave_dEta2 - ave_dEta*ave_dEta;
-         b = ave_dPhi2 - ave_dPhi*ave_dPhi;
-         c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
-     } else ptD_ = 0;
+    if(sum_weight > 0){
+        ptD_ = sqrt(sum_weight)/sum_pt;
+        ave_dEta  = sum_dEta  / sum_weight;
+        ave_dPhi  = sum_dPhi  / sum_weight;
+        ave_dEta2 = sum_dEta2 / sum_weight;
+        ave_dPhi2 = sum_dPhi2 / sum_weight;
+        a = ave_dEta2 - ave_dEta*ave_dEta;
+        b = ave_dPhi2 - ave_dPhi*ave_dPhi;
+        c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
+    } else ptD_ = 0;
 
-     float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
-     if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
-     else              axis2_ = 0.0;
-     if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
-     else              axis1_ = 0.0;
+    float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
+    if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
+    else              axis2_ = 0.0;
+    if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
+    else              axis1_ = 0.0;
 }
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
 {
-  bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
+    
+    bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
 
-  jetPBJetTags_        = iConfig.getParameter<std::string>("jetPBJetTags");
+    jetPBJetTags_        = iConfig.getParameter<std::string>("jetPBJetTags");
 
-  jetBPBJetTags_        = iConfig.getParameter<std::string>("jetBPBJetTags");
+    jetBPBJetTags_        = iConfig.getParameter<std::string>("jetBPBJetTags");
 
-  deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
+    deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
 
-  deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
+    deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
 
-  CvsBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
-  CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
+    CvsBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
+    CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
 
-  debug_       = iConfig.getParameter<bool>("debug");
+    debug_       = iConfig.getParameter<bool>("debug");
 
-  genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
+    genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
 
-  deltaRcon_ = iConfig.getUntrackedParameter<double>("deltaRcon", 0.01);
+    deltaRcon_ = iConfig.getUntrackedParameter<double>("deltaRcon", 0.01);
 
-  jetType_ = iConfig.getParameter<std::string>("jetType");
+    jetType_ = iConfig.getParameter<std::string>("jetType");
 
-  qgTaggerKey_ = iConfig.getParameter<std::string>("qgTaggerKey");
+    qgTaggerKey_ = iConfig.getParameter<std::string>("qgTaggerKey");
   
 
-  NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
-  ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
+    NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
+    ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
 
-  //Consumes statements and input tags
-  JetTok_                 = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "jetSrc"             ) );
-  PuppiJetsSrc_Tok_       = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiJetsSrc"       ) );
-  PuppiSubJetsSrc_Tok_    = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiSubJetsSrc"    ) );
-  EleLVec_Tok_            = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "eleLVec"            ) );
-  MuLVec_Tok_             = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "muLVec"             ) );
-  TrksForIsoVetolVec_Tok_ = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "trksForIsoVetoLVec" ) );
-  LooseIsoTrksVec_Tok_    = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "looseisoTrksLVec"   ) );
+    //Consumes statements and input tags
+    JetTok_                 = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "jetSrc"             ) );
+    PuppiJetsSrc_Tok_       = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiJetsSrc"       ) );
+    PuppiSubJetsSrc_Tok_    = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiSubJetsSrc"    ) );
+    EleLVec_Tok_            = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "eleLVec"            ) );
+    MuLVec_Tok_             = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "muLVec"             ) );
+    TrksForIsoVetolVec_Tok_ = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "trksForIsoVetoLVec" ) );
+    LooseIsoTrksVec_Tok_    = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "looseisoTrksLVec"   ) );
 
 
-  //Produces statements 
+    //Produces statements 
 
-  //AK4 jet variables 
-  produces<std::vector<TLorentzVector> >("jetsLVec");
-  produces<std::vector<int> >("recoJetsFlavor");
-  produces<std::vector<float> >("recoJetsCSVv2");
-  produces<std::vector<float> >("recoJetsCharge");
-  produces<std::vector<float> >("recoJetsJecUnc");
-  produces<std::vector<float> >("recoJetsJecScaleRawToFull");
-  produces<int>("nJets");
+    //AK4 jet variables 
+    produces<std::vector<TLorentzVector> >("jetsLVec");
+    produces<std::vector<int> >("recoJetsFlavor");
+    produces<std::vector<float> >("recoJetsCSVv2");
+    produces<std::vector<float> >("recoJetsCharge");
+    produces<std::vector<float> >("recoJetsJecUnc");
+    produces<std::vector<float> >("recoJetsJecScaleRawToFull");
+    produces<int>("nJets");
 
-  produces<std::vector<float> >("DeepCSVb");
-  produces<std::vector<float> >("DeepCSVc");
-  produces<std::vector<float> >("DeepCSVl");
-  produces<std::vector<float> >("DeepCSVbb");
-  produces<std::vector<float> >("DeepCSVcc");
+    produces<std::vector<float> >("DeepCSVb");
+    produces<std::vector<float> >("DeepCSVc");
+    produces<std::vector<float> >("DeepCSVl");
+    produces<std::vector<float> >("DeepCSVbb");
+    produces<std::vector<float> >("DeepCSVcc");
 
-  produces<std::vector<float> >("DeepFlavorb");
-  produces<std::vector<float> >("DeepFlavorbb");
-  produces<std::vector<float> >("DeepFlavorlepb");
-  produces<std::vector<float> >("DeepFlavorc");
-  produces<std::vector<float> >("DeepFlavoruds");
-  produces<std::vector<float> >("DeepFlavorg");
+    produces<std::vector<float> >("DeepFlavorb");
+    produces<std::vector<float> >("DeepFlavorbb");
+    produces<std::vector<float> >("DeepFlavorlepb");
+    produces<std::vector<float> >("DeepFlavorc");
+    produces<std::vector<float> >("DeepFlavoruds");
+    produces<std::vector<float> >("DeepFlavorg");
 
-  produces<std::vector<float> >("CversusB");
-  produces<std::vector<float> >("CversusL");
+    produces<std::vector<float> >("CversusB");
+    produces<std::vector<float> >("CversusL");
 
-  produces<std::vector<float> >("qgLikelihood");
-  produces<std::vector<float> >("qgPtD");
-  produces<std::vector<float> >("qgAxis2");
-  produces<std::vector<float> >("qgAxis1");
-  produces<std::vector<float> >("qgMult");
+    produces<std::vector<float> >("qgLikelihood");
+    produces<std::vector<float> >("qgPtD");
+    produces<std::vector<float> >("qgAxis2");
+    produces<std::vector<float> >("qgAxis1");
+    produces<std::vector<float> >("qgMult");
 
-  produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
-  produces<std::vector<float> >("recoJetschargedEmEnergyFraction");
-  produces<std::vector<float> >("recoJetsneutralEmEnergyFraction");
-  produces<std::vector<float> >("recoJetsHFHadronEnergyFraction");
-  produces<std::vector<float> >("recoJetsmuonEnergyFraction");
-  produces<std::vector<float> >("recoJetsneutralEnergyFraction");
-  produces<std::vector<float> >("recoJetsHFEMEnergyFraction");  
-  produces<std::vector<float> >("PhotonEnergyFraction");
-  produces<std::vector<float> >("ElectronEnergyFraction");
+    produces<std::vector<float> >("recoJetschargedHadronEnergyFraction");
+    produces<std::vector<float> >("recoJetschargedEmEnergyFraction");
+    produces<std::vector<float> >("recoJetsneutralEmEnergyFraction");
+    produces<std::vector<float> >("recoJetsHFHadronEnergyFraction");
+    produces<std::vector<float> >("recoJetsmuonEnergyFraction");
+    produces<std::vector<float> >("recoJetsneutralEnergyFraction");
+    produces<std::vector<float> >("recoJetsHFEMEnergyFraction");  
+    produces<std::vector<float> >("PhotonEnergyFraction");
+    produces<std::vector<float> >("ElectronEnergyFraction");
 
-  produces<std::vector<float> >("ChargedHadronMultiplicity");
-  produces<std::vector<float> >("NeutralHadronMultiplicity");
-  produces<std::vector<float> >("PhotonMultiplicity");
-  produces<std::vector<float> >("ElectronMultiplicity");
-  produces<std::vector<float> >("MuonMultiplicity");
+    produces<std::vector<float> >("ChargedHadronMultiplicity");
+    produces<std::vector<float> >("NeutralHadronMultiplicity");
+    produces<std::vector<float> >("PhotonMultiplicity");
+    produces<std::vector<float> >("ElectronMultiplicity");
+    produces<std::vector<float> >("MuonMultiplicity");
 
-  produces<std::vector<int> >("trksForIsoVetoMatchedJetIdx");
-  produces<std::vector<int> >("looseisoTrksMatchedJetIdx");
+    produces<std::vector<float> >("JetProba");
+    produces<std::vector<float> >("JetBprob");
 
-  produces<std::vector<float> >("JetProba");
-  produces<std::vector<float> >("JetBprob");
+    produces<std::vector<int> >("muMatchedJetIdx");
+    produces<std::vector<int> >("eleMatchedJetIdx");
+    produces<std::vector<int> >("trksForIsoVetoMatchedJetIdx");
+    produces<std::vector<int> >("looseisoTrksMatchedJetIdx");
 
-  produces<std::vector<int> >("muMatchedJetIdx");
-  produces<std::vector<int> >("eleMatchedJetIdx");
 
-  //AK8 jet variables 
-  produces<std::vector<TLorentzVector> >("puppiJetsLVec");
-  produces<std::vector<TLorentzVector> >("puppiSubJetsLVec");
-  produces<std::vector<float> >("puppisoftDropMass");
-  produces<std::vector<float> >("puppitau1");
-  produces<std::vector<float> >("puppitau2");
-  produces<std::vector<float> >("puppitau3");
-  produces<std::vector<float> >("puppiSubJetsBdisc");
+    //AK8 jet variables 
+    produces<std::vector<TLorentzVector> >("puppiJetsLVec");
+    produces<std::vector<TLorentzVector> >("puppiSubJetsLVec");
+    produces<std::vector<float> >("puppisoftDropMass");
+    produces<std::vector<float> >("puppitau1");
+    produces<std::vector<float> >("puppitau2");
+    produces<std::vector<float> >("puppitau3");
+    produces<std::vector<float> >("puppiSubJetsBdisc");
 
 }
 
