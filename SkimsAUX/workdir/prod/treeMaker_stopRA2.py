@@ -382,19 +382,6 @@ process.selectedPatJetsRA2 = process.simpleJetSelector.clone()
 
 process.load("PhysicsTools.PatAlgos.selectionLayer1.jetCountFilter_cfi")
 
-# PFJets (with CHS)
-process.ak4patJetsPFchsPt10     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt10.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt10.pfJetCut = cms.string('pt > 10')
-
-process.ak4patJetsPFchsPt30     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt30.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt30.pfJetCut = cms.string('pt > 10')
-
-process.ak4patJetsPFchsPt50Eta25     = process.selectedPatJetsRA2.clone()
-process.ak4patJetsPFchsPt50Eta25.jetSrc = cms.InputTag('slimmedJets')
-process.ak4patJetsPFchsPt50Eta25.pfJetCut = cms.string('pt > 50 & abs(eta) < 2.5')
-
 process.patJetsAK4PFCHSPt10 = process.selectedPatJetsRA2.clone()
 process.patJetsAK4PFCHSPt10.jetSrc = cms.InputTag("patJetsAK4PFCHS")
 process.patJetsAK4PFCHSPt10.pfJetCut = cms.string('pt >= 10')
@@ -403,14 +390,9 @@ process.patJetsAK4PFCHSPt10NoLep = process.selectedPatJetsRA2.clone()
 process.patJetsAK4PFCHSPt10NoLep.jetSrc = cms.InputTag("patJetsAK4PFCHSNoLep")
 process.patJetsAK4PFCHSPt10NoLep.pfJetCut = cms.string('pt >= 10')
 
-# PFJets - filters
-process.countak4JetsPFchsPt50Eta25           = process.countPatJets.clone()
-process.countak4JetsPFchsPt50Eta25.src       = cms.InputTag('ak4patJetsPFchsPt50Eta25')
-process.countak4JetsPFchsPt50Eta25.minNumber = cms.uint32(3)
+#ra2PFchsJets_task = cms.Task(process.ak4patJetsPFchsPt10, process.ak4patJetsPFchsPt30, process.ak4patJetsPFchsPt50Eta25 )
 
-ra2PFchsJets_task = cms.Task(process.ak4patJetsPFchsPt10, process.ak4patJetsPFchsPt30, process.ak4patJetsPFchsPt50Eta25 )
-
-process.ra2PFchsJets = cms.Sequence( ra2PFchsJets_task )
+#process.ra2PFchsJets = cms.Sequence( ra2PFchsJets_task )
 
 ## -- Add AK8 PUPPI jet collection using Jet Toolbox --
 
@@ -513,11 +495,11 @@ process.ak4jetMHTPFchsDPhiFilter = process.jetMHTDPhiFilter.clone()
 process.ak4jetMHTPFchsDPhiFilter.JetSource = cms.InputTag("ak4patJetsPFchsPt30")
 process.ak4jetMHTPFchsDPhiFilter.MHTSource = cms.InputTag("mhtPFchs")
 
-process.ra2Objects_task = cms.Task(ra2PFchsJets_task, process.htPFchs, process.mhtPFchs)
+#process.ra2Objects_task = cms.Task(ra2PFchsJets_task, process.htPFchs, process.mhtPFchs)
 
-process.ra2Objects = cms.Sequence( 
-                                 process.ra2Objects_task
-                                 )
+#process.ra2Objects = cms.Sequence( 
+#                                 process.ra2Objects_task
+#                                 )
 
 process.load("PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi")
 process.load("PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi")
@@ -842,7 +824,7 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
 
 # Define which IDs we want to produce
-my_photon_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff']#cutBasedPhotonID_Fall17_94X_V1_cff
+my_photon_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V1_cff']
 
 # Add them to the VID producer
 for idmod in my_photon_id_modules:
@@ -1245,11 +1227,11 @@ process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
 
 if options.mcInfo == False:
 
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task#, process.genHT
+	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets,  process.prepareCutvars_task#, process.genHT
 ) #process.hltFilte process.QGAK4PFCHSr process.stopPFJets
 
 else:
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.ra2Objects_task, process.prepareCutvars_task, process.genHT, process.ISRJetProducer, process.prodGenJets #process.PDFWeights
+	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerOther, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.prepareCutvars_task, process.genHT, process.ISRJetProducer, process.prodGenJets #process.PDFWeights
 )
 
 # Other sequence
