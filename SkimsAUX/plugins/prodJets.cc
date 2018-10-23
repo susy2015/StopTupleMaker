@@ -68,41 +68,24 @@ class prodJets : public edm::EDFilter
 
   void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
-  edm::InputTag jetSrc_, jetOtherSrc_;
+    edm::InputTag jetSrc_;
   // All have to be pat::Jet, otherwise cannot get b-tagging information!
-  edm::Handle<std::vector<pat::Jet> > jets, otherjets; 
   std::string bTagKeyString_;
-  edm::InputTag vtxSrc_;
-  edm::InputTag metSrc_;
-  bool isPatJet;
   bool debug_;
 
   bool isData_;
 
   double jetPtCut_miniAOD_, genMatch_dR_;
-  double relPt_for_xCheck_, dR_for_xCheck_;
 
   edm::EDGetTokenT<std::vector<pat::Jet> >JetTok_;
-  edm::EDGetTokenT<std::vector<pat::Jet> >OtherJetsTok_;
-  edm::EDGetTokenT<std::vector<int> > W_EmuVec_Tok_;
-  edm::EDGetTokenT<std::vector<int> >W_TauVec_Tok_;
-  edm::EDGetTokenT<std::vector<int> >W_Tau_EmuVec_Tok_;
-  edm::EDGetTokenT<std::vector<int> >W_Tau_ProngsVec_Tok_;
-  edm::EDGetTokenT<std::vector<int> >W_Tau_NuVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >GenDecayLVec_Tok_;
   edm::EDGetTokenT<std::vector<int> >GenDecayMomRefVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >EleLVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >MuLVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >TrksForIsoVetolVec_Tok_;
   edm::EDGetTokenT<std::vector<TLorentzVector> >LooseIsoTrksVec_Tok_;
-  edm::EDGetTokenT< std::vector<reco::Vertex> >VtxTok_;
   edm::EDGetTokenT<std::vector<pat::Jet>> PuppiJetsSrc_Tok_;
   edm::EDGetTokenT<std::vector<pat::Jet>> PuppiSubJetsSrc_Tok_;
-  edm::EDGetTokenT<std::vector<pat::Jet>> Ak8Jets_Tok_;
-  edm::EDGetTokenT<std::vector<pat::Jet>> Ak8SubJets_Tok_;
-
-  edm::InputTag W_emuVec_Src_, W_tauVec_Src_, W_tau_emuVec_Src_, W_tau_prongsVec_Src_, W_tau_nuVec_Src_;
-  edm::Handle<std::vector<int> > W_emuVec_, W_tauVec_, W_tau_emuVec_, W_tau_prongsVec_, W_tau_nuVec_;
 
   edm::InputTag genDecayLVec_Src_;
   edm::Handle<std::vector<TLorentzVector> > genDecayLVec_;
@@ -128,53 +111,15 @@ class prodJets : public edm::EDFilter
   std::string ak8PFJetsPuppi_label_;
 
   std::string jetPBJetTags_;
-  std::string jetPNegBJetTags_;
-  std::string jetPPosBJetTags_;
 
   std::string jetBPBJetTags_;
-  std::string jetBPNegBJetTags_;
-  std::string jetBPPosBJetTags_;
 
   std::string deepCSVBJetTags_;
-  std::string deepCSVNegBJetTags_;
-  std::string deepCSVPosBJetTags_;
 
   std::string deepFlavorBJetTags_;
 
- std::string combinedSVBJetTags_;
-  std::string combinedSVNegBJetTags_;
-  std::string combinedSVPosBJetTags_;
-
-  std::string combinedIVFSVBJetTags_;
-  std::string combinedIVFSVPosBJetTags_;
-  std::string combinedIVFSVNegBJetTags_;
-
-  std::string simpleSVHighEffBJetTags_;
-  std::string simpleSVNegHighEffBJetTags_;
-  std::string simpleSVHighPurBJetTags_;
-  std::string simpleSVNegHighPurBJetTags_;
-
-  std::string softPFMuonBJetTags_;
-  std::string softPFMuonNegBJetTags_;
-  std::string softPFMuonPosBJetTags_;
-
-  std::string softPFElectronBJetTags_;
-  std::string softPFElectronNegBJetTags_;
-  std::string softPFElectronPosBJetTags_;
-
-  std::string doubleSVBJetTags_;
-
-  std::string cMVABJetTags_;
-  std::string cMVAv2BJetTags_;
-  std::string cMVAv2NegBJetTags_;
-  std::string cMVAv2PosBJetTags_;
-
   std::string   CvsBCJetTags_;
-  std::string   CvsBNegCJetTags_;
-  std::string   CvsBPosCJetTags_;
   std::string   CvsLCJetTags_;
-  std::string   CvsLNegCJetTags_;
-  std::string   CvsLPosCJetTags_;
 };
 
 void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
@@ -268,78 +213,23 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   isData_ = true;
 
   jetSrc_      = iConfig.getParameter<edm::InputTag>("jetSrc");
-  jetOtherSrc_ = iConfig.getParameter<edm::InputTag>("jetOtherSrc");
-  vtxSrc_      = iConfig.getParameter<edm::InputTag>("vtxSrc");
-  //metSrc_      = iConfig.getParameter<edm::InputTag>("metSrc");
   bTagKeyString_ = iConfig.getParameter<std::string>("bTagKeyString");
 
   jetPBJetTags_        = iConfig.getParameter<std::string>("jetPBJetTags");
-  jetPNegBJetTags_     = iConfig.getParameter<std::string>("jetPNegBJetTags");
-  jetPPosBJetTags_     = iConfig.getParameter<std::string>("jetPPosBJetTags");
 
   jetBPBJetTags_        = iConfig.getParameter<std::string>("jetBPBJetTags");
-  jetBPNegBJetTags_     = iConfig.getParameter<std::string>("jetBPNegBJetTags");
-  jetBPPosBJetTags_     = iConfig.getParameter<std::string>("jetBPPosBJetTags");
 
   deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
-  deepCSVNegBJetTags_ = iConfig.getParameter<std::string>("deepCSVNegBJetTags");
-  deepCSVPosBJetTags_ = iConfig.getParameter<std::string>("deepCSVPosBJetTags");
 
   deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
-
-  combinedSVBJetTags_     = iConfig.getParameter<std::string>("combinedSVBJetTags");
-  combinedSVNegBJetTags_  = iConfig.getParameter<std::string>("combinedSVNegBJetTags");
-  combinedSVPosBJetTags_  = iConfig.getParameter<std::string>("combinedSVPosBJetTags");
-
-  combinedIVFSVBJetTags_      = iConfig.getParameter<std::string>("combinedIVFSVBJetTags");
-  combinedIVFSVPosBJetTags_   = iConfig.getParameter<std::string>("combinedIVFSVPosBJetTags");
-  combinedIVFSVNegBJetTags_   = iConfig.getParameter<std::string>("combinedIVFSVNegBJetTags");
-
-  simpleSVHighEffBJetTags_      = iConfig.getParameter<std::string>("simpleSVHighEffBJetTags");
-  simpleSVNegHighEffBJetTags_   = iConfig.getParameter<std::string>("simpleSVNegHighEffBJetTags");
-  simpleSVHighPurBJetTags_      = iConfig.getParameter<std::string>("simpleSVHighPurBJetTags");
-  simpleSVNegHighPurBJetTags_   = iConfig.getParameter<std::string>("simpleSVNegHighPurBJetTags");
-
-  combinedIVFSVBJetTags_      = iConfig.getParameter<std::string>("combinedIVFSVBJetTags");
-  combinedIVFSVPosBJetTags_   = iConfig.getParameter<std::string>("combinedIVFSVPosBJetTags");
-  combinedIVFSVNegBJetTags_   = iConfig.getParameter<std::string>("combinedIVFSVNegBJetTags");
-
-  softPFMuonBJetTags_       = iConfig.getParameter<std::string>("softPFMuonBJetTags");
-  softPFMuonNegBJetTags_    = iConfig.getParameter<std::string>("softPFMuonNegBJetTags");
-  softPFMuonPosBJetTags_    = iConfig.getParameter<std::string>("softPFMuonPosBJetTags");
-
-  softPFElectronBJetTags_       = iConfig.getParameter<std::string>("softPFElectronBJetTags");
-  softPFElectronNegBJetTags_    = iConfig.getParameter<std::string>("softPFElectronNegBJetTags");
-  softPFElectronPosBJetTags_    = iConfig.getParameter<std::string>("softPFElectronPosBJetTags");
-
-  doubleSVBJetTags_ = iConfig.getParameter<std::string>("doubleSVBJetTags");
-
-  cMVABJetTags_ = iConfig.getParameter<std::string>("cMVABJetTags");
-  cMVAv2BJetTags_ = iConfig.getParameter<std::string>("cMVAv2BJetTags");
-  cMVAv2NegBJetTags_ = iConfig.getParameter<std::string>("cMVAv2NegBJetTags");
-  cMVAv2PosBJetTags_ = iConfig.getParameter<std::string>("cMVAv2PosBJetTags");
 
   CvsBCJetTags_             = iConfig.getParameter<std::string>("CvsBCJetTags");
-  CvsBNegCJetTags_             = iConfig.getParameter<std::string>("CvsBNegCJetTags");
-  CvsBPosCJetTags_             = iConfig.getParameter<std::string>("CvsBPosCJetTags");
   CvsLCJetTags_             = iConfig.getParameter<std::string>("CvsLCJetTags");
-  CvsLNegCJetTags_             = iConfig.getParameter<std::string>("CvsLNegCJetTags");
-  CvsLPosCJetTags_             = iConfig.getParameter<std::string>("CvsLPosCJetTags");
-
-  deepFlavorBJetTags_    = iConfig.getParameter<std::string>("deepFlavorBJetTags");
 
   debug_       = iConfig.getParameter<bool>("debug");
 
   jetPtCut_miniAOD_ = iConfig.getUntrackedParameter<double>("jetPtCut_miniAOD", 10);
   genMatch_dR_ = iConfig.getUntrackedParameter<double>("genMatch_dR", 1.0);
-  dR_for_xCheck_ = iConfig.getUntrackedParameter<double>("dR_for_xCheck", 0.2);
-  relPt_for_xCheck_ = iConfig.getUntrackedParameter<double>("relPt_for_xCheck", 1e-2);
-
-  W_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_emuVec");
-  W_tauVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tauVec");
-  W_tau_emuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_emuVec");
-  W_tau_prongsVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_prongsVec");
-  W_tau_nuVec_Src_ = iConfig.getParameter<edm::InputTag>("W_tau_nuVec");
 
   genDecayLVec_Src_ = iConfig.getParameter<edm::InputTag>("genDecayLVec");
 
@@ -364,21 +254,13 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   NjettinessAK8Puppi_label_ = iConfig.getParameter<std::string>("NjettinessAK8Puppi_label");
   ak8PFJetsPuppi_label_ = iConfig.getParameter<std::string>("ak8PFJetsPuppi_label");
 
-
   JetTok_ = consumes<std::vector<pat::Jet> >(jetSrc_);
-  OtherJetsTok_ = consumes<std::vector<pat::Jet> >(jetOtherSrc_);
-  W_EmuVec_Tok_=consumes<std::vector<int> >(W_emuVec_Src_);
-  W_TauVec_Tok_=consumes<std::vector<int> >(W_tauVec_Src_);
-  W_Tau_EmuVec_Tok_=consumes<std::vector<int> >(W_tau_emuVec_Src_);
-  W_Tau_ProngsVec_Tok_ = consumes<std::vector<int> >(W_tau_prongsVec_Src_);
-  W_Tau_NuVec_Tok_ = consumes<std::vector<int> >(W_tau_nuVec_Src_);
   GenDecayLVec_Tok_=consumes<std::vector<TLorentzVector> >(genDecayLVec_Src_);
   GenDecayMomRefVec_Tok_=consumes<std::vector<int> >(genDecayMomRefVec_Src_);
   EleLVec_Tok_=consumes<std::vector<TLorentzVector> >(eleLVec_Src_);
   MuLVec_Tok_=consumes<std::vector<TLorentzVector> >(muLVec_Src_);
   TrksForIsoVetolVec_Tok_=consumes<std::vector<TLorentzVector> >(trksForIsoVetoLVec_Src_);
   LooseIsoTrksVec_Tok_=consumes<std::vector<TLorentzVector> >(looseisoTrksLVec_Src_);
-  VtxTok_=consumes< std::vector<reco::Vertex> >(vtxSrc_);
   PuppiJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiJetsSrc_);
   PuppiSubJetsSrc_Tok_ = consumes<std::vector<pat::Jet>>(puppiSubJetsSrc_);
 
@@ -429,34 +311,16 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("puppitau3");
   produces<std::vector<float> >("puppiSubJetsBdisc");
 
-produces<std::vector<float> >("JetProba");
-  produces<std::vector<float> >("JetProbaN");
-  produces<std::vector<float> >("JetProbaP");
+  produces<std::vector<float> >("JetProba");
   produces<std::vector<float> >("JetBprob");
-  produces<std::vector<float> >("JetBprobP");
-  produces<std::vector<float> >("JetBprobN");
 
   produces<std::vector<float> >("CombinedSvtx");
-  produces<std::vector<float> >("CombinedSvtxN");
-  produces<std::vector<float> >("CombinedSvtxP");
 
-produces<std::vector<float> >("DeepCSVb");
+  produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("DeepCSVc");
   produces<std::vector<float> >("DeepCSVl");
   produces<std::vector<float> >("DeepCSVbb");
   produces<std::vector<float> >("DeepCSVcc");
-
-  produces<std::vector<float> >("DeepCSVbN");
-  produces<std::vector<float> >("DeepCSVcN");
-  produces<std::vector<float> >("DeepCSVlN");
-  produces<std::vector<float> >("DeepCSVbbN");
-  produces<std::vector<float> >("DeepCSVccN");
-
-  produces<std::vector<float> >("DeepCSVbP");
-  produces<std::vector<float> >("DeepCSVcP");
-  produces<std::vector<float> >("DeepCSVlP");
-  produces<std::vector<float> >("DeepCSVbbP");
-  produces<std::vector<float> >("DeepCSVccP");
 
   produces<std::vector<float> >("DeepFlavorb");
   produces<std::vector<float> >("DeepFlavorbb");
@@ -465,36 +329,8 @@ produces<std::vector<float> >("DeepCSVb");
   produces<std::vector<float> >("DeepFlavoruds");
   produces<std::vector<float> >("DeepFlavorg");
 
-  produces<std::vector<float> >("CombinedIVF");
-  produces<std::vector<float> >("CombinedIVFP");
-  produces<std::vector<float> >("CombinedIVFN");
-
-  produces<std::vector<float> >("Svtx");
-  produces<std::vector<float> >("SvtxN");
-  produces<std::vector<float> >("SvtxHP");
-  produces<std::vector<float> >("SvtxNHP");
-
-  produces<std::vector<float> >("SoftM");
-  produces<std::vector<float> >("SoftMN");
-  produces<std::vector<float> >("SoftMP");
-
-  produces<std::vector<float> >("SoftE");
-  produces<std::vector<float> >("SoftEN");
-  produces<std::vector<float> >("SoftEP");
-
-  produces<std::vector<float> >("DoubleSV");
-
-  produces<std::vector<float> >("cMVA");
-  produces<std::vector<float> >("cMVAv2");
-  produces<std::vector<float> >("cMVAv2Neg");
-  produces<std::vector<float> >("cMVAv2Pos");
-
   produces<std::vector<float> >("CversusB");
-  produces<std::vector<float> >("CversusBNeg");
-  produces<std::vector<float> >("CversusBPos");
   produces<std::vector<float> >("CversusL");
-  produces<std::vector<float> >("CversusLNeg");
-  produces<std::vector<float> >("CversusLPos");
 
 }
 
@@ -508,6 +344,7 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   if( !iEvent.isRealData() ) isData_ = false;
 
+  edm::Handle<std::vector<pat::Jet> > jets; 
   iEvent.getByToken(JetTok_, jets);
 
   //get the JEC uncertainties
@@ -518,13 +355,6 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   if( !isData_ )
   {
-    iEvent.getByToken(OtherJetsTok_, otherjets);
-    iEvent.getByToken(W_EmuVec_Tok_, W_emuVec_);
-    iEvent.getByToken(W_TauVec_Tok_, W_tauVec_);
-    iEvent.getByToken(W_Tau_EmuVec_Tok_, W_tau_emuVec_);
-    iEvent.getByToken(W_Tau_ProngsVec_Tok_, W_tau_prongsVec_);
-    iEvent.getByToken(W_Tau_NuVec_Tok_, W_tau_nuVec_);
-
     iEvent.getByToken(GenDecayLVec_Tok_, genDecayLVec_);
     iEvent.getByToken(GenDecayMomRefVec_Tok_, genDecayMomRefVec_);
   }
@@ -534,13 +364,6 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iEvent.getByToken(TrksForIsoVetolVec_Tok_, trksForIsoVetoLVec_);
   iEvent.getByToken(LooseIsoTrksVec_Tok_,looseisoTrksLVec_);
-
-  //read in the objects
-  edm::Handle< std::vector<reco::Vertex> > vertices;
-  iEvent.getByToken(VtxTok_, vertices);
-  //reco::Vertex::Point vtxpos = (vertices->size() > 0 ? (*vertices)[0].position() : reco::Vertex::Point());
-  //edm::Handle<edm::View<reco::MET> > met;
-  //iEvent.getByLabel(metSrc_, met);
 
   std::vector<pat::Jet> extJets = (*jets);
   //PUPPI
@@ -556,34 +379,14 @@ bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::unique_ptr<std::vector<float> > recoJetsJecUnc(new std::vector<float>());
   std::unique_ptr<std::vector<float> > recoJetsJecScaleRawToFull(new std::vector<float>());
 
- std::unique_ptr<std::vector<float> > JetProba(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > JetProbaN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > JetProbaP(new std::vector<float>());
+  std::unique_ptr<std::vector<float> > JetProba(new std::vector<float>());
   std::unique_ptr<std::vector<float> > JetBprob(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > JetBprobP(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > JetBprobN(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >CombinedSvtx(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CombinedSvtxN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CombinedSvtxP(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > DeepCSVb(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepCSVc(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepCSVl(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepCSVbb(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepCSVcc(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > DeepCSVbN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVcN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVlN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVbbN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVccN(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> > DeepCSVbP(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVcP(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVlP(new std::vector<float>());
-  std::unique_ptr<std::vector<float> > DeepCSVbbP(new std::vector<float>());
-std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > DeepFlavorb(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepFlavorbb(new std::vector<float>());
@@ -592,36 +395,8 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepFlavoruds(new std::vector<float>());
   std::unique_ptr<std::vector<float> > DeepFlavorg(new std::vector<float>());
 
-  std::unique_ptr<std::vector<float> >CombinedIVF(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CombinedIVFN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CombinedIVFP(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >Svtx(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SvtxN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SvtxHP(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SvtxNHP(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >SoftM(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SoftMN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SoftMP(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >SoftE(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SoftEN(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >SoftEP(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >DoubleSV(new std::vector<float>());
-
-  std::unique_ptr<std::vector<float> >cMVA(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >cMVAv2(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >cMVAv2Neg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >cMVAv2Pos(new std::vector<float>());
-
   std::unique_ptr<std::vector<float> >CversusB(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CversusBNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CversusBPos(new std::vector<float>());
   std::unique_ptr<std::vector<float> >CversusL(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CversusLNeg(new std::vector<float>());
-  std::unique_ptr<std::vector<float> >CversusLPos(new std::vector<float>());
 
   std::unique_ptr<std::vector<float> > qgLikelihood(new std::vector<float>());
   std::unique_ptr<std::vector<float> > qgPtD(new std::vector<float>());
@@ -720,119 +495,16 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
     float trialDeepCSVcc = jet.bDiscriminator((deepCSVBJetTags_+":probcc").c_str());
     DeepCSVcc->push_back(trialDeepCSVcc);
 
-    float trialDeepCSVbN = jet.bDiscriminator((deepCSVNegBJetTags_+":probb").c_str());
-    DeepCSVbN->push_back(trialDeepCSVbN);
-
-    float trialDeepCSVcN = jet.bDiscriminator((deepCSVNegBJetTags_+":probc").c_str());
-    DeepCSVcN->push_back(trialDeepCSVcN);
-
-    float trialDeepCSVlN = jet.bDiscriminator((deepCSVNegBJetTags_+":probudsg").c_str());
-    DeepCSVlN->push_back(trialDeepCSVlN);
-
-    float trialDeepCSVbbN = jet.bDiscriminator((deepCSVNegBJetTags_+":probbb").c_str());
-    DeepCSVbbN->push_back(trialDeepCSVbbN);
-
-    float trialDeepCSVccN = jet.bDiscriminator((deepCSVNegBJetTags_+":probcc").c_str());
-    DeepCSVccN->push_back(trialDeepCSVccN);
-
-    float trialDeepCSVbP = jet.bDiscriminator((deepCSVPosBJetTags_+":probb").c_str());
-    DeepCSVbP->push_back(trialDeepCSVbP);
-
-    float trialDeepCSVcP = jet.bDiscriminator((deepCSVPosBJetTags_+":probc").c_str());
-    DeepCSVcP->push_back(trialDeepCSVcP);
-
-    float trialDeepCSVlP = jet.bDiscriminator((deepCSVPosBJetTags_+":probudsg").c_str());
-    DeepCSVlP->push_back(trialDeepCSVlP);
-
-    float trialDeepCSVbbP = jet.bDiscriminator((deepCSVPosBJetTags_+":probbb").c_str());
-    DeepCSVbbP->push_back(trialDeepCSVbbP);
-
-    float trialDeepCSVccP = jet.bDiscriminator((deepCSVPosBJetTags_+":probcc").c_str());
-    DeepCSVccP->push_back(trialDeepCSVccP);
-
-    float tri_CombinedIVF =jet.bDiscriminator(combinedIVFSVBJetTags_.c_str());
-    CombinedIVF->push_back(tri_CombinedIVF);
-
-    float tri_CombinedIVF_P =jet.bDiscriminator(combinedIVFSVPosBJetTags_.c_str());
-    CombinedIVFP ->push_back(tri_CombinedIVF_P);
-
-    float tri_CombinedIVF_N =jet.bDiscriminator(combinedIVFSVNegBJetTags_.c_str());
-    CombinedIVFN ->push_back(tri_CombinedIVF_N);
-
     float Proba = jet.bDiscriminator(jetPBJetTags_.c_str());
     JetProba->push_back(Proba);
-
-    float ProbaN = jet.bDiscriminator(jetPNegBJetTags_.c_str());
-    JetProbaN->push_back(ProbaN);
-
-    float ProbaP = jet.bDiscriminator(jetPPosBJetTags_.c_str());
-    JetProbaP->push_back(ProbaP);
 
     float Bprob = jet.bDiscriminator(jetBPBJetTags_.c_str());
     JetBprob->push_back(Bprob);
 
-    float BprobN = jet.bDiscriminator(jetBPNegBJetTags_.c_str());
-    JetBprobN->push_back(BprobN);
-
-    float BprobP = jet.bDiscriminator(jetBPPosBJetTags_.c_str());
-    JetBprobP->push_back(BprobP);
-
-    float Tri_CombinedSvtx = jet.bDiscriminator(combinedSVBJetTags_.c_str());
-    CombinedSvtx->push_back(Tri_CombinedSvtx);
-
-    float Tri_CombinedSvtxN = jet.bDiscriminator(combinedSVNegBJetTags_.c_str());
-    CombinedSvtxN->push_back(Tri_CombinedSvtxN);
-
-    float Tri_CombinedSvtxP = jet.bDiscriminator(combinedSVPosBJetTags_.c_str());
-    CombinedSvtxP-> push_back(Tri_CombinedSvtxP);
-
-    float tri_Svtx = jet.bDiscriminator(simpleSVHighEffBJetTags_.c_str());
-    Svtx  ->push_back(tri_Svtx);
-    float tri_SvtxN = jet.bDiscriminator(simpleSVNegHighEffBJetTags_.c_str());
-    SvtxN ->push_back(tri_SvtxN);
-    float tri_SvtxHP  = jet.bDiscriminator(simpleSVHighPurBJetTags_.c_str());
-    SvtxHP->push_back(tri_SvtxHP);
-    float tri_SvtxNHP = jet.bDiscriminator(simpleSVNegHighPurBJetTags_.c_str());
-    SvtxNHP->push_back(tri_SvtxNHP);
-
-    float tri_SoftM  = jet.bDiscriminator(softPFMuonBJetTags_.c_str());
-    SoftM->push_back(tri_SoftM);
-    float tri_SoftMN = jet.bDiscriminator(softPFMuonNegBJetTags_.c_str());
-    SoftMN->push_back(tri_SoftMN);
-    float tri_SoftMP = jet.bDiscriminator(softPFMuonPosBJetTags_.c_str());
-    SoftMP->push_back(tri_SoftMP);
-
-    float tri_SoftE  = jet.bDiscriminator(softPFElectronBJetTags_.c_str());
-    SoftE->push_back(tri_SoftE);
-    float tri_SoftEN = jet.bDiscriminator(softPFElectronNegBJetTags_.c_str());
-    SoftEN->push_back(tri_SoftEN);
-    float tri_SoftEP = jet.bDiscriminator(softPFElectronPosBJetTags_.c_str());
-    SoftEP->push_back(tri_SoftEP);
-
-    float tri_DoubleSV = jet.bDiscriminator(doubleSVBJetTags_.c_str());
-    DoubleSV->push_back(tri_DoubleSV);
-
-    float tri_cMVA = jet.bDiscriminator(cMVABJetTags_.c_str());
-    cMVA->push_back(tri_cMVA);
-    float tri_cMVAv2 = jet.bDiscriminator(cMVAv2BJetTags_.c_str());
-    cMVAv2->push_back(tri_cMVAv2);
-    float tri_cMVAv2Neg = jet.bDiscriminator(cMVAv2NegBJetTags_.c_str());
-    cMVAv2Neg->push_back(tri_cMVAv2Neg);
-    float tri_cMVAv2Pos = jet.bDiscriminator(cMVAv2PosBJetTags_.c_str());
-    cMVAv2Pos->push_back(tri_cMVAv2Pos);
-
     float tri_CvsB = jet.bDiscriminator(CvsBCJetTags_.c_str());
     CversusB->push_back(tri_CvsB);
-    float tri_CvsBNeg = jet.bDiscriminator(CvsBNegCJetTags_.c_str());
-    CversusBNeg->push_back(tri_CvsBNeg);
-    float tri_CvsBPos = jet.bDiscriminator(CvsBPosCJetTags_.c_str());
-    CversusBPos->push_back(tri_CvsBPos);
     float tri_CvsL = jet.bDiscriminator(CvsLCJetTags_.c_str());
     CversusL->push_back(tri_CvsL);
-    float tri_CvsLNeg = jet.bDiscriminator(CvsLNegCJetTags_.c_str());
-    CversusLNeg->push_back(tri_CvsLNeg);
-    float tri_CvsLPos = jet.bDiscriminator(CvsLPosCJetTags_.c_str());
-    CversusLPos->push_back(tri_CvsLPos);
 
     float trialDeepFlavorb = jet.bDiscriminator((deepFlavorBJetTags_+":probb").c_str());
     DeepFlavorb->push_back(trialDeepFlavorb);
@@ -1080,15 +752,6 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   iEvent.put(std::move(DeepCSVbb),"DeepCSVbb");
   iEvent.put(std::move(DeepCSVcc),"DeepCSVcc");
 
-  iEvent.put(std::move(DeepCSVbN),"DeepCSVbN");
-  iEvent.put(std::move(DeepCSVcN),"DeepCSVcN");
-  iEvent.put(std::move(DeepCSVlN),"DeepCSVlN");
-  iEvent.put(std::move(DeepCSVbbN),"DeepCSVbbN");
-  iEvent.put(std::move(DeepCSVccN),"DeepCSVccN");
-
-  iEvent.put(std::move(DeepCSVbP),"DeepCSVbP");
-  iEvent.put(std::move(DeepCSVcP),"DeepCSVcP");
-  iEvent.put(std::move(DeepCSVlP),"DeepCSVlP");
   iEvent.put(std::move(recoJetsneutralEnergyFraction), "recoJetsneutralEnergyFraction");
   iEvent.put(std::move(recoJetsHFHadronEnergyFraction), "recoJetsHFHadronEnergyFraction");
   iEvent.put(std::move(recoJetsHFEMEnergyFraction), "recoJetsHFEMEnergyFraction");
@@ -1096,9 +759,6 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   iEvent.put(std::move(PhotonEnergyFraction), "PhotonEnergyFraction");
   iEvent.put(std::move(ElectronEnergyFraction), "ElectronEnergyFraction");
   
-  iEvent.put(std::move(DeepCSVbbP),"DeepCSVbbP");
-  iEvent.put(std::move(DeepCSVccP),"DeepCSVccP");
-
   iEvent.put(std::move(DeepFlavorb), "DeepFlavorb");
   iEvent.put(std::move(DeepFlavorbb), "DeepFlavorbb");
   iEvent.put(std::move(DeepFlavorlepb), "DeepFlavorlepb");
@@ -1106,40 +766,8 @@ std::unique_ptr<std::vector<float> > DeepCSVccP(new std::vector<float>());
   iEvent.put(std::move(DeepFlavoruds), "DeepFlavoruds");
   iEvent.put(std::move(DeepFlavorg), "DeepFlavorg");
 
-  iEvent.put(std::move(CombinedSvtx),"CombinedSvtx");
-  iEvent.put(std::move(CombinedSvtxN),"CombinedSvtxN");
-  iEvent.put(std::move(CombinedSvtxP),"CombinedSvtxP");
-
-  iEvent.put(std::move(CombinedIVF),"CombinedIVF");
-  iEvent.put(std::move(CombinedIVFP),"CombinedIVFP");
-  iEvent.put(std::move(CombinedIVFN),"CombinedIVFN");
-
-  iEvent.put(std::move(Svtx),"Svtx");
-  iEvent.put(std::move(SvtxN),"SvtxN");
-  iEvent.put(std::move(SvtxHP),"SvtxHP");
-  iEvent.put(std::move(SvtxNHP),"SvtxNHP");
-
-  iEvent.put(std::move(SoftM),"SoftM");
-  iEvent.put(std::move(SoftMN),"SoftMN");
-  iEvent.put(std::move(SoftMP),"SoftMP");
-
-  iEvent.put(std::move(SoftE),"SoftE");
-  iEvent.put(std::move(SoftEN),"SoftEN");
-  iEvent.put(std::move(SoftEP),"SoftEP");
-
-  iEvent.put(std::move(DoubleSV),"DoubleSV");
-
-  iEvent.put(std::move(cMVA),"cMVA");
-  iEvent.put(std::move(cMVAv2),"cMVAv2");
-  iEvent.put(std::move(cMVAv2Neg),"cMVAv2Neg");
-  iEvent.put(std::move(cMVAv2Pos),"cMVAv2Pos");
-
   iEvent.put(std::move(CversusB),"CversusB");
-  iEvent.put(std::move(CversusBNeg),"CversusBNeg");
-  iEvent.put(std::move(CversusBPos),"CversusBPos");
   iEvent.put(std::move(CversusL),"CversusL");
-  iEvent.put(std::move(CversusLNeg),"CversusLNeg");
-  iEvent.put(std::move(CversusLPos),"CversusLPos");
 
   return true;
 }
