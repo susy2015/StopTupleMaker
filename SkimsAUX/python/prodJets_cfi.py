@@ -2,86 +2,33 @@ import FWCore.ParameterSet.Config as cms
 
 prodJets = cms.EDFilter(
   "prodJets",
+
   jetSrc = cms.InputTag('slimmedJets'),
-  jetOtherSrc = cms.InputTag('patJetsAK4PFCHS'),
+  puppiJetsSrc = cms.InputTag("slimmedJetsAK8"),
+
   jetType = cms.string('AK4PFchs'),
+
   qgTaggerKey = cms.string('QGTagger'),
-  deepCSVBJetTags = cms.string('pfDeepCSVJetTags'),#'deepFlavourJetTags:probb'),#'deepFlavourJetTags'),
+  deepCSVBJetTags = cms.string('pfDeepCSVJetTags'),
   deepFlavorBJetTags = cms.string('pfDeepFlavourJetTags'),
-  deepCSVNegBJetTags = cms.string('negativeDeepFlavourJetTags'),#pfNegativeDeepCSVJetTags'),
-  deepCSVPosBJetTags = cms.string('positiveDeepFlavourJetTags'),
-  combinedSVBJetTags = cms.string('pfCombinedSecondaryVertexV2BJetTags'),
-  combinedSVPosBJetTags = cms.string('pfPositiveCombinedSecondaryVertexV2BJetTags'),
-  combinedSVNegBJetTags = cms.string('pfNegativeCombinedSecondaryVertexV2BJetTags'),
-  combinedIVFSVBJetTags = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-  combinedIVFSVPosBJetTags = cms.string('pfPositiveCombinedInclusiveSecondaryVertexV2BJetTags'),
-  combinedIVFSVNegBJetTags = cms.string('pfNegativeCombinedInclusiveSecondaryVertexV2BJetTags'),
-  simpleSVHighEffBJetTags = cms.string('pfSimpleSecondaryVertexHighEffBJetTags'),
-  simpleSVNegHighEffBJetTags = cms.string('pfNegativeSimpleSecondaryVertexHighEffBJetTags'),
-  simpleSVHighPurBJetTags = cms.string('pfSimpleSecondaryVertexHighPurBJetTags'),
-  simpleSVNegHighPurBJetTags = cms.string('pfNegativeSimpleSecondaryVertexHighPurBJetTags'),
-  softPFMuonBJetTags = cms.string('softPFMuonBJetTags'),
-  softPFMuonNegBJetTags = cms.string('negativeSoftPFMuonBJetTags'),
-  softPFMuonPosBJetTags = cms.string('positiveSoftPFMuonBJetTags'),
-  softPFElectronBJetTags = cms.string('softPFElectronBJetTags'),
-  softPFElectronNegBJetTags = cms.string('negativeSoftPFElectronBJetTags'),
-  softPFElectronPosBJetTags = cms.string('positiveSoftPFElectronBJetTags'),
-  doubleSVBJetTags = cms.string('pfBoostedDoubleSecondaryVertexAK8BJetTags'),
-  cMVABJetTags = cms.string('pfCombinedMVABJetTags'),
-  cMVAv2BJetTags = cms.string('pfCombinedMVAV2BJetTags'),
-  cMVAv2NegBJetTags = cms.string('pfNegativeCombinedMVAV2BJetTags'),
-  cMVAv2PosBJetTags = cms.string('pfPositiveCombinedMVAV2BJetTags'),
   CvsBCJetTags = cms.string('pfCombinedCvsBJetTags'),
-  CvsBNegCJetTags = cms.string('pfNegativeCombinedCvsBJetTags'),
-  CvsBPosCJetTags = cms.string('pfPositiveCombinedCvsBJetTags'),
   CvsLCJetTags = cms.string('pfCombinedCvsLJetTags'),
-  CvsLNegCJetTags = cms.string('pfNegativeCombinedCvsLJetTags'),
-  CvsLPosCJetTags = cms.string('pfPositiveCombinedCvsLJetTags'),  
-  tagInfoName = cms.string('pfDeepCSV'),#'deepNN'),
-  ipTagInfos = cms.string('pfImpactParameter'),
-  svTagInfos = cms.string('pfInclusiveSecondaryVertexFinder'),
-  ipTagInfosCTag = cms.string('pfImpactParameter'),
-  svTagInfosCTag = cms.string('pfInclusiveSecondaryVertexFinderCvsL'),
-  softPFMuonTagInfosCTag = cms.string('softPFMuons'),
-  softPFElectronTagInfosCTag = cms.string('softPFElectrons'),
-  vtxSrc = cms.InputTag('goodVertices'),
-  #  metSrc = cms.InputTag('slimmedMETs'),
-  ak4ptCut = cms.double(20.0),
   bTagKeyString = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-  W_emuVec = cms.InputTag("prodGenInfo:WemuVec"),
-  W_tauVec = cms.InputTag("prodGenInfo:WtauVec"),
-  W_tau_emuVec = cms.InputTag("prodGenInfo:WtauemuVec"),
-  W_tau_prongsVec = cms.InputTag("prodGenInfo:WtauprongsVec"),
-  W_tau_nuVec = cms.InputTag("prodGenInfo:WtaunuVec"),
-  genDecayLVec = cms.InputTag("prodGenInfo:genDecayLVec"),
-  genDecayMomRefVec = cms.InputTag("prodGenInfo:genDecayMomRefVec"),
+
+  jetPBJetTags = cms.string("jetPBJetTags"),
+  jetBPBJetTags = cms.string("jetBPBJetTags"),
+
+  NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
+  ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
+
   eleLVec = cms.InputTag("prodElectronsNoIso:elesLVec"), 
   muLVec = cms.InputTag("prodMuonsNoIso:muonsLVec"), 
   trksForIsoVetoLVec = cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"),
   looseisoTrksLVec = cms.InputTag("prodIsoTrks:looseisoTrksLVec"),
-  #puppiJetsSrc = cms.InputTag("slimmedJetsPuppi"),
-  puppiJetsSrc = cms.InputTag("slimmedJetsAK8"),#"selectedPatJetsAK8PFPuppi"),
-  puppiSubJetsSrc = cms.InputTag("selectedPatJetsAK8PFPuppiSoftDropPacked"),
-  ak8JetsSrc = cms.InputTag("slimmedJetsAK8"),
-  #ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked"),
-  ak8SubJetsSrc = cms.InputTag("slimmedJetsAK8PFCHSSoftDropPacked","SubJets"),
-  debug  = cms.bool(False),
-  NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
-  ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
-  svComputer = cms.string('candidateCombinedSecondaryVertexV2Computer'),
-  slComputer = cms.string('candidateCombinedSecondaryVertexSoftLeptonComputer'),
-  properties = cms.vstring(
-       "bDiscriminatorCSV",
-  ),
-  bDiscriminatorCSV = cms.vstring('pfCombinedInclusiveSecondaryVertexV2BJetTags'
-                            ,'deepFlavourJetTags:probudsg'
-                            ,'deepFlavourJetTags:probb'
-                            ,'deepFlavourJetTags:probc'
-                            ,'deepFlavourJetTags:probbb'
-                            ,'deepFlavourJetTags:probcc'
-                            ),
-  bDiscriminators = cms.vstring(), 
-  ak8JetSrc = cms.InputTag("selectedPatJetsAK8PFPuppi"),
-  ak8ptCut = cms.double(200.0),
 
+  debug  = cms.bool(False),
+
+  genMatch_dR = cms.untracked.double(1.0),
+  deltaRcon = cms.untracked.double(0.01),
 )
+
