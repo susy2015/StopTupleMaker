@@ -36,7 +36,7 @@ private:
     void produceAK4JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
     void produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup & iSetup);
 
-    void compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
+    void computeJetShape(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_);
 
     template<typename T>
     void drMatchObject(const T& objLVec, const pat::Jet& jet, unsigned int ij, std::unique_ptr<std::vector<int> >& matchVec)
@@ -88,16 +88,14 @@ private:
     edm::EDGetTokenT<std::vector<TLorentzVector> > LooseIsoTrksVec_Tok_;
 
     edm::EDGetTokenT<std::vector<pat::Jet> > PuppiJetsSrc_Tok_;
-    edm::EDGetTokenT<std::vector<pat::Jet> > PuppiSubJetsSrc_Tok_;
- 
 };
 
-void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, double& ptD_, double& axis1_, double& axis2_)
+void prodJets::computeJetShape(const reco::Jet * jet, bool isReco, double& totalMult, double& ptD, double& axis1, double& axis2)
 {
-    totalMult_ = 0;
-    ptD_       = 0;
-    axis1_     = 0;
-    axis2_     = 0;
+    totalMult = 0;
+    ptD       = 0;
+    axis1     = 0;
+    axis2     = 0;
 
     if(jet->numberOfDaughters() == 0) return;
 
@@ -129,12 +127,12 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
                     // this isn't stored for packedCandidates, so will need fix if useQC is changed to true
                     if( p->dzError()==0 || p->dxyError()==0 ) continue;
                     if( (p->dz()*p->dz() )  / (p->dzError()*p->dzError() ) > 25. ) continue;
-                    if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult_; // this cut only      applies to multiplicity
-                } else ++totalMult_;
-            } else ++totalMult_;
+                    if( (p->dxy()*p->dxy()) / (p->dxyError()*p->dxyError()) < 25. ) ++totalMult; // this cut only      applies to multiplicity
+                } else ++totalMult;
+            } else ++totalMult;
         } else { // neutral particles
             if(part->pt() < 1.0) continue;
-            ++totalMult_;
+            ++totalMult;
         } // charged, neutral particles
 
         float dEta   = part->eta() - jet->eta();
@@ -161,7 +159,7 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
     float ave_dPhi2 = 0.0;
 
     if(sum_weight > 0){
-        ptD_ = sqrt(sum_weight)/sum_pt;
+        ptD = sqrt(sum_weight)/sum_pt;
         ave_dEta  = sum_dEta  / sum_weight;
         ave_dPhi  = sum_dPhi  / sum_weight;
         ave_dEta2 = sum_dEta2 / sum_weight;
@@ -169,13 +167,13 @@ void prodJets::compute(const reco::Jet * jet, bool isReco, double& totalMult_, d
         a = ave_dEta2 - ave_dEta*ave_dEta;
         b = ave_dPhi2 - ave_dPhi*ave_dPhi;
         c = -(sum_dEta_dPhi/sum_weight - ave_dEta*ave_dPhi);
-    } else ptD_ = 0;
+    } else ptD = 0;
 
     float delta = sqrt(fabs( (a-b)*(a-b) + 4*c*c ));
-    if(a+b-delta > 0) axis2_ = sqrt(0.5*(a+b-delta));
-    else              axis2_ = 0.0;
-    if(a+b+delta > 0) axis1_ = sqrt(0.5*(a+b+delta));
-    else              axis1_ = 0.0;
+    if(a+b-delta > 0) axis2 = sqrt(0.5*(a+b-delta));
+    else              axis2 = 0.0;
+    if(a+b+delta > 0) axis1 = sqrt(0.5*(a+b+delta));
+    else              axis1 = 0.0;
 }
 
 prodJets::prodJets(const edm::ParameterSet & iConfig) 
@@ -208,7 +206,6 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
     //Consumes statements and input tags
     JetTok_                 = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "jetSrc"             ) );
     PuppiJetsSrc_Tok_       = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiJetsSrc"       ) );
-    PuppiSubJetsSrc_Tok_    = consumes<std::vector<pat::Jet> >       ( iConfig.getParameter<edm::InputTag>( "puppiSubJetsSrc"    ) );
     EleLVec_Tok_            = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "eleLVec"            ) );
     MuLVec_Tok_             = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "muLVec"             ) );
     TrksForIsoVetolVec_Tok_ = consumes<std::vector<TLorentzVector> > ( iConfig.getParameter<edm::InputTag>( "trksForIsoVetoLVec" ) );
@@ -275,12 +272,16 @@ prodJets::prodJets(const edm::ParameterSet & iConfig)
 
     //AK8 jet variables 
     produces<std::vector<TLorentzVector> >("puppiJetsLVec");
-    produces<std::vector<TLorentzVector> >("puppiSubJetsLVec");
-    produces<std::vector<float> >("puppisoftDropMass");
-    produces<std::vector<float> >("puppitau1");
-    produces<std::vector<float> >("puppitau2");
-    produces<std::vector<float> >("puppitau3");
-    produces<std::vector<float> >("puppiSubJetsBdisc");
+    produces<std::vector<float> >("puppiSoftDropMass");
+    produces<std::vector<float> >("puppiTau1");
+    produces<std::vector<float> >("puppiTau2");
+    produces<std::vector<float> >("puppiTau3");
+    produces<std::vector<std::vector<TLorentzVector> > >("puppiAK8SubjetLVec");
+    produces<std::vector<std::vector<float> > >("puppiAK8SubjetMult");
+    produces<std::vector<std::vector<float> > >("puppiAK8SubjetPtD");
+    produces<std::vector<std::vector<float> > >("puppiAK8SubjetAxis1");
+    produces<std::vector<std::vector<float> > >("puppiAK8SubjetAxis2");
+    produces<std::vector<std::vector<float> > >("puppiAK8SubjetBDisc");
 
 }
 
@@ -540,63 +541,78 @@ void prodJets::produceAK8JetVariables(edm::Event & iEvent, const edm::EventSetup
 {
     //PUPPI AK8 jets and subjets
     edm::Handle<std::vector<pat::Jet> > puppiJets;
-    edm::Handle<std::vector<pat::Jet> > puppiSubJets; 
     iEvent.getByToken(PuppiJetsSrc_Tok_, puppiJets);
-    iEvent.getByToken(PuppiSubJetsSrc_Tok_, puppiSubJets);
 
     //Create smart pointer for output vectors 
     std::unique_ptr<std::vector<TLorentzVector> > puppiJetsLVec(new std::vector<TLorentzVector>());
-    std::unique_ptr<std::vector<TLorentzVector> > puppiSubJetsLVec(new std::vector<TLorentzVector>());
-    std::unique_ptr<std::vector<float> > puppiSubJetsBdisc(new std::vector<float>());
-    std::unique_ptr<std::vector<float> > puppisoftDropMass(new std::vector<float>());
-    std::unique_ptr<std::vector<float> > puppitau1(new std::vector<float>());
-    std::unique_ptr<std::vector<float> > puppitau2(new std::vector<float>());
-    std::unique_ptr<std::vector<float> > puppitau3(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppiSoftDropMass(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppiTau1(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppiTau2(new std::vector<float>());
+    std::unique_ptr<std::vector<float> > puppiTau3(new std::vector<float>());
 
-    //Get AK8 jet variables 
+    std::unique_ptr<std::vector<std::vector<TLorentzVector> > > puppiAK8SubjetLVec(new std::vector<std::vector<TLorentzVector> >());
+    std::unique_ptr<std::vector<std::vector<float> > > puppiAK8SubjetMult(new std::vector<std::vector<float > >());
+    std::unique_ptr<std::vector<std::vector<float> > > puppiAK8SubjetPtD(new std::vector<std::vector<float > >());
+    std::unique_ptr<std::vector<std::vector<float> > > puppiAK8SubjetAxis1(new std::vector<std::vector<float > >());
+    std::unique_ptr<std::vector<std::vector<float> > > puppiAK8SubjetAxis2(new std::vector<std::vector<float > >());
+    std::unique_ptr<std::vector<std::vector<float> > > puppiAK8SubjetBDisc(new std::vector<std::vector<float > >());
+
     for(unsigned int ip = 0; ip < puppiJets->size(); ip++){
         TLorentzVector perPuppiJetLVec;
         perPuppiJetLVec.SetPtEtaPhiE( puppiJets->at(ip).pt(), puppiJets->at(ip).eta(), puppiJets->at(ip).phi(), puppiJets->at(ip).energy() );
         puppiJetsLVec->push_back(perPuppiJetLVec);
 
-        float puppi_tau1_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau1");
-        puppitau1->push_back(puppi_tau1_uf);
-        float puppi_tau2_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau2");
-        puppitau2->push_back(puppi_tau2_uf);
-        float puppi_tau3_uf         = puppiJets->at(ip).userFloat(NjettinessAK8Puppi_label_+":tau3");
-        puppitau3->push_back(puppi_tau3_uf);
+        puppiTau1 ->push_back( puppiJets->at(ip).userFloat( NjettinessAK8Puppi_label_+":tau1" ) );
+        puppiTau2 ->push_back( puppiJets->at(ip).userFloat( NjettinessAK8Puppi_label_+":tau2" ) );
+        puppiTau3 ->push_back( puppiJets->at(ip).userFloat( NjettinessAK8Puppi_label_+":tau3" ) );
 
-        float puppisoftDropMass_uf = puppiJets->at(ip).userFloat(ak8PFJetsPuppi_label_+"SoftDropMass");
-        puppisoftDropMass->push_back(puppisoftDropMass_uf);
-    }
+        puppiSoftDropMass ->push_back( puppiJets->at(ip).userFloat( ak8PFJetsPuppi_label_+"SoftDropMass" ) );
 
-    //Get KA8 subjet variables 
-    for(unsigned int ip = 0; ip < puppiSubJets->size(); ip++){
-        // The subjet collection is a collection of softdropped jets, and you have to access the subjets from there
-        // Most of the time there are two daughters, sometimes there is only one
-        // Not all of the puppiJets have a matching puppiSubJets jet
+        puppiAK8SubjetLVec->push_back(std::vector<TLorentzVector>());
+        puppiAK8SubjetMult->push_back(std::vector<float>());
+        puppiAK8SubjetPtD->push_back(std::vector<float>());
+        puppiAK8SubjetAxis1->push_back(std::vector<float>());
+        puppiAK8SubjetAxis2->push_back(std::vector<float>());
+        puppiAK8SubjetBDisc->push_back(std::vector<float>());     
 
-        TLorentzVector perPuppiSubJetLVec;
-        for(unsigned int id=0; id<puppiSubJets->at(ip).numberOfDaughters(); ++id){
-            perPuppiSubJetLVec.SetPtEtaPhiE( puppiSubJets->at(ip).daughter(id)->pt(), 
-                                             puppiSubJets->at(ip).daughter(id)->eta(), 
-                                             puppiSubJets->at(ip).daughter(id)->phi(), 
-                                             puppiSubJets->at(ip).daughter(id)->energy() );
-            puppiSubJetsLVec->push_back(perPuppiSubJetLVec);
-            // btag info is not available for reco::Candidates, so must cast it to a pat::Jet
-            puppiSubJetsBdisc->push_back(dynamic_cast<const pat::Jet *>(puppiSubJets->at(ip).daughter(id))->bDiscriminator(bTagKeyString_.c_str()));
+        auto const & subjets = puppiJets->at(ip).subjets("SoftDrop");
+        for( auto const & it : subjets)
+        {
+            TLorentzVector perSubJetLVec;
+            perSubJetLVec.SetPtEtaPhiE( it->pt(), it->eta(), it->phi(), it->energy() );
+          
+            // btag info
+            double subjetBDiscriminator = it->bDiscriminator(bTagKeyString_.c_str());
+      
+            //compute the qg input variables for the subjet
+            double totalMult = 0;
+            double ptD       = 0;
+            double axis1     = 0;
+            double axis2     = 0;
+            computeJetShape(dynamic_cast<const pat::Jet *>(&(*it)), true, totalMult, ptD, axis1, axis2);
+      
+            puppiAK8SubjetLVec->back().push_back(perSubJetLVec);
+            puppiAK8SubjetMult->back().push_back(totalMult);
+            puppiAK8SubjetPtD->back().push_back(ptD);
+            puppiAK8SubjetAxis1->back().push_back(axis1);
+            puppiAK8SubjetAxis2->back().push_back(axis2);
+            puppiAK8SubjetBDisc->back().push_back(subjetBDiscriminator);
         }
     }
 
     //put variables back into event
     iEvent.put(std::move(puppiJetsLVec), "puppiJetsLVec");
-    iEvent.put(std::move(puppiSubJetsLVec), "puppiSubJetsLVec");
-    iEvent.put(std::move(puppiSubJetsBdisc), "puppiSubJetsBdisc");
-    iEvent.put(std::move(puppisoftDropMass),"puppisoftDropMass");
-    iEvent.put(std::move(puppitau1),"puppitau1");
-    iEvent.put(std::move(puppitau2),"puppitau2");
-    iEvent.put(std::move(puppitau3),"puppitau3");
+    iEvent.put(std::move(puppiSoftDropMass), "puppiSoftDropMass");
+    iEvent.put(std::move(puppiTau1),"puppiTau1");
+    iEvent.put(std::move(puppiTau2),"puppiTau2");
+    iEvent.put(std::move(puppiTau3),"puppiTau3");
 
+    iEvent.put(std::move(puppiAK8SubjetLVec),  "puppiAK8SubjetLVec");
+    iEvent.put(std::move(puppiAK8SubjetMult),  "puppiAK8SubjetMult");
+    iEvent.put(std::move(puppiAK8SubjetPtD),   "puppiAK8SubjetPtD");
+    iEvent.put(std::move(puppiAK8SubjetAxis1), "puppiAK8SubjetAxis1");
+    iEvent.put(std::move(puppiAK8SubjetAxis2), "puppiAK8SubjetAxis2");
+    iEvent.put(std::move(puppiAK8SubjetBDisc), "puppiAK8SubjetBDisc");
 }
 
 bool prodJets::filter(edm::Event& iEvent, const edm::EventSetup& iSetup) 
