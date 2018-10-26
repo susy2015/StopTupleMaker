@@ -417,44 +417,6 @@ if options.hltSelection:
       andOr = True
    )
 
-# HT 
-process.load("StopTupleMaker.Skims.htProducer_cfi")
-process.load("StopTupleMaker.Skims.htFilter_cfi")
-process.htPFchs = process.ht.clone()
-process.htPFchs.JetCollection = cms.InputTag("ak4patJetsPFchsPt50Eta25")
-process.htPFchsFilter = process.htFilter.clone()
-process.htPFchsFilter.HTSource = cms.InputTag("htPFchs")
-
-# MHT
-process.load("StopTupleMaker.Skims.mhtProducer_cfi")
-process.load("StopTupleMaker.Skims.mhtFilter_cfi")
-process.mhtPFchs = process.mht.clone()
-process.mhtPFchs.JetCollection = cms.InputTag("ak4patJetsPFchsPt30")
-process.mhtPFchsFilter = process.mhtFilter.clone()
-process.mhtPFchsFilter.MHTSource = cms.InputTag("mhtPFchs")
-
-#MT2
-#process.load("StopTupleMaker.SkimsAUX.mt2Producer_cfi")
-##process.load("StopTupleMaker.SkimsAUX.mt2Filter_cfi")
-#process.mt2PFchs = process.mt2.clone()
-#process.mt2PFchs.JetTag = cms.InputTag("ak4patJetsPFchsPt30")
-#process.mt2PFchs.METTag = cms.InputTag("slimmedMETs")
-
-
-# Delta Phi
-process.load("StopTupleMaker.Skims.jetMHTDPhiFilter_cfi")
-process.ak4jetMHTPFchsDPhiFilter = process.jetMHTDPhiFilter.clone()
-process.ak4jetMHTPFchsDPhiFilter.JetSource = cms.InputTag("ak4patJetsPFchsPt30")
-process.ak4jetMHTPFchsDPhiFilter.MHTSource = cms.InputTag("mhtPFchs")
-
-#process.ra2Objects_task = cms.Task(ra2PFchsJets_task, process.htPFchs, process.mhtPFchs)
-
-#process.ra2Objects = cms.Sequence( 
-#                                 process.ra2Objects_task
-#                                 )
-
-process.load("PhysicsTools.PatAlgos.selectionLayer1.muonCountFilter_cfi")
-process.load("PhysicsTools.PatAlgos.selectionLayer1.electronCountFilter_cfi")
 
 ############################# START SUSYPAT specifics ####################################
 process.prefilterCounter        = cms.EDProducer("EventCountProducer")
@@ -502,87 +464,11 @@ process.loosetrackIsolation = process.trackIsolation.clone()
 #process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
 process.loosetrackIsolation.isoCut            = cms.double(0.5)
 
-#process.refalltrackIsolation = process.trackIsolation.clone()
-#process.refalltrackIsolation.mintPt_PFCandidate = cms.double (-1.0)
-#process.refalltrackIsolation.isoCut           = cms.double(9999.0)
-
-process.load('StopTupleMaker.Skims.StopJets_drt_from_AOD_cff')
-process.load("StopTupleMaker.SkimsAUX.nJetsForSkimsRA2_cfi")
-process.load("StopTupleMaker.SkimsAUX.jetMHTDPhiForSkimsRA2_cfi")
-
-# ak4 jets
-process.ak4stopJetsPFchsPt30 = process.stopJetsPFchsPt30.clone(jetSrc = "slimmedJets")
-process.ak4stopJetsPFchsPt50Eta24 = process.stopJetsPFchsPt50Eta24.clone(jetSrc = "slimmedJets")
-
-process.ak4nJetsForSkimsStop = process.nJetsForSkimsRA2.clone()
-process.ak4nJetsForSkimsStop.JetSource = cms.InputTag("ak4stopJetsPFchsPt30")
-process.ak4jetMHTDPhiForSkimsStop = process.jetMHTDPhiForSkimsRA2.clone()
-process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETs")
-process.ak4jetMHTDPhiForSkimsStop.JetSource = cms.InputTag("ak4stopJetsPFchsPt30")
-
-process.ak4stophtPFchs = process.htPFchs.clone()
-process.ak4stophtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt50Eta24")
-
-process.ak4stopmhtPFchs = process.mhtPFchs.clone()
-process.ak4stopmhtPFchs.JetCollection = cms.InputTag("ak4stopJetsPFchsPt30")
-#
-
-process.prepareCutvars_task = cms.Task(process.ak4stopJetsPFchsPt30, process.ak4stopJetsPFchsPt50Eta24, process.ak4nJetsForSkimsStop, process.ak4jetMHTDPhiForSkimsStop, process.ak4stophtPFchs, process.ak4stopmhtPFchs )
-
-process.prepareCutvars_seq = cms.Sequence( process.prepareCutvars_task )
-
-#############################
-# Joe just put these here, maybe the go better slightlt higher up
-############################
-
 process.load("StopTupleMaker.SkimsAUX.prodGenJets_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodEventInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.PhotonIDisoProducer_cfi")
-
-process.load("StopTupleMaker.Skims.StopBTagJets_cff")
-process.stopBJets.JetSrc = cms.InputTag("stopJetsPFchsPt30")
-
-#if hasattr(process, 'goodPhotons'):
-#  print blahAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
-process.load("StopTupleMaker.Skims.StopDPhiSelection_cff")
-process.jetsMETDPhiFilter.jetSrc = cms.InputTag("stopJetsPFchsPt30")
-if options.usePhiCorrMET == True:
-   process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETs")
-else:
-   process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETs")
-process.jetsMETDPhiFilter.dPhiCuts = cms.untracked.vdouble(0.5, 0.5, 0.3)
-
-process.stopCount1BJets = process.stopCountBJets.clone()
-process.stopCount1BJets.minNumber = cms.uint32(1)
-
-process.stopCount2BJets = process.stopCountBJets.clone()
-process.stopCount2BJets.minNumber = cms.uint32(2)
-
-#process.load("StopTupleMaker.Skims.StopType3TopTagger_cff")
-#if options.usePhiCorrMET == True:
-#   process.type3topTagger.metSrc = cms.InputTag("slimmedMETs")
-#else:
-#   process.type3topTagger.metSrc = cms.InputTag("slimmedMETs")
-#process.type3topTagger.taggingMode = cms.untracked.bool(True)
-#process.type3topTagger.jetSrc = cms.InputTag("stopJetsPFchsPt30")
-
-process.metPFchsFilter = process.mhtPFchsFilter.clone()
-if options.usePhiCorrMET == True:
-   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
-else:
-   process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs")
-
-process.met175PFchsFilter = process.metPFchsFilter.clone()
-process.met175PFchsFilter.MinMHT = cms.double(175)
-
-process.met200PFchsFilter = process.metPFchsFilter.clone()
-process.met200PFchsFilter.MinMHT = cms.double(200)
-
-process.met350PFchsFilter = process.metPFchsFilter.clone()
-process.met350PFchsFilter.MinMHT = cms.double(350)
 
 process.TFileService = cms.Service("TFileService",
    fileName = cms.string('stopFlatNtuples.root')
@@ -1108,20 +994,16 @@ if options.selSMSpts == True:
 
 
 if options.mcInfo == False:
-
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets,  process.prepareCutvars_task#, process.genHT
-) #process.hltFilte process.QGAK4PFCHSr process.stopPFJets
-
+	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, 
+                                        )
 else:
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.stopBJets, process.prepareCutvars_task, process.genHT, process.ISRJetProducer, process.prodGenJets #process.PDFWeights
-)
+	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.genHT, process.ISRJetProducer, process.prodGenJets
+                                        )
 
 # Other sequence
 process.comb_seq = cms.Sequence(
   # All cleaning && all basic variables, e.g., mht, ht...     
   process.comb_task 
-  # hlt requirement
-  #process.QGAK4PFCHS, process.stopPFJets
 )
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
@@ -1133,11 +1015,8 @@ process.ak4Stop_Path = cms.Path( process.fullPatMetSequence *
                                  process.prodJetIDEventFilterNoLep * process.METFilters *
                                  process.noBadMuonsFilter * process.badMuonsFilter * process.duplicateMuonsFilter * process.prodJetsNoLep *
                                  process.prodJets * process.prodMET * process.prodEventInfo * process.trig_filter_seq * process.prodSecondaryVertex *
-                                 #process.prodBTag *
-                                 #process.goodPhotons *
-                                 #process.genHT *
                                  process.stopTreeMaker
-                                 * process.dump
+#                                 * process.dump
 )
 
 
