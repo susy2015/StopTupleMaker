@@ -27,6 +27,7 @@ options.register('hltSelection', '*', VarParsing.VarParsing.multiplicity.list, V
 
 options.register('debug', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "switch on/off debug mode")
 options.register('verbose', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "verbose of debug")
+options.register('endReport', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "Show report")
 
 options.register('doPtHatWeighting', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "PtHat weighting for QCD flat samples, default is False")
 
@@ -34,11 +35,6 @@ options.register('fileslist', '', VarParsing.VarParsing.multiplicity.singleton, 
 
 options.register('fastsim', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "fastsim sample or not, default is False")
 
-#options.register('doTopTagger', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "do top tagger or not, default is True")
-
-options.register('smsModel', 'T1tttt', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "SMS model name")
-options.register('smsMotherMass',  -1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "SMS mother mass")
-options.register('smsDaughterMass',  -1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "SMS daughter mass")
 options.register('selSMSpts', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "select model pobools")
 
 options.parseArguments()
@@ -73,12 +69,17 @@ if options.debug:
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.suppressWarning = cms.untracked.vstring('ecalLaserCorrFilter','manystripclus53X','toomanystripclus53X')
 
+
 ## -- Options and Output Report --
-process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options  = cms.untracked.PSet( )
+if options.endReport:
+   process.options.wantSummary = cms.untracked.bool(True) 
+
+## -- Allow unscheduled --
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 ## -- Maximal Number of Events --
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )#cms.untracked.PSet(input = cms.untracked.int32(-1))#options.maxEvents) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
 if options.debug and options.verbose ==1:
    process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',
@@ -351,24 +352,10 @@ if options.hltSelection:
    )
 
 
-############################# START SUSYPAT specifics ####################################
-process.prefilterCounter        = cms.EDProducer("EventCountProducer")
-process.postStdCleaningCounter  = cms.EDProducer("EventCountProducer")
-
-process.cleanpatseq_task  = cms.Task(process.postStdCleaningCounter)
-
 # Standard Event cleaning 
 process.load("StopTupleMaker.SkimsAUX.prodFilterOutScraping_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodGoodVertices_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodSecondaryVertex_cfi")
-
-# an example sequence to create skimmed susypat-tuples
-process.cleanpatseq = cms.Sequence(
-#                      process.ra2StdCleaning          *
-                      #process.postStdCleaningCounter  #*
-                      process.cleanpatseq_task
-                      )
-############################# EDN SUSYPAT specifics ####################################
 
 process.dummyCounter = cms.EDProducer("EventCountProducer")
 
@@ -386,16 +373,6 @@ if options.doPtHatWeighting:
 from JetMETCorrections.Configuration.DefaultJEC_cff import *
 process.ak4PFJetschsL1FastL2L3Residual = ak4PFJetsL1FastL2L3Residual.clone( algorithm = cms.string('AK4PFchs'), src = 'slimmedJets' )
 process.ak4PFJetschsL1FastL2L3 = ak4PFJetsL1FastL2L3.clone( algorithm = cms.string('AK4PFchs'), src = 'slimmedJets' )
-
-# Default is dR = 0.3, dz < 0.05, pt > 10, reliso < 0.1
-process.load("StopTupleMaker.Skims.trackIsolationMaker_cfi")
-process.trackIsolation = process.trackIsolationFilter.clone()
-#process.trackIsolation.pfCandidatesTag = cms.InputTag("packedPFCandidates")
-process.trackIsolation.doTrkIsoVeto = cms.bool(False)
-
-process.loosetrackIsolation = process.trackIsolation.clone()
-#process.loosetrackIsolation.minPt_PFCandidate = cms.double(5.0)
-process.loosetrackIsolation.isoCut            = cms.double(0.5)
 
 process.load("StopTupleMaker.SkimsAUX.prodGenJets_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
@@ -816,10 +793,10 @@ if options.selSMSpts == True:
 
 
 if options.mcInfo == False:
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, 
+   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.prodIsoTrks, 
                                         )
 else:
-	process.comb_task = cms.Task(   process.cleanpatseq_task, process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.trackIsolation, process.loosetrackIsolation, process.prodIsoTrks, process.genHT, process.ISRJetProducer, process.prodGenJets
+   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.prodIsoTrks, process.genHT, process.ISRJetProducer, process.prodGenJets
                                         )
 
 # Other sequence
