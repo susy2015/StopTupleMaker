@@ -89,14 +89,8 @@ if options.debug and options.verbose ==1:
 
 ## -- Input Source --
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-      #'/store/relval/CMSSW_3_8_0_pre8/RelValTTbar/GEN-SIM-RECO/START38_V6-v1/0004/847D00B0-608E-DF11-A37D-003048678FA0.root'
-      #'/store/data/Run2017C/SingleMuon/MINIAOD/17Nov2017-v1/40000/0015635A-0BD9-E711-A76C-02163E0133BB.root'
-    #'/store/relval/CMSSW_9_4_5_cand1/RelValTTbar_13/MINIAODSIM/94X_mc2017_realistic_v14_RelVal_rmaod-v1/10000/A8356B71-6E2E-E811-8A63-0CC47A7C3424.root'      
-   '/store/mc/RunIIFall17MiniAOD/TTJets_SingleLeptFromT_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/00257B91-1808-E811-BD39-0242AC130002.root'
-   #'/store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/00000/2C881587-4CF6-E711-B958-0CC47AA989C0.root'
-      #'root://cmsxrootd.fnal.gov///store/mc/RunIIFall17MiniAOD/WWTo2L2Nu_NNPDF31_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/04291F1E-A501-E811-8EC9-6CC2173D4980.root'
-    )
+    #Do not add files here, instead add them to "process.source.fileNames" below or using the option "options.files"
+    fileNames = cms.untracked.vstring("" )
 )
 
 if options.files:
@@ -125,6 +119,12 @@ else:
       #'/store/relval/CMSSW_10_1_7/EGamma/MINIAOD/101X_dataRun2_Prompt_HEmiss_v1_RelVal_EGamma2018B-v1/10000/00BCDF45-3680-E811-9772-0CC47A7C3638.root'
       #'/store/relval/CMSSW_10_1_7/EGamma/MINIAOD/101X_dataRun2_Prompt_v11_RelVal_EGamma2018B-v1/10000/169FB560-2E80-E811-BB39-0CC47A7C360E.root' 
       ]
+
+## -- Output source -- 
+
+process.TFileService = cms.Service("TFileService",
+   fileName = cms.string('stopFlatNtuples.root')
+)
 
 ## ---------------------
 ## -- Calibration tag --
@@ -402,10 +402,6 @@ process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodEventInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.PhotonIDisoProducer_cfi")
-
-process.TFileService = cms.Service("TFileService",
-   fileName = cms.string('stopFlatNtuples.root')
-)
 
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
