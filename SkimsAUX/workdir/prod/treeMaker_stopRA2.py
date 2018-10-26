@@ -13,12 +13,9 @@ import tarfile
 
 import FWCore.ParameterSet.VarParsing as VarParsing
 options = VarParsing.VarParsing ('standard')
-#92X_dataRun2_Prompt_v7
-options.register('era', "Run2_25ns", VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Run2_25ns or Run2_50ns")
+
 options.register('ntpVersion', "Ntp_BLAH", VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "ntpVersion: to be same as the tag of the release. But can be used to produce 72X ntuple as well!")
 options.register('GlobalTag', "94X_mc2017_realistic_v12", VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "74X PromptReco: 74X_dataRun2_Prompt_v0")
-options.register('cmsswVersion', '101X', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "'36X' for example. Used for specific MC fix")
-options.register('specialFix', 'JEC', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "special fixes ==>   JEC : use external JEC; IVF : fix IVF; BADMUON : bad muon filters")
 options.register('jecDBname', "Fall17_17Nov2017_V8_MC", VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "Summer15_25nsV6_DATA for data")
 options.register('hltName', 'HLT', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "HLT menu to use for trigger matching")
 
@@ -26,24 +23,10 @@ options.register('mcInfo', True, VarParsing.VarParsing.multiplicity.singleton, V
 
 options.register('doPDFs', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "switch to enable the production of PDF weights for NNPDF3.0, CT10, MMHT2014, n.b. you need to do `scram setup lhapdf` before running (default=False)")
 
-options.register('addJetsForZinv', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "switch to add top projected jets for Zinv")
-
-options.register('externalFilterList', '', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "event list for filters")
-
-options.register('jetCorrections', 'L2Relative', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Level of jet corrections to use: Note the factors are read from DB via GlobalTag")
-options.jetCorrections.append('L3Absolute')
-
-options.register('mcVersion', '', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "'36X' for example. Used for specific MC fix")
-options.register('dataVersion', '', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "'36X' for example. Used for specific DATA fix")
-
-options.register('jetTypes', 'AK4PF', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Additional jet types that will be produced (AK4Calo and AK4PF, cross cleaned in PF2PAT, are included anyway)")
 options.register('hltSelection', '*', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "hlTriggers (OR) used to filter events. for data: ''HLT_Mu9', 'HLT_IsoMu9', 'HLT_IsoMu13_v*''; for MC, HLT_Mu9")
-options.register('addKeep', '', VarParsing.VarParsing.multiplicity.list, VarParsing.VarParsing.varType.string, "Additional keep and drop statements to trim the event content")
 
 options.register('debug', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "switch on/off debug mode")
 options.register('verbose', 0, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "verbose of debug")
-
-options.register('test', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "switch on/off debug mode")
 
 options.register('doPtHatWeighting', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "PtHat weighting for QCD flat samples, default is False")
 
@@ -53,16 +36,10 @@ options.register('fastsim', False, VarParsing.VarParsing.multiplicity.singleton,
 
 #options.register('doTopTagger', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "do top tagger or not, default is True")
 
-options.register('usePhiCorrMET', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "use phi corrected MET or not, default is False")
-
-options.register('reducedfilterTags', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "use phi corrected MET or not, default is True")
-
 options.register('smsModel', 'T1tttt', VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.string, "SMS model name")
 options.register('smsMotherMass',  -1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "SMS mother mass")
 options.register('smsDaughterMass',  -1, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.int, "SMS daughter mass")
 options.register('selSMSpts', False, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "select model pobools")
-
-options.register('pythia8', True, VarParsing.VarParsing.multiplicity.singleton, VarParsing.VarParsing.varType.bool, "pythi8 or not, default True")
 
 options.parseArguments()
 options._tagOrder =[]
@@ -76,25 +53,12 @@ print options
 procCMSSWver = os.environ['CMSSW_RELEASE_BASE'].split("/")[-1]
 print "procCMSSWver : ", procCMSSWver, "\n"
 
-#if not "CMSSW_8_0" in procCMSSWver:
-#   print "You should be using CMSSW 80X!! Please change your release area"
-#   sys.exit("ERROR: Not using 80X release")
-
-#if not options.cmsswVersion == "80X":
-#   print "You should be using CMSSW 80X as option!! Please change to be consistent with the release area"
-#   sys.exit("ERROR: Not using 80X option")
-
 
 ## ------------------------
 ## -- Define the process --
 ## ------------------------
 
 process = cms.Process("SUSY")
-
-if options.era == "Run2_25ns":
-   process = cms.Process("SUSY", eras.Run2_25ns)
-elif options.era == "Run2_50ns":
-   process = cms.Process("SUSY", eras.Run2_50ns)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -171,9 +135,6 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 if options.GlobalTag:
    process.GlobalTag = GlobalTag(process.GlobalTag, options.GlobalTag, '')
 
-if options.mcInfo == False: 
-   options.jetCorrections.append('L2L3Residual')
-options.jetCorrections.insert(0, 'L1FastJet')
 
 ########################################################################################################################################################
 
@@ -509,7 +470,7 @@ process.stopTreeMaker.TreeName = cms.string("AUX")
 
 process.ntpVersion = cms.EDFilter(
    "prodNtupleVersionString", 
-   inputStr = cms.vstring(options.ntpVersion, options.GlobalTag, options.cmsswVersion, options.specialFix, options.hltName, options.era, options.jecDBname, procCMSSWver)
+   inputStr = cms.vstring(options.ntpVersion, options.GlobalTag, options.hltName, options.jecDBname, procCMSSWver)
 )
 
 #process.stopTreeMaker.vectorString.append(cms.InputTag("ntpVersion"))
@@ -850,31 +811,6 @@ if options.fastsim == False:
 else:
    process.trig_filter_task = cms.Task( process.HBHENoiseIsoFilter, process.triggerProducer, process.CSCTightHaloFilter, process.globalSuperTightHalo2016Filter, process.goodVerticesFilter, process.ecalBadCalibFilter, process.EcalDeadCellTriggerPrimitiveFilter, process.BadChargedCandidateFilter, process.BadPFMuonFilter ) 
    process.trig_filter_seq = cms.Sequence(process.trig_filter_task)
-
-if options.externalFilterList:
-   process.load("StopTupleMaker.SkimsAUX.EventListFilter_cfi")
-   for flist in options.externalFilterList:
-      tfile = tarfile.open(flist, 'r:gz')
-      tfile.extractall('.')
-      flist = flist.replace(".txt.tar.gz", ".txt")
-      if flist.find("ecalsc") != -1:
-         process.eeBadScListFilter = process.EventListFilter.clone(inputFileList=flist)
-         process.trig_filter_seq += process.eeBadScListFilter
-         process.stopTreeMaker.varsBool.append(cms.InputTag("eeBadScListFilter"))
-      elif flist.find("csc2015") != -1:
-         process.CSCTightHaloListFilter = process.EventListFilter.clone(inputFileList=flist)
-         process.trig_filter_seq += process.CSCTightHaloListFilter
-         process.stopTreeMaker.varsBool.append(cms.InputTag("CSCTightHaloListFilter"))
-      elif flist.find("badResolutionTrack") !=-1:
-         process.badResolutionTrackListFilter = process.EventListFilter.clone(inputFileList=flist)
-         process.trig_filter_seq += process.badResolutionTrackListFilter
-         process.stopTreeMaker.varsBool.append(cms.InputTag("badResolutionTrackListFilter"))
-      elif flist.find("muonBadTrack") != -1:
-         process.muonBadTrackListFilter = process.EventListFilter.clone(inputFileList=flist)
-         process.trig_filter_seq += process.muonBadTrackListFilter
-         process.stopTreeMaker.varsBool.append(cms.InputTag("muonBadTrackListFilter"))
-      else:
-         print "Do NOT support externalFilterList with name : ", flist
 
 if options.selSMSpts == True:
    process.stopTreeMaker.vectorString.extend([cms.InputTag("smsModelFilter:fileNameStr"), cms.InputTag("smsModelFilter:smsModelStr")])
