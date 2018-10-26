@@ -30,5 +30,7 @@ prodJets = cms.EDFilter(
 
   genMatch_dR = cms.untracked.double(1.0),
   deltaRcon = cms.untracked.double(0.01),
-)
+
+  datapath = cms.string("NNKit/data/ak8/full")
+  )
 
