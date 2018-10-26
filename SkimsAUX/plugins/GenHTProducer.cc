@@ -45,7 +45,7 @@ private:
 GenHTProducer::GenHTProducer(const edm::ParameterSet& iConfig) : getterOfProducts_(edm::ProcessMatch("*"), this)
 {
   callWhenNewProductsRegistered(getterOfProducts_);
-  produces<double>("genHT");
+  produces<float>("genHT");
 
 }
 
@@ -64,7 +64,7 @@ void GenHTProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   using namespace edm;
 
   // first calculate genHT
-  double genHT = 0.0;
+  float genHT = 0.0;
 
   std::vector<edm::Handle<LHEEventProduct> > handles;
   getterOfProducts_.fillHandles(iEvent, handles);

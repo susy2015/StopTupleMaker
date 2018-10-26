@@ -13,14 +13,14 @@ git checkout NEW_TAG_NAME
 The following installation instructions assume the user wants to process Run2016 data or Spring16 MC.
 
 ```
-cmsrel CMSSW_9_4_6_patch1
-cd CMSSW_9_4_6_patch1/src
+cmsrel CMSSW_9_4_10
+cd CMSSW_9_4_10/src
 cmsenv
 git cms-init
-git clone -b jetToolbox_94X git@github.com:cms-jet/JetToolbox.git
-or
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v1
 git cms-merge-topic -u pastika:AddAxis1_946p1
+#https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
+git cms-merge-topic cms-met:METFixEE2017_949_v2
 
 git clone -b master git@github.com:susy2015/StopTupleMaker.git
 
