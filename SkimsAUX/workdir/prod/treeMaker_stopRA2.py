@@ -291,34 +291,6 @@ addJetCollection(
 process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2', 'QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
-#if "JEC" in options.specialFix:
-#  print ("\nApplying fix to JEC issues in %s ...\n" %(options.cmsswVersion))
-#  # JEC can be downloaded from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
-#  #inputDB = "sqlite_file:" + os.environ['CMSSW_BASE'] + "/src/StopTupleMaker/SkimsAUX/data/PY8_RunIISpring15DR74_bx25_MC.db"
-#  #print inputDB
-#   
-#
-#  #if options.cmsswVersion == "80X":
-#  updateJetCollection(
-#      process,
-#      jetSource = cms.InputTag('slimmedJets'),
-#      postfix = 'UpdatedJEC',
-#      jetCorrections = ('AK4PFchs', jetCorrLevelLists, 'None')
-#  )
-#  process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1']
-#  process.updatedPatJetsUpdatedJEC.userData.userInts.src += ['QGTagger:mult']
-#  # update the MET to account for the new JECs
-#  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-#  runMetCorAndUncFromMiniAOD(
-#      process,
-#      isData=not options.mcInfo, # controls gen met
-#      #jetCollUnskimmed="updatedPatJetsUpdatedJEC",
-#      #jetColl="updatedPatJetsUpdatedJEC",
-#      #postfix="Update"
-#  )
-#  #process.fix80XJEC = cms.Sequence( process.patJetCorrFactorsUpdatedJEC + process.updatedPatJetsUpdatedJEC ) ## NS: What is this patJetCorrFactorsUpdatedJEC ??
-    
-
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
 outputModuleName = "out"
@@ -480,13 +452,6 @@ process.load("StopTupleMaker.SkimsAUX.genDecayStringMakerPythia8_cfi")
 process.printDecayPythia8.src = cms.InputTag("prunedGenParticles")
 process.printDecayPythia8.keyDecayStrs = cms.vstring("t", "tbar", "~chi_1+", "~chi_1-")
 process.printDecayPythia8.printDecay = cms.untracked.bool(options.debug)
-
-
-#process.load("StopTupleMaker.TopTagger.groomProd_cfi")
-#process.groomProdak4 = process.groomProd.clone()
-#process.groomProdak4.jetSrc = cms.InputTag("ak4patJetsPFchsPt10")
-#process.groomProdak4.groomingOpt = cms.untracked.int32(1)
-#process.groomProdak4.debug = cms.untracked.bool(options.debug)
 
 
 #Addition of Filter Decision Bits and Trigger Results
@@ -677,7 +642,6 @@ process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","loose
 process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","mediumElectronID"))
 process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","tightElectronID"))
 
-#process.stopTreeMaker.varsInt.append(cms.InputTag("prodJets", "nJets"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "jetsLVec"))
 #process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenJets", "genjetsLVec"))
 process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "recoJetsFlavor"))
@@ -689,10 +653,7 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgLikelihood"
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgPtD"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis2"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgMult"))
-#process.stopTreeMaker.vectorDouble.append(cms.InputTag("prodJets", "qgPtDrLog"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "qgAxis1"))
-#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgnMult"))
-#process.stopTreeMaker.vectorInt.append(cms.InputTag("prodJets", "qgcMult"))
 
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetschargedHadronEnergyFraction"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetschargedEmEnergyFraction"))
@@ -850,6 +811,7 @@ if options.mcInfo == True:
    process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodGenJets", "genjetsLVec"))
    process.stopTreeMaker.varsFloat.extend([cms.InputTag("prodMET:genmet"), cms.InputTag("prodMET:genmetphi")])
 
+   #NEEDS TO BE FIXED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    #process.PDFWeights = cms.EDProducer('PDFWeightProducer')
    #process.stopTreeMaker.varsFloat.append(cms.InputTag("PDFWeights", "x1"))
    #process.stopTreeMaker.varsFloat.append(cms.InputTag("PDFWeights", "x2"))
@@ -963,11 +925,3 @@ process.ak4Stop_Path = cms.Path( process.fullPatMetSequence *
 #                                 * process.dump
 )
 
-
-#process.myTask = cms.Task()
-#process.myTask.add(*[getattr(process,prod) for prod in process.producers_()])
-#process.myTask.add(*[getattr(process,filt) for filt in process.filters_()])
-#process.ak4Stop_Path = cms.Task()
-#process.ak4Stop_Path.add(*[getattr(process,prod) for prod in process.producers_()])
-#process.ak4Stop_Path.add(*[getattr(process,filt) for filt in process.filters_()])
-#process.ak4Stop_Path.associate(process.myTask)   
