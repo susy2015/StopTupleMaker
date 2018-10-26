@@ -141,7 +141,7 @@ WeightProducer::WeightProducer(const edm::ParameterSet& iConfig):
 }
 
 WeightProducer::~WeightProducer() {
-   printf("\n==> WeightProducer   cntPrintOut_ : %10d  accuWeight_ : %10.8f  avgWeight_ : %10.8f\n\n", cntPrintOut_, accuWeight_, accuWeight_/cntPrintOut_);
+//   printf("\n==> WeightProducer   cntPrintOut_ : %10d  accuWeight_ : %10.8f  avgWeight_ : %10.8f\n\n", cntPrintOut_, accuWeight_, accuWeight_/cntPrintOut_);
 }
 
 // ------------ method called to produce the data  ------------
@@ -246,7 +246,7 @@ void WeightProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) 
     }
 
     if( cntPrintOut_ < maxInitPrintOut_ ){
-       printf("==> WeightProducer   cntPrintOut_ : %2d  _weight : %10.8f  accuWeight_ : %10.8f  avgWeight_ : %10.8f  --> ptHatweight_ : %10.8f  storedWeight : %10.8f  ratioPtHat : %10.8f  --> puweight : %10.8f\n", cntPrintOut_, _weight, accuWeight_, accuWeight_/cntPrintOut_, ptHatweight_, storedWeight, ratioPtHat, puweight_);
+//       printf("==> WeightProducer   cntPrintOut_ : %2d  _weight : %10.8f  accuWeight_ : %10.8f  avgWeight_ : %10.8f  --> ptHatweight_ : %10.8f  storedWeight : %10.8f  ratioPtHat : %10.8f  --> puweight : %10.8f\n", cntPrintOut_, _weight, accuWeight_, accuWeight_/cntPrintOut_, ptHatweight_, storedWeight, ratioPtHat, puweight_);
     }
 
 }
