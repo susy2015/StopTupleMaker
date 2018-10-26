@@ -387,6 +387,13 @@ process.printDecayPythia8.src = cms.InputTag("prunedGenParticles")
 process.printDecayPythia8.keyDecayStrs = cms.vstring("t", "tbar", "~chi_1+", "~chi_1-")
 process.printDecayPythia8.printDecay = cms.untracked.bool(options.debug)
 
+# Default is dR = 0.3, dz < 0.05, pt > 10, reliso < 0.1
+process.load("StopTupleMaker.SkimsAUX.trackIsolationMaker_cfi")
+process.trackIsolation = process.trackIsolationFilter.clone()
+process.trackIsolation.doTrkIsoVeto = cms.bool(False)
+
+process.loosetrackIsolation = process.trackIsolation.clone()
+process.loosetrackIsolation.isoCut            = cms.double(0.5)
 
 #Addition of Filter Decision Bits and Trigger Results
 process.load("StopTupleMaker.SkimsAUX.prodTriggerResults_cfi")
@@ -793,10 +800,10 @@ if options.selSMSpts == True:
 
 
 if options.mcInfo == False:
-   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.prodIsoTrks, 
+   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.loosetrackIsolation, process.prodIsoTrks, 
                                         )
 else:
-   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.prodIsoTrks, process.genHT, process.ISRJetProducer, process.prodGenJets
+   process.comb_task = cms.Task( process.prodMuons, process.egmGsfElectronIDTask, process.prodElectrons, process.egmPhotonIDTask, process.goodPhotons, process.QGTagger, process.QGTaggerNoLep, process.weightProducer, process.loosetrackIsolation, process.prodIsoTrks, process.genHT, process.ISRJetProducer, process.prodGenJets
                                         )
 
 # Other sequence
