@@ -325,13 +325,13 @@ process.load("StopTupleMaker.SkimsAUX.ISRJetProducer_cfi")
 ########################################################################################################################################################
 
 #recalculate MET because of updated JEC
-#https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#PF_MET
+#https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(
    process,
    isData=not options.mcInfo, # controls gen met
-#   fixEE2017 = True,
-#   fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
+   fixEE2017 = True,
+   fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
 #   postfix = "ModifiedMET"
 )
 
