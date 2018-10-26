@@ -188,32 +188,36 @@ process.load("StopTupleMaker.SkimsAUX.prodElectrons_cfi")
 ## ---------------------------------------
 
 ## define the JECs JET Corrections
-jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
 jetCorrLevelLists = ['L1FastJet', 'L2Relative', 'L3Absolute']
+jetCorrectionLevels = ('AK4PFchs', cms.vstring(jetCorrLevelLists), 'None')
 if options.mcInfo == False:
-      jetCorrectionLevels = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']), 'None')
       jetCorrLevelLists = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
+      jetCorrectionLevels = ('AK4PFchs', cms.vstring(jetCorrLevelLists), 'None')
 
 AK4_btagDiscriminators = [ 'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                             'softPFMuonBJetTags',
-                             'softPFElectronBJetTags',
-                             'pfJetBProbabilityBJetTags',
-                             'pfJetProbabilityBJetTags',
-                             'pfCombinedCvsLJetTags',
-                             'pfCombinedCvsBJetTags',
-                             'pfCombinedSecondaryVertexV2BJetTags',
-                             'pfDeepCSVJetTags:probudsg',
-                             'pfDeepCSVJetTags:probb',
-                             'pfDeepCSVJetTags:probc',
-                             'pfDeepCSVJetTags:probbb',
-          ]
+                           'softPFMuonBJetTags',
+                           'softPFElectronBJetTags',
+                           'pfJetBProbabilityBJetTags',
+                           'pfJetProbabilityBJetTags',
+                           'pfCombinedCvsLJetTags',
+                           'pfCombinedCvsBJetTags',
+                           'pfCombinedSecondaryVertexV2BJetTags',
+                           'pfDeepCSVJetTags:probudsg',
+                           'pfDeepCSVJetTags:probb',
+                           'pfDeepCSVJetTags:probc',
+                           'pfDeepCSVJetTags:probbb',
+                           'pfDeepCSVDiscriminatorsJetTags:BvsAll',
+                           ]
 
 
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 
-#Clean well ID and isolated e/mu out of PF candidates 
+#Clean well ID and isolated e/mu out of PF candidates
+process.pfPVCleanedCHS = cms.EDFilter("CandPtrSelector",
+                                      src = cms.InputTag("packedPFCandidates"),
+                                      cut = cms.string("fromPV") )
 process.pfNoMuonCHSNoMu =  cms.EDProducer("CandPtrProjector", 
-                                          src = cms.InputTag("packedPFCandidates"), 
+                                          src = cms.InputTag("pfPVCleanedCHS"), 
                                           veto = cms.InputTag("prodMuons", "mu2Clean"))
 process.pfNoElectronCHSNoEle = cms.EDProducer("CandPtrProjector", 
                                               src = cms.InputTag("pfNoMuonCHSNoMu"), 
@@ -222,22 +226,29 @@ process.pfNoElectronCHSNoEle = cms.EDProducer("CandPtrProjector",
 #recluster AK4 jets from leptonclened PF candidates 
 process.ak4PFJetsCHSNoLep = ak4PFJets.clone(src = 'pfNoElectronCHSNoEle', doAreaFastjet = True) # no idea while doArea is false by default, but it's True in RECO so we have to set it
 
-## -- Add the Q/G discriminator --
-qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-## import Q/G database
-from CondCore.DBCommon.CondDBSetup_cfi import *
-QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-      CondDBSetup,
-      toGet = cms.VPSet(),
-      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-)
-for type in ['AK4PFchs','AK4PFchs_antib']:
-  QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
-    record = cms.string('QGLikelihoodRcd'),
-    tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-    label  = cms.untracked.string('QGL_'+type)
-  )))
+##Override default JEC source 
+process.jec = cms.ESSource("PoolDBESSource",
+    DBParameters = cms.PSet(
+      messageLevel = cms.untracked.int32(0)
+    ),
+    timetype = cms.string('runnumber'),
+    toGet = cms.VPSet(
+      cms.PSet(
+        record = cms.string('JetCorrectionsRecord'),
+        tag    = cms.string('JetCorrectorParametersCollection_'+options.jecDBname+"_AK4PFchs"),
+        label  = cms.untracked.string('AK4PFchs')
+      ),
+      ## here you add as many jet types as you need
+      ## note that the tag name is specific for the particular sqlite file 
+    ),
+    # from page 19 on slides https://indico.cern.ch/event/405326/contribution/2/attachments/811719/1112498/Pythia8.pdf
+    # connect = cms.string('sqlite:PY8_RunIISpring15DR74_bx25_MC.db')
+    connect = cms.string('sqlite:'+options.jecDBname+'.db')
+  )
+## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
+#Calculate QG variables for AK4 jet collections 
 process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets   = cms.InputTag('slimmedJets') 
 
@@ -268,7 +279,7 @@ addJetCollection(
       labelName = 'AK4PFCHSNoLep',
       jetSource = cms.InputTag('ak4PFJetsCHSNoLep'),
       pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-      pfCandidates = cms.InputTag('packedPFCandidates'),
+      pfCandidates = cms.InputTag('pfNoElectronCHSNoEle'),
       svSource = cms.InputTag('slimmedSecondaryVertices'),
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
@@ -280,61 +291,38 @@ addJetCollection(
 process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2', 'QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
 
-if "JEC" in options.specialFix:
-  print ("\nApplying fix to JEC issues in %s ...\n" %(options.cmsswVersion))
-  # JEC can be downloaded from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
-  #inputDB = "sqlite_file:" + os.environ['CMSSW_BASE'] + "/src/StopTupleMaker/SkimsAUX/data/PY8_RunIISpring15DR74_bx25_MC.db"
-  #print inputDB
-  process.load("CondCore.DBCommon.CondDBCommon_cfi")
-  from CondCore.DBCommon.CondDBSetup_cfi import *
-  process.jec = cms.ESSource("PoolDBESSource",
-    DBParameters = cms.PSet(
-      messageLevel = cms.untracked.int32(0)
-    ),
-    timetype = cms.string('runnumber'),
-    toGet = cms.VPSet(
-      cms.PSet(
-        record = cms.string('JetCorrectionsRecord'),
-        tag    = cms.string('JetCorrectorParametersCollection_'+options.jecDBname+"_AK4PFchs"),
-        label  = cms.untracked.string('AK4PFchs')
-      ),
-      ## here you add as many jet types as you need
-      ## note that the tag name is specific for the particular sqlite file 
-    ),
-    # from page 19 on slides https://indico.cern.ch/event/405326/contribution/2/attachments/811719/1112498/Pythia8.pdf
-    # connect = cms.string('sqlite:PY8_RunIISpring15DR74_bx25_MC.db')
-    connect = cms.string('sqlite:'+options.jecDBname+'.db')
-    # connect = cms.string(inputDB)
-    # uncomment above tag lines and this comment to use MC JEC
-  )
-  ## add an es_prefer statement to resolve a possible conflict from simultaneous connection to a global tag
-  process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-   
-
-  #if options.cmsswVersion == "80X":
-  updateJetCollection(
-      process,
-      jetSource = cms.InputTag('slimmedJets'),
-      postfix = 'UpdatedJEC',
-      jetCorrections = ('AK4PFchs', jetCorrLevelLists, 'None')
-  )
-  process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1']
-  process.updatedPatJetsUpdatedJEC.userData.userInts.src += ['QGTagger:mult']
-  # update the MET to account for the new JECs
-  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-  runMetCorAndUncFromMiniAOD(
-      process,
-      isData=not options.mcInfo, # controls gen met
-      #jetCollUnskimmed="updatedPatJetsUpdatedJEC",
-      #jetColl="updatedPatJetsUpdatedJEC",
-      #postfix="Update"
-  )
-  #process.fix80XJEC = cms.Sequence( process.patJetCorrFactorsUpdatedJEC + process.updatedPatJetsUpdatedJEC ) ## NS: What is this patJetCorrFactorsUpdatedJEC ??
+#if "JEC" in options.specialFix:
+#  print ("\nApplying fix to JEC issues in %s ...\n" %(options.cmsswVersion))
+#  # JEC can be downloaded from https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC
+#  #inputDB = "sqlite_file:" + os.environ['CMSSW_BASE'] + "/src/StopTupleMaker/SkimsAUX/data/PY8_RunIISpring15DR74_bx25_MC.db"
+#  #print inputDB
+#   
+#
+#  #if options.cmsswVersion == "80X":
+#  updateJetCollection(
+#      process,
+#      jetSource = cms.InputTag('slimmedJets'),
+#      postfix = 'UpdatedJEC',
+#      jetCorrections = ('AK4PFchs', jetCorrLevelLists, 'None')
+#  )
+#  process.updatedPatJetsUpdatedJEC.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1']
+#  process.updatedPatJetsUpdatedJEC.userData.userInts.src += ['QGTagger:mult']
+#  # update the MET to account for the new JECs
+#  from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#  runMetCorAndUncFromMiniAOD(
+#      process,
+#      isData=not options.mcInfo, # controls gen met
+#      #jetCollUnskimmed="updatedPatJetsUpdatedJEC",
+#      #jetColl="updatedPatJetsUpdatedJEC",
+#      #postfix="Update"
+#  )
+#  #process.fix80XJEC = cms.Sequence( process.patJetCorrFactorsUpdatedJEC + process.updatedPatJetsUpdatedJEC ) ## NS: What is this patJetCorrFactorsUpdatedJEC ??
     
 
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
-jetToolbox( process, 'ak8', 'ak8JetSubsNoLep', 'out', 
+outputModuleName = "out"
+jetToolbox( process, 'ak8', 'ak8JetSubsNoLep', outputModuleName, 
             runOnMC = options.mcInfo, 
             PUMethod='Puppi', 
             newPFCollection=True,
@@ -343,13 +331,6 @@ jetToolbox( process, 'ak8', 'ak8JetSubsNoLep', 'out',
             addSoftDrop = True, 
             addNsub = True, 
             bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                                  'softPFMuonBJetTags',
-                                  'softPFElectronBJetTags',
-                                  'pfJetBProbabilityBJetTags',
-                                  'pfJetProbabilityBJetTags',
-                                  'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                                  'pfCombinedCvsLJetTags',
-                                  'pfCombinedCvsBJetTags',
                                   'pfCombinedSecondaryVertexV2BJetTags',
                                   'pfDeepCSVJetTags:probudsg',
                                   'pfDeepCSVJetTags:probb',
@@ -360,27 +341,25 @@ jetToolbox( process, 'ak8', 'ak8JetSubsNoLep', 'out',
             postFix="NoLep")
 
 # Keep this behind the cleaned version for now, otherwise everything will be lepton cleaned
-jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', 
-  runOnMC = options.mcInfo, 
-  PUMethod='Puppi', 
-  addSoftDropSubjets = True, 
-  addSoftDrop = True, 
-  addNsub = True, 
-  bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                        'softPFMuonBJetTags',
-                        'softPFElectronBJetTags',
-                        'pfJetBProbabilityBJetTags',
-                        'pfJetProbabilityBJetTags',
-                        'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-                        'pfCombinedCvsLJetTags',
-                        'pfCombinedCvsBJetTags',
-                        'pfCombinedSecondaryVertexV2BJetTags',
-                        'pfDeepCSVJetTags:probudsg',
-                        'pfDeepCSVJetTags:probb',
-                        'pfDeepCSVJetTags:probc',
-                        'pfDeepCSVJetTags:probbb',
-                        ], 
-  addCMSTopTagger = False)
+jetToolbox( process, 'ak8', 'ak8JetSubs', outputModuleName, 
+            runOnMC = options.mcInfo, 
+            PUMethod='Puppi', 
+            addSoftDropSubjets = True, 
+            addSoftDrop = True, 
+            addNsub = True, 
+            bTagDiscriminators = ['pfCombinedInclusiveSecondaryVertexV2BJetTags',
+                                  'pfCombinedSecondaryVertexV2BJetTags',
+                                  'pfDeepCSVJetTags:probudsg',
+                                  'pfDeepCSVJetTags:probb',
+                                  'pfDeepCSVJetTags:probc',
+                                  'pfDeepCSVJetTags:probbb',
+                                  ], 
+            addCMSTopTagger = False)
+
+# Hack to remove the stupid output module created by jetToolbox
+# which makes this infuriating "jettoolbox.root" file
+if hasattr(process, outputModuleName):
+   delattr(process, outputModuleName)
 
 process.load("StopTupleMaker.SkimsAUX.prodJets_cfi")
 
@@ -390,15 +369,15 @@ process.prodJets.debug = cms.bool(options.debug)
 
 process.prodJetsNoLep = process.prodJets.clone()
 process.prodJetsNoLep.jetSrc = cms.InputTag('patJetsAK4PFCHSNoLep')
+process.prodJetsNoLep.ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppiNoLep')
 process.prodJetsNoLep.qgTaggerKey = cms.string('QGTaggerNoLep')
 process.prodJetsNoLep.puppiJetsSrc = cms.InputTag('packedPatJetsAK8PFPuppiNoLepSoftDrop')
 process.prodJetsNoLep.NjettinessAK8Puppi_label = cms.string('NjettinessAK8PuppiNoLep')
-process.prodJetsNoLep.ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppiNoLep')
 
 ########################################################################################################################################################
 
 process.load('StopTupleMaker.SkimsAUX.prodJetIDEventFilter_cfi')
-process.prodJetIDEventFilter.JetSource = cms.InputTag("slimmedJets")
+process.prodJetIDEventFilter.JetSource = cms.InputTag("updatedPatJetsAK4PFCHS")
 process.prodJetIDEventFilter.MinJetPt  = cms.double(10.0)
 process.prodJetIDEventFilter.MaxJetEta = cms.double(999.0)
 
@@ -408,6 +387,23 @@ process.prodJetIDEventFilterNoLep.JetSource = cms.InputTag("packedPatJetsAK8PFPu
 ########################################################################################################################################################
 
 process.load("StopTupleMaker.SkimsAUX.ISRJetProducer_cfi")
+
+########################################################################################################################################################
+
+#recalculate MET because of updated JEC
+#https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#PF_MET
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(
+   process,
+   isData=not options.mcInfo, # controls gen met
+#   fixEE2017 = True,
+#   fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139} ,
+#   postfix = "ModifiedMET"
+)
+
+process.load("StopTupleMaker.SkimsAUX.prodMET_cfi")
+#make sure we pick up the MET produced above
+process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
 
 ########################################################################################################################################################
 
@@ -540,7 +536,6 @@ process.prepareCutvars_seq = cms.Sequence( process.prepareCutvars_task )
 ############################
 
 process.load("StopTupleMaker.SkimsAUX.prodGenJets_cfi")
-process.load("StopTupleMaker.SkimsAUX.prodMET_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodGenInfo_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodIsoTrks_cfi")
 process.load("StopTupleMaker.SkimsAUX.prodEventInfo_cfi")
@@ -1079,6 +1074,7 @@ if options.fastsim == False:
 else:
    process.trig_filter_task = cms.Task( process.HBHENoiseIsoFilter, process.triggerProducer, process.CSCTightHaloFilter, process.globalSuperTightHalo2016Filter, process.goodVerticesFilter, process.ecalBadCalibFilter, process.EcalDeadCellTriggerPrimitiveFilter, process.BadChargedCandidateFilter, process.BadPFMuonFilter ) 
    process.trig_filter_seq = cms.Sequence(process.trig_filter_task)
+
 if options.externalFilterList:
    process.load("StopTupleMaker.SkimsAUX.EventListFilter_cfi")
    for flist in options.externalFilterList:
@@ -1110,7 +1106,6 @@ if options.selSMSpts == True:
 
 #process.ak4Stop_Path.associate(process.myTask)
 
-process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
 
 if options.mcInfo == False:
 
@@ -1131,104 +1126,20 @@ process.comb_seq = cms.Sequence(
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
-process.ak4Stop_Path = cms.Path(
-                                   process.comb_seq * 
-                                   process.printDecayPythia8 * process.prodGenInfo * process.prodGoodVertices * 
-                                   process.prodMuonsNoIso * process.prodElectronsNoIso * process.prodIsoTrks * process.prodJetIDEventFilter *
-                                   process.prodJetIDEventFilterNoLep * process.METFilters *
-                                   process.noBadMuonsFilter * process.badMuonsFilter * process.duplicateMuonsFilter * process.prodJetsNoLep * 
-                                   process.prodJets * process.prodMET * process.prodEventInfo * process.trig_filter_seq * process.prodSecondaryVertex *
-                                   #process.prodBTag *
-                                   #process.goodPhotons *
-                                   #process.genHT *
-                                   process.stopTreeMaker
+process.ak4Stop_Path = cms.Path( process.fullPatMetSequence * 
+                                 process.comb_seq * 
+                                 process.printDecayPythia8 * process.prodGenInfo * process.prodGoodVertices * 
+                                 process.prodMuonsNoIso * process.prodElectronsNoIso * process.prodIsoTrks * process.prodJetIDEventFilter *
+                                 process.prodJetIDEventFilterNoLep * process.METFilters *
+                                 process.noBadMuonsFilter * process.badMuonsFilter * process.duplicateMuonsFilter * process.prodJetsNoLep *
+                                 process.prodJets * process.prodMET * process.prodEventInfo * process.trig_filter_seq * process.prodSecondaryVertex *
+                                 #process.prodBTag *
+                                 #process.goodPhotons *
+                                 #process.genHT *
+                                 process.stopTreeMaker
+                                 * process.dump
 )
 
-#if options.doTopTagger == False:
-#   process.ak4Stop_Path.remove(process.type3topTagger)
-
-#if options.mcInfo == False:
-#   process.ak4Stop_Path.remove(process.prodGenInfo)
-#   process.ak4Stop_Path.remove(process.printDecayPythia8)
-
-#if options.selSMSpts == True:
-#   process.ak4Stop_Path.replace(process.hltFilter, process.hltFilter*process.smsModelFilter)
-
-if "JEC" in options.specialFix:
-   if options.cmsswVersion == "80X":
-
-      process.comb_seq.replace(process.weightProducer, process.fix80XJEC*process.weightProducer)
-   
-      process.updatedPatJetsUpdatedJECPt10 = process.selectedPatJetsRA2.clone()
-      process.updatedPatJetsUpdatedJECPt10.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.updatedPatJetsUpdatedJECPt10.pfJetCut = cms.string('pt >= 10')
-   
-      process.prodJets.jetSrc = cms.InputTag('updatedPatJetsUpdatedJECPt10')
-      if options.fastsim == True:
-         process.prodJets.jetOtherSrc = cms.InputTag('updatedPatJetsUpdatedJECPt10')
-      
-      process.ak4patJetsPFchsPt10.jetSrc = cms.InputTag('updatedPatJetsUpdatedJEC')
-      process.ak4patJetsPFchsPt30.jetSrc = cms.InputTag('updatedPatJetsUpdatedJEC')
-      process.ak4patJetsPFchsPt50Eta25.jetSrc = cms.InputTag('updatedPatJetsUpdatedJEC')
-      process.prodJetIDEventFilter.JetSource = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.ak4stopJetsPFchsPt30.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.ak4stopJetsPFchsPt50Eta24.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-   
-      process.stopJetsPFchsPt30.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.stopJetsPFchsPt30Eta24.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.stopJetsPFchsPt50Eta24.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.stopJetsPFchsPt70Eta24.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.stopJetsPFchsPt70eta2p5.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-   
-      process.updatedPatJetsUpdatedJECPt30 = process.selectedPatJetsRA2.clone()
-      process.updatedPatJetsUpdatedJECPt30.jetSrc = cms.InputTag("updatedPatJetsUpdatedJEC")
-      process.updatedPatJetsUpdatedJECPt30.pfJetCut = cms.string('pt >= 20')
-      
-      process.mt2PFchs.JetTag = cms.InputTag("updatedPatJetsUpdatedJECPt30")
-
-      if "BADMUON" in options.specialFix and options.mcInfo == False:
-         process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
-         process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETsMuEGClean")
-         process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
-      
-         process.met175PFchsFilter.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
-         process.met200PFchsFilter.MHTSource = cms.InputTag("slimmedMETsMuEGClean")
-      
-         process.prodElectrons.metSource = cms.InputTag("slimmedMETsMuEGClean")
-         process.prodElectronsNoIso.metSource = cms.InputTag("slimmedMETsMuEGClean")
-      
-         process.prodIsoTrks.metSrc = cms.InputTag("slimmedMETsMuEGClean")
-         # Already adjusted ... and we don't re-produce the slimmedMETsMuEGClean when we redo the JEC...
-         #process.prodMET.metSrc = cms.InputTag("slimmedMETsMuEGClean")
-      
-         process.prodMuons.metSource = cms.InputTag("slimmedMETsMuEGClean")
-         process.prodMuonsNoIso.metSource = cms.InputTag("slimmedMETsMuEGClean")
-      
-         #process.type3topTagger.metSrc = cms.InputTag("slimmedMETsMuEGClean")
-      
-         #process.mt2PFchs.METTag = cms.InputTag("slimmedMETsMuEGClean")
-      else:
-         process.ak4jetMHTDPhiForSkimsStop.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
-         process.jetsMETDPhiFilter.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
-         process.metPFchsFilter.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         process.met175PFchsFilter.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
-         process.met200PFchsFilter.MHTSource = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         process.prodElectrons.metSource = cms.InputTag("slimmedMETs", "", process.name_())
-         process.prodElectronsNoIso.metSource = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         process.prodIsoTrks.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
-         process.prodMET.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         process.prodMuons.metSource = cms.InputTag("slimmedMETs", "", process.name_())
-         process.prodMuonsNoIso.metSource = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         #process.type3topTagger.metSrc = cms.InputTag("slimmedMETs", "", process.name_())
-      
-         process.mt2PFchs.METTag = cms.InputTag("slimmedMETs", "", process.name_())
-
-process.prodMET.metSrc = cms.InputTag("slimmedMETs")
 
 #process.myTask = cms.Task()
 #process.myTask.add(*[getattr(process,prod) for prod in process.producers_()])
@@ -1237,8 +1148,3 @@ process.prodMET.metSrc = cms.InputTag("slimmedMETs")
 #process.ak4Stop_Path.add(*[getattr(process,prod) for prod in process.producers_()])
 #process.ak4Stop_Path.add(*[getattr(process,filt) for filt in process.filters_()])
 #process.ak4Stop_Path.associate(process.myTask)   
-###-- Dump config ------------------------------------------------------------
-if options.debug:
-   file = open('allDump_cfg.py','w')
-   file.write(str(process.dumpPython()))
-   file.close()
