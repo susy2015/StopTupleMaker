@@ -247,11 +247,11 @@ addJetCollection(
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
       btagDiscriminators = AK4_btagDiscriminators,
-      genParticles = cms.InputTag('prunedGenParticles'),
-      genJetCollection = cms.InputTag('slimmedGenJets'),
 )
 process.patJetsAK4PFCHSNoLep.userData.userFloats.src += ['QGTaggerNoLep:qgLikelihood','QGTaggerNoLep:ptD', 'QGTaggerNoLep:axis2', 'QGTaggerNoLep:axis1']
 process.patJetsAK4PFCHSNoLep.userData.userInts.src += ['QGTaggerNoLep:mult']
+process.patJetsAK4PFCHSNoLep.addGenPartonMatch = cms.bool(False)
+process.patJetsAK4PFCHSNoLep.addGenJetMatch = cms.bool(False)
 
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
