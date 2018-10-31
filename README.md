@@ -17,11 +17,15 @@ cmsrel CMSSW_9_4_10
 cd CMSSW_9_4_10/src
 cmsenv
 git cms-init
-git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v1
-git cms-merge-topic -u pastika:AddAxis1_946p1
+git cms-merge-topic -u pastika:AddAxis1_946p1 #needed for AXIS1
 #https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
-git cms-merge-topic cms-met:METFixEE2017_949_v2
+git cms-merge-topic cms-met:METFixEE2017_949_v2 #NEED for METFix in 2017
 
+git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v1 #needed for JEtToolBox
+#DeepAK8
+git clone ssh://git@gitlab.cern.ch:7999/TreeMaker/NNKit.git -b cmssw-improvements-4
+scram setup /cvmfs/cms.cern.ch/slc6_amd64_gcc700/cms/cmssw/CMSSW_10_3_0_pre4/config/toolbox/slc6_amd64_gcc700/tools/selected/mxnet-predict.xml
+#LPC ntuple code
 git clone -b master git@github.com:susy2015/StopTupleMaker.git
 
 scram b -j9
