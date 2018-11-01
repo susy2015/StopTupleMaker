@@ -85,6 +85,9 @@ class prodElectrons : public edm::EDFilter
   bool debug_;
   double minElePtForElectron2Clean_, maxEleMiniIso_;
 
+  std::vector<double> eleEAValues_;
+  std::vector<double> eleEAEtaValues_;
+
   bool passElectronID(const pat::Electron & ele, const edm::Handle< std::vector<reco::Vertex> > & vertices, const elesIDLevel level, double rho);
   bool passElectronISO(const pat::Electron & ele, const double relIso, const elesIDLevel level);
 };
@@ -111,6 +114,9 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   debug_         = iConfig.getParameter<bool>("Debug");
   rhoSrc_       = iConfig.getParameter<edm::InputTag>("RhoSource");
 
+  eleEAValues_ = (iConfig.getParameter<std::vector<double>>("EAValues")),
+  eleEAEtaValues_ = (iConfig.getParameter<std::vector<double>>("EAEtaValues")),
+    
   vetoElectronID = iConfig.getParameter<edm::InputTag>("VetoElectronID");
   looseElectronID = iConfig.getParameter<edm::InputTag>("LooseElectronID");
   mediumElectronID = iConfig.getParameter<edm::InputTag>("MediumElectronID");
@@ -251,10 +257,12 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   {
 
     const edm::Ptr<pat::Electron> elePtr(electrons, ele - electrons->begin() );
+    /*
     bool passveto = (*veto_id_decisions_)[ elePtr ];
     bool passloose = (*loose_id_decisions_)[ elePtr ];
     bool passmedium = (*medium_id_decisions_)[ elePtr ];
     bool passtight = (*tight_id_decisions_)[ elePtr ];
+    */
 
     float pt = ele->pt();
     if (ele->pt() < minElePt_) continue;
@@ -268,19 +276,32 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool isMediumID = passElectronID((*ele), vertices, MEDIUM, rho);
     bool isTightID = passElectronID((*ele), vertices, TIGHT, rho);
 
-    vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    //vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0"); // for V1
+    vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
     bool iPassMediumIDOnly_ = mediumIdIsoMasked.cutFlowPassed();
     
-     vid::CutFlowResult looseIdIsoMasked = (*loose_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
-     bool iPassLooseIDOnly_ = looseIdIsoMasked.cutFlowPassed();
-    
-    vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    vid::CutFlowResult looseIdIsoMasked = (*loose_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
+    bool iPassLooseIDOnly_ = looseIdIsoMasked.cutFlowPassed();
+     
+    vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
     bool iPassVetoIDOnly_ = vetoIdIsoMasked.cutFlowPassed();
     
-    vid::CutFlowResult tightIdIsoMasked = (*tight_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
+    vid::CutFlowResult tightIdIsoMasked = (*tight_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
     bool iPassTightIDOnly_ = tightIdIsoMasked.cutFlowPassed();
 
-    if( ! (isVetoID || isMediumID) ) continue;
+    if (debug_){
+      int ncuts=10;
+      std::cout << "vetoIdIsoMasked: " << std::endl;
+      for(int icut = 0; icut<ncuts; icut++) {
+	std::cout << icut << " " 
+		  << vetoIdIsoMasked.getNameAtIndex(icut).c_str() << " "
+		  << (int)vetoIdIsoMasked.isCutMasked(icut) << " " 
+		  << vetoIdIsoMasked.getValueCutUpon(icut) << " " 
+		  << (int)vetoIdIsoMasked.getCutResultByIndex(icut) << std::endl;
+      }
+    }
+
+    // if( ! (isVetoID || isMediumID) ) continue; // if we are storing other IDs, we shouldn't do this.
 
     // isolation cuts                                                                                                                                        
     reco::GsfElectron::PflowIsolationVariables pfIso = ele->pfIsolationVariables();
@@ -289,8 +310,8 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // compute final isolation
     float iso = absiso/pt;
     //double miniIso = commonFunctions::getPFIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), 0.05, 0.2, 10., false, false);
-    float miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho);
-    float pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho, true);
+    float miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho, eleEAValues_, eleEAEtaValues_ );
+    float pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*ele)), "electron", rho, eleEAValues_, eleEAEtaValues_, true );
 
     if(doEleIso_ == 1 ) 
     {
@@ -300,6 +321,7 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     {
       if( miniIso >= maxEleMiniIso_ ) continue;
     }
+    if (debug_) std::cout << "miniIso: " << miniIso << " rho: " << rho << std::endl;
 
     // electron is ID'd and isolated! - only accept if vertex present
     if (vertices->size()>0)
@@ -326,13 +348,12 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // add eles to clean from jets
     if( isVetoID && miniIso < maxEleMiniIso_ && ele->pt() > minElePtForElectron2Clean_ ) ele2Clean->push_back(*ele);
 
-      Electron_vetoID->push_back(iPassVetoIDOnly_);//passveto);
-      Electron_looseID->push_back(iPassLooseIDOnly_);//passloose);(passloose);
-      Electron_mediumID->push_back(iPassMediumIDOnly_);//passmedium);
-      Electron_tightID->push_back(iPassTightIDOnly_);//passtight);
+    Electron_vetoID->push_back(iPassVetoIDOnly_);//passveto);
+    Electron_looseID->push_back(iPassLooseIDOnly_);//passloose);(passloose);
+    Electron_mediumID->push_back(iPassMediumIDOnly_);//passmedium);
+    Electron_tightID->push_back(iPassTightIDOnly_);//passtight);
 
   }
-
 
   // determine result before losing ownership of the pointer
   bool result = (doEleVeto_ ? (prod->size() == 0) : true);

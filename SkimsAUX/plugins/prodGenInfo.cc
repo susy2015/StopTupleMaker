@@ -50,7 +50,13 @@ class prodGenInfo : public edm::EDFilter {
     edm::EDGetTokenT<pat::PackedCandidateCollection> PfCandsTok_;
     edm::EDGetTokenT<double> RhoTok_;
 
-     bool debug_;
+    bool debug_;
+
+    // for gen-level activity variables, but not-well defihned variables
+    std::vector<double> genEleEAValues;
+    std::vector<double> genEleEAEtaValues;
+    std::vector<double> genMuEAValues;
+    std::vector<double> genMuEAEtaValues;
 
     int find_idx(const reco::Candidate & target);
     int find_idx(int genIdx, const std::vector<int> &genDecayIdxVec);
@@ -80,8 +86,6 @@ prodGenInfo::prodGenInfo(const edm::ParameterSet & iConfig) {
   PfCandsTok_= consumes<pat::PackedCandidateCollection>(pfCandsSrc_);
   RhoTok_ = consumes<double>(rhoSrc_);
 
-
-
   produces<std::vector<std::string> >("genDecayStrVec");
   produces<std::vector<int> >("genDecayIdxVec");
   produces<std::vector<int> >("genDecayPdgIdVec");
@@ -102,6 +106,12 @@ prodGenInfo::prodGenInfo(const edm::ParameterSet & iConfig) {
   //StopStopPT fr ISR Systematics
   produces< std::vector< TLorentzVector > >("selGenParticle"); 
   produces< std::vector< int > >("selPDGid");
+
+  // 2017 94x numbers (just to make this code work)
+  genEleEAValues={0.1440, 0.1562, 0.1032, 0.0859, 0.1116, 0.1321, 0.1654};
+  genEleEAEtaValues={1.0,    1.479,    2.0,    2.2,    2.3,    2.4};
+  genMuEAValues={0.0735, 0.0619, 0.0465, 0.0433, 0.0577};
+  genMuEAEtaValues={0.8,    1.3,    2.0,    2.2};
 
 }
 
@@ -419,7 +429,15 @@ double prodGenInfo::calc_pfActivity (const int idx, const std::vector<int> &genD
    if( std::abs(pdgId) ==11) gen_type = "electron";
    else if ( std::abs(pdgId) == 13 ) gen_type = "muon"; 
 
-   double pfActivity = commonFunctions::GetMiniIsolation(pfcands, lep, gen_type, rho, true);
+   
+   double pfActivity=0.;
+   if (gen_type=="electron"){
+     pfActivity = commonFunctions::GetMiniIsolation(pfcands, lep, gen_type, rho, 
+						    genEleEAValues, genEleEAEtaValues, true);
+   } else if (gen_type=="muon"){
+     pfActivity = commonFunctions::GetMiniIsolation(pfcands, lep, gen_type, rho, 
+						    genMuEAValues, genMuEAEtaValues, true);
+   }
    return pfActivity;
 }
 

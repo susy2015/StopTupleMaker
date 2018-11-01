@@ -49,6 +49,9 @@ class prodMuons : public edm::EDFilter
   edm::InputTag badGlobalMuonTaggerSrc_, cloneGlobalMuonTaggerSrc_;
   edm::EDGetTokenT<edm::PtrVector<reco::Muon>> badGlobalMuonTok_, cloneGlobalMuonTok_;
 
+  std::vector<double> muEAValues_;
+  std::vector<double> muEAEtaValues_;
+
   bool isLooseMuon(const pat::Muon & muon);
   bool isMediumMuon(const pat::Muon & muon, const reco::Vertex::Point & vtxpos);
   bool isTightMuon(const pat::Muon & muon, const reco::Vertex::Point & vtxpos);
@@ -62,6 +65,8 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
   metSrc_       = iConfig.getParameter<edm::InputTag>("metSource");
   pfCandsSrc_   = iConfig.getParameter<edm::InputTag>("PFCandSource");
   rhoSrc_       = iConfig.getParameter<edm::InputTag>("RhoSource");
+  muEAValues_   = (iConfig.getParameter<std::vector<double>>("EAValues")),
+  muEAEtaValues_= (iConfig.getParameter<std::vector<double>>("EAEtaValues")),
   minMuPt_      = iConfig.getParameter<double>("MinMuPt");
   maxMuEta_     = iConfig.getParameter<double>("MaxMuEta");
   maxMuD0_      = iConfig.getParameter<double>("MaxMuD0");
@@ -211,8 +216,9 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
       // isolation cuts
       double muRelIso = (m->pfIsolationR04().sumChargedHadronPt + std::max(0., m->pfIsolationR04().sumNeutralHadronEt + m->pfIsolationR04().sumPhotonEt - 0.5*m->pfIsolationR04().sumPUPt) ) / m->pt();
-      double miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho);
-      double pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho, true);
+      double miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho, muEAValues_, muEAEtaValues_ );
+      double pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho, muEAValues_, muEAEtaValues_, true);
+      if (debug_) std::cout << "muon miniIso: " << miniIso << std::endl;
 
       if (doMuonIso_ ==1 ) 
       {

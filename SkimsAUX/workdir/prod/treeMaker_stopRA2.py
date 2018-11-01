@@ -564,7 +564,7 @@ process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodElectronsNoIso", "el
 process.stopTreeMaker.vectorBool.extend([cms.InputTag("prodElectronsNoIso", "elesisEB")])
 process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodElectronsNoIso", "elesFlagTight"), cms.InputTag("prodElectronsNoIso", "elesFlagMedium"), cms.InputTag("prodElectronsNoIso", "elesFlagLoose"), cms.InputTag("prodElectronsNoIso", "elesFlagVeto")])
 
-my_electron_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff']
+my_electron_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff']
 
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 for idmod in my_electron_id_modules:
@@ -573,10 +573,10 @@ for idmod in my_electron_id_modules:
 from RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff import *
 process.load('RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff')
 
-process.prodElectronsNoIso.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto")
-process.prodElectronsNoIso.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose")
-process.prodElectronsNoIso.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium")
-process.prodElectronsNoIso.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight")
+process.prodElectronsNoIso.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto")
+process.prodElectronsNoIso.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose")
+process.prodElectronsNoIso.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium")
+process.prodElectronsNoIso.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight")
 
 process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","vetoElectronID"))
 process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","looseElectronID"))
