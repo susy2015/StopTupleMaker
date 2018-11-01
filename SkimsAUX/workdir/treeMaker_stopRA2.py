@@ -618,6 +618,7 @@ process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCSVv2|reco
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "recoJetsCharge"))
 process.stopTreeMaker.vectorFloatNamesInTree.append("prodJets:recoJetsCharge|recoJetsCharge")
 
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVall"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVb"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVc"))
 process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "DeepCSVl"))
@@ -643,6 +644,14 @@ process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK
 process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis1"))
 process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetAxis2"))
 process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiAK8SubjetBDisc"))
+
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8btop"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8bW"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8bZ"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8bZbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8bHbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8bH4q"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJets", "puppiDeepAK8raw"))
 
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJetsNoLep", "jetsLVec"))
 process.stopTreeMaker.vectorTLorentzVectorNamesInTree.append("prodJetsNoLep:jetsLVec|prodJetsNoLep_jetsLVec")
@@ -712,9 +721,13 @@ process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "pu
 process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetAxis2"))
 process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiAK8SubjetBDisc"))
 
-
-
-
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8btop"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8bW"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8bZ"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8bZbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8bHbb"))
+process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8bH4q"))
+process.stopTreeMaker.vectorVectorFloat.append(cms.InputTag("prodJetsNoLep", "puppiDeepAK8raw"))
 
 if options.mcInfo == True:
    process.prodGenInfo.debug = cms.bool(options.debug)

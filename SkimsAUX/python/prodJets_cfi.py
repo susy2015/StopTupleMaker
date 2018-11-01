@@ -28,6 +28,9 @@ prodJets = cms.EDFilter(
 
   debug  = cms.bool(False),
 
+  AK4minPTcut_= cms.double(10.0),
+  AK8minPTcut_= cms.double(170.0),
+
   genMatch_dR = cms.untracked.double(1.0),
   deltaRcon = cms.untracked.double(0.01),
 
