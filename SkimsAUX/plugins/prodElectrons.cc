@@ -85,7 +85,7 @@ class prodElectrons : public edm::EDFilter
   bool debug_;
   double minElePtForElectron2Clean_, maxEleMiniIso_;
 
-  string relIsoString_;
+  std::string relIsoString_;
 
   std::vector<double> eleEAValues_;
   std::vector<double> eleEAEtaValues_;
