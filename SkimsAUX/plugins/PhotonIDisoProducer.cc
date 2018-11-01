@@ -62,7 +62,8 @@ PhotonIDisoProducer::PhotonIDisoProducer(const edm::ParameterSet& iConfig):
   looseIdToken_(consumes<edm::ValueMap<bool> >(loosePhotonID)),
   mediumIdToken_(consumes<edm::ValueMap<bool> >(mediumPhotonID)),
   tightIdToken_(consumes<edm::ValueMap<bool> >(tightPhotonID)),
-  debug(iConfig.getUntrackedParameter<bool>("debug",true))
+  debug(iConfig.getUntrackedParameter<bool>("debug",true)),
+  minPhotonPt (iConfig.getParameter<double>("ptmin") )
 {
 
   ecalRecHitsInputTag_EE_Token_ = consumes<EcalRecHitCollection>(ecalRecHitsInputTag_EE_);
@@ -191,10 +192,11 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 	  photonLVecGen->push_back(genPhoton);
 
 	  }
-        if ((abs(genParticles->at(ig).pdgId()) == 1 || abs(genParticles->at(ig).pdgId()) == 2 || abs(genParticles->at(ig).pdgId()) == 3 ||
-             abs(genParticles->at(ig).pdgId()) == 4 || abs(genParticles->at(ig).pdgId()) == 5 || abs(genParticles->at(ig).pdgId()) == 6 ||
-             abs(genParticles->at(ig).pdgId()) == 9 || abs(genParticles->at(ig).pdgId()) == 21) && (genParticles->at(ig).status() == 23 ||
-                                                                                          genParticles->at(ig).status() == 71)){
+        if ((abs(genParticles->at(ig).pdgId()) == 1 )){
+            //        || abs(genParticles->at(ig).pdgId()) == 2 || abs(genParticles->at(ig).pdgId()) == 3 ||
+            // abs(genParticles->at(ig).pdgId()) == 4 || abs(genParticles->at(ig).pdgId()) == 5 || abs(genParticles->at(ig).pdgId()) == 6 ||
+            // abs(genParticles->at(ig).pdgId()) == 9 || abs(genParticles->at(ig).pdgId()) == 21) && (genParticles->at(ig).status() == 23 ||
+            //                                                                              genParticles->at(ig).status() == 71)){
 
           genParton.SetPtEtaPhiE( genParticles->at(ig).pt(), genParticles->at(ig).eta(), genParticles->at(ig).phi(), genParticles->at(ig).energy() );
           genPartonLVec->push_back(genParton);
@@ -266,7 +268,7 @@ PhotonIDisoProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
             }
 
     // check if photon is a good loose photon
-    if( passAcc ){ 
+    if( passAcc && iPhoton->pt() > minPhotonPt){ 
       TLorentzVector perGammaLVec; 
       perGammaLVec.SetPtEtaPhiE( iPhoton->pt(), iPhoton->eta(), iPhoton->phi(), iPhoton->energy() );
       photonLVec->push_back(perGammaLVec);
