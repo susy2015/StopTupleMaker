@@ -77,9 +77,7 @@ namespace commonFunctions
 	// Eta
 	eta = getEta(*ptcl);
 	// EA
-	//KH double EA;
-	if(type=="electron") EA = GetEA(eta,EAValues,EAEtaValues);
-	else EA = GetEA(eta,EAValues,EAEtaValues);
+	EA = GetEA(eta,EAValues,EAEtaValues);
 	double correction = rho * EA * (r_iso/0.3) * (r_iso/0.3);
 	iso -= correction;
       }

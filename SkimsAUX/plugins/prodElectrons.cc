@@ -85,6 +85,8 @@ class prodElectrons : public edm::EDFilter
   bool debug_;
   double minElePtForElectron2Clean_, maxEleMiniIso_;
 
+  string relIsoString_;
+
   std::vector<double> eleEAValues_;
   std::vector<double> eleEAEtaValues_;
 
@@ -116,7 +118,9 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
 
   eleEAValues_ = (iConfig.getParameter<std::vector<double>>("EAValues")),
   eleEAEtaValues_ = (iConfig.getParameter<std::vector<double>>("EAEtaValues")),
-    
+
+  relIsoString_ = iConfig.getParameter<std::string>("relIsoString");
+
   vetoElectronID = iConfig.getParameter<edm::InputTag>("VetoElectronID");
   looseElectronID = iConfig.getParameter<edm::InputTag>("LooseElectronID");
   mediumElectronID = iConfig.getParameter<edm::InputTag>("MediumElectronID");
@@ -276,17 +280,16 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool isMediumID = passElectronID((*ele), vertices, MEDIUM, rho);
     bool isTightID = passElectronID((*ele), vertices, TIGHT, rho);
 
-    //vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0"); // for V1
-    vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
+    vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[ elePtr ].getCutFlowResultMasking(relIsoString_);
     bool iPassMediumIDOnly_ = mediumIdIsoMasked.cutFlowPassed();
     
-    vid::CutFlowResult looseIdIsoMasked = (*loose_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
+    vid::CutFlowResult looseIdIsoMasked = (*loose_id_cutflow_)[ elePtr ].getCutFlowResultMasking(relIsoString_);
     bool iPassLooseIDOnly_ = looseIdIsoMasked.cutFlowPassed();
      
-    vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
+    vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[ elePtr ].getCutFlowResultMasking(relIsoString_);
     bool iPassVetoIDOnly_ = vetoIdIsoMasked.cutFlowPassed();
     
-    vid::CutFlowResult tightIdIsoMasked = (*tight_id_cutflow_)[ elePtr ].getCutFlowResultMasking("GsfEleRelPFIsoScaledCut_0");
+    vid::CutFlowResult tightIdIsoMasked = (*tight_id_cutflow_)[ elePtr ].getCutFlowResultMasking(relIsoString_);
     bool iPassTightIDOnly_ = tightIdIsoMasked.cutFlowPassed();
 
     if (debug_){

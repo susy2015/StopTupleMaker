@@ -16,6 +16,7 @@ prodElectrons = cms.EDFilter(
   RhoSource     = cms.InputTag('fixedGridRhoFastjetAll'),
   EAValues      = cms.vdouble(0.1440, 0.1562, 0.1032, 0.0859, 0.1116, 0.1321, 0.1654), #2017
   EAEtaValues   = cms.vdouble(1.0,    1.479,    2.0,    2.2,    2.3,    2.4),          #2017
+  relIsoString  = cms.string("GsfEleRelPFIsoScaledCut_0"),  #2017, in 2016 or 94x V1, this was GsfEleEffAreaPFIsoCut_0
   MinElePt       = cms.double(5),
   MaxEleEta      = cms.double(2.5),
   MaxEleMiniIso  = cms.double(0.10),
