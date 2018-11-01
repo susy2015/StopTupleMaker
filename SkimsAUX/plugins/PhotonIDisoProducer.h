@@ -65,7 +65,7 @@ private:
   edm::EDGetTokenT<edm::ValueMap<bool> >  mediumIdToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  tightIdToken_;
   bool debug;
-
+  double minPhotonPt;
 };
 
 

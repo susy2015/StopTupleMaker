@@ -18,5 +18,6 @@ goodPhotons = cms.EDProducer("PhotonIDisoProducer",
         ecalRecHitsInputTag_EB = cms.InputTag("reducedEgamma","reducedEBRecHits"),
         rhoCollection          = cms.untracked.InputTag("fixedGridRhoFastjetAll"),
         genParCollection = cms.untracked.InputTag("prunedGenParticles"), 
-        debug                  = cms.untracked.bool(False)
-    )
+        debug                  = cms.untracked.bool(False),
+        ptmin                  = cms.double(20.0)
+        )

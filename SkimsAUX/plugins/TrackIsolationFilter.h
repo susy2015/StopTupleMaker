@@ -46,6 +46,7 @@ private:
   // ----------member data ---------------------------
   double dR_;
   double dzcut_;
+  double dxycut_;
   double minPt_;
 
   double isoCut_;

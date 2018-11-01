@@ -20,7 +20,7 @@
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
 //#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
-#include "StopTupleMaker/SkimsAUX/plugins/ElectronEffectiveArea.h"
+//#include "StopTupleMaker/SkimsAUX/plugins/ElectronEffectiveArea.h"
 #include "DataFormats/TrackReco/interface/HitPattern.h"
 
 #include "DataFormats/METReco/interface/MET.h"
