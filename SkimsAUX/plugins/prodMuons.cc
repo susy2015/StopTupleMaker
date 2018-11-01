@@ -206,11 +206,11 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       bool isMediumID = isMediumMuon((*m), vtxpos);
       bool isTightID = isTightMuon((*m), vtxpos);
 
-      // only store muons passing medium or tight ID
-      if ( !(isMediumID || isTightID) ) continue;
+      // only store muons passing loose ID
+      if ( ! isLooseID ) continue;
 
       // isolation cuts
-      double muRelIso = (m->pfIsolationR04().sumChargedHadronPt + std::max(0., m->pfIsolationR04().sumNeutralHadronEt + m->pfIsolationR04().sumPhotonEt - 0.5*m->pfIsolationR04().sumPUPt) ) / m->pt();
+      double muRelIso = (m->pfIsolationR04().sumChargedHadronPt + std::max(0., m->pfIsolationR04().sumNeutralHadronEt + m->pfIsolationR04().sumPhotonEt - 0.5*dm->pfIsolationR04().sumPUPt) ) / m->pt();
       double miniIso = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho);
       double pfActivity = commonFunctions::GetMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*m)), "muon", rho, true);
 

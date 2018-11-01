@@ -71,6 +71,7 @@ TrackIsolationFilter::TrackIsolationFilter(const edm::ParameterSet& iConfig) {
   
   dR_               = iConfig.getParameter<double>          ("dR_ConeSize");       // dR value used to define the isolation cone                (default 0.3 )
   dzcut_            = iConfig.getParameter<double>          ("dz_CutValue");       // cut value for dz(trk,vtx) for track to include in iso sum (default 0.05)
+  dxycut_           = iConfig.getParameter<double>          ("dxy_CutValue");       // cut value for dxy(trk,vtx) for track to include in iso sum (default 0.05)
   minPt_            = iConfig.getParameter<double>          ("minPt_PFCandidate"); // store PFCandidates with pt above this cut                 (default 0   )
   isoCut_           = iConfig.getParameter<double>          ("isoCut"); // isolation cut value
   doTrkIsoVeto_     = iConfig.getParameter<bool>            ("doTrkIsoVeto");
@@ -165,31 +166,37 @@ bool TrackIsolationFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSe
 
            for( pat::PackedCandidateCollection::const_iterator pf_other = pfCandidatesHandle->begin(); pf_other != pfCandidatesHandle->end(); pf_other++ ) {
 
-              // don't count the PFCandidate in its own isolation sum
-              if( pf_it == pf_other       ) continue;
+             // don't count the PFCandidate in its own isolation sum
+             if( pf_it == pf_other       ) continue;
 
-	      // require the PFCandidate to be charged
-	      if( pf_other->charge() == 0 ) continue;
+             // require the PFCandidate to be charged
+             if( pf_other->charge() == 0 ) continue;
 
-              // cut on dR between the PFCandidates
-              double dR = deltaR(pf_it->eta(), pf_it->phi(), pf_other->eta(), pf_other->phi());
-              if( dR > dR_ ) continue;
+             // cut on dR between the PFCandidates
+             double dR = deltaR(pf_it->eta(), pf_it->phi(), pf_other->eta(), pf_other->phi());
+             if( dR > dR_ ) continue;
 
-	      // cut on the PFCandidate dz
-	      double dz_other = pf_other->dz();
+             // cut on the PFCandidate dz
+             double dz_other = pf_other->dz();
+             if( fabs(dz_other) > dzcut_ ) continue;
 
-	      if( fabs(dz_other) > dzcut_ ) continue;
+             // Adding transverse impact parameter cut, 
+             // value 0.2cm base on Table 3 of https://arxiv.org/pdf/1405.6569.pdf
+             double dxy_other = pf_other->dxy();
+             if( fabs(dxy_other) > dxycut_ ) continue;
 
-              if( std::find( exclPdgIdVec_.begin(), exclPdgIdVec_.end(), pf_other->pdgId() ) != exclPdgIdVec_.end() ) continue;
+             if( std::find( exclPdgIdVec_.begin(), exclPdgIdVec_.end(), pf_other->pdgId() ) != exclPdgIdVec_.end() ) continue;
 
-	      trkiso += pf_other->pt();
+             trkiso += pf_other->pt();
            }
 
            // calculate the dz of this candidate
            double dz_it = pf_it->dz();
+           double dxy_it = pf_it->dxy();
 
            if( trkiso/pf_it->pt() > isoCut_ ) continue;
            if( std::abs(dz_it) > dzcut_ ) continue;
+           if( std::abs(dxy_it) > dxycut_) continue;
 
            // store trkiso and dz values
            pfcands_dzpv->push_back(dz_it);
