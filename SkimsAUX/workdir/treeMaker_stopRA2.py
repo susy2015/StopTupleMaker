@@ -229,6 +229,7 @@ updateJetCollection(
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
+      #UpdateJetCollection will NOT update btag discriminators and JEC at the same time, so the below line must be set to NONE to update JEC
       btagDiscriminators = None,
 )
 process.updatedPatJetsAK4PFCHS.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1']
