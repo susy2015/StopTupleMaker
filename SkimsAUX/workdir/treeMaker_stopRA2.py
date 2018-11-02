@@ -486,8 +486,6 @@ if options.fastsim == False:
    process.stopTreeMaker.varsBool.append(cms.InputTag("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult"))
    process.stopTreeMaker.varsBoolNamesInTree.append("HBHENoiseFilterResultProducer:HBHEIsoNoiseFilterResult|HBHEIsoNoiseFilter")
 
-process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuons", "nMuons_cut"))
-process.stopTreeMaker.varsIntNamesInTree.append("prodMuons:nMuons_cut|nMuons_CUT")
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuons", "nMuons"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuons", "muonsLVec"))
 
@@ -549,9 +547,6 @@ process.stopTreeMaker.vectorFloat.append(cms.InputTag("prodSecondaryVertex", "sv
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVertex", "svSoftLVec"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVertex", "svLVec"))
 
-
-process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectronsCut"))
-process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectronsCut|nElectrons_CUT")
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectrons"))
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodElectrons", "elesLVec"))
 process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodElectrons", "elesCharge"), cms.InputTag("prodElectrons", "elesMtw"), cms.InputTag("prodElectrons", "elesRelIso"), cms.InputTag("prodElectrons", "elesMiniIso"), cms.InputTag("prodElectrons", "elespfActivity")])
