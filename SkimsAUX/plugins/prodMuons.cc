@@ -212,7 +212,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       bool isTightID = isTightMuon((*m), vtxpos);
 
       // only store muons passing loose ID
-      if ( ! isLooseID ) continue;
+      //if ( ! isLooseID ) continue;
 
       // isolation cuts
       double muRelIso = (m->pfIsolationR04().sumChargedHadronPt + std::max(0., m->pfIsolationR04().sumNeutralHadronEt + m->pfIsolationR04().sumPhotonEt - 0.5*m->pfIsolationR04().sumPUPt) ) / m->pt();
