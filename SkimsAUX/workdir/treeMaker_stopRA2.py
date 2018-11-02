@@ -229,7 +229,7 @@ updateJetCollection(
       elSource = cms.InputTag('slimmedElectrons'),
       muSource = cms.InputTag('slimmedMuons'),
       jetCorrections = jetCorrectionLevels,
-      btagDiscriminators = AK4_btagDiscriminators,
+      btagDiscriminators = None,
 )
 process.updatedPatJetsAK4PFCHS.userData.userFloats.src += ['QGTagger:qgLikelihood','QGTagger:ptD', 'QGTagger:axis2', 'QGTagger:axis1']
 process.updatedPatJetsAK4PFCHS.userData.userInts.src += ['QGTagger:mult']
