@@ -438,12 +438,6 @@ process.noBadMuonsFilter = process.filterDecisionProducerPAT.clone( filterName  
 process.badMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = cms.string("Flag_badMuons"),trigTagSrc = cms.InputTag("TriggerResults",processName=cms.InputTag.skipCurrentProcess()) )
 process.duplicateMuonsFilter = process.filterDecisionProducerPAT.clone( filterName = cms.string("Flag_duplicateMuons"),trigTagSrc = cms.InputTag("TriggerResults",processName=cms.InputTag.skipCurrentProcess()) )
 
-process.prodMuonsNoIso = process.prodMuons.clone()
-process.prodMuonsNoIso.DoMuonIsolation = cms.int32(0)
-
-process.prodElectronsNoIso = process.prodElectrons.clone()
-process.prodElectronsNoIso.DoElectronIsolation = cms.int32(0)
-
 process.load("StopTupleMaker.StopTreeMaker.stopTreeMaker_cfi")
 process.stopTreeMaker.debug = cms.bool(options.debug)
 process.stopTreeMaker.TreeName = cms.string("AUX")
@@ -492,13 +486,13 @@ if options.fastsim == False:
    process.stopTreeMaker.varsBool.append(cms.InputTag("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult"))
    process.stopTreeMaker.varsBoolNamesInTree.append("HBHENoiseFilterResultProducer:HBHEIsoNoiseFilterResult|HBHEIsoNoiseFilter")
 
+process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuons", "nMuons_cut"))
+process.stopTreeMaker.varsIntNamesInTree.append("prodMuons:nMuons_cut|nMuons_CUT")
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuons", "nMuons"))
-process.stopTreeMaker.varsIntNamesInTree.append("prodMuons:nMuons|nMuons_CUT")
-process.stopTreeMaker.varsInt.append(cms.InputTag("prodMuonsNoIso", "nMuons"))
-process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuonsNoIso", "muonsLVec"))
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodMuons", "muonsLVec"))
 
-process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodMuonsNoIso", "muonsCharge"), cms.InputTag("prodMuonsNoIso", "muonsMtw"), cms.InputTag("prodMuonsNoIso", "muonsRelIso"), cms.InputTag("prodMuonsNoIso", "muonsMiniIso"), cms.InputTag("prodMuonsNoIso", "muonspfActivity")])
-process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodMuonsNoIso","muonsFlagLoose"),cms.InputTag("prodMuonsNoIso", "muonsFlagMedium"), cms.InputTag("prodMuonsNoIso", "muonsFlagTight")])
+process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodMuons", "muonsCharge"), cms.InputTag("prodMuons", "muonsMtw"), cms.InputTag("prodMuons", "muonsRelIso"), cms.InputTag("prodMuons", "muonsMiniIso"), cms.InputTag("prodMuons", "muonspfActivity")])
+process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodMuons","muonsFlagLoose"),cms.InputTag("prodMuons", "muonsFlagMedium"), cms.InputTag("prodMuons", "muonsFlagTight")])
 
 #ANDRES Gamma Var  
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -556,13 +550,13 @@ process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVer
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodSecondaryVertex", "svLVec"))
 
 
+process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectronsCut"))
+process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectronsCut|nElectrons_CUT")
 process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectrons", "nElectrons"))
-process.stopTreeMaker.varsIntNamesInTree.append("prodElectrons:nElectrons|nElectrons_CUT")
-process.stopTreeMaker.varsInt.append(cms.InputTag("prodElectronsNoIso", "nElectrons"))
-process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodElectronsNoIso", "elesLVec"))
-process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodElectronsNoIso", "elesCharge"), cms.InputTag("prodElectronsNoIso", "elesMtw"), cms.InputTag("prodElectronsNoIso", "elesRelIso"), cms.InputTag("prodElectronsNoIso", "elesMiniIso"), cms.InputTag("prodElectronsNoIso", "elespfActivity")])
-process.stopTreeMaker.vectorBool.extend([cms.InputTag("prodElectronsNoIso", "elesisEB")])
-process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodElectronsNoIso", "elesFlagTight"), cms.InputTag("prodElectronsNoIso", "elesFlagMedium"), cms.InputTag("prodElectronsNoIso", "elesFlagLoose"), cms.InputTag("prodElectronsNoIso", "elesFlagVeto")])
+process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodElectrons", "elesLVec"))
+process.stopTreeMaker.vectorFloat.extend([cms.InputTag("prodElectrons", "elesCharge"), cms.InputTag("prodElectrons", "elesMtw"), cms.InputTag("prodElectrons", "elesRelIso"), cms.InputTag("prodElectrons", "elesMiniIso"), cms.InputTag("prodElectrons", "elespfActivity")])
+process.stopTreeMaker.vectorBool.extend([cms.InputTag("prodElectrons", "elesisEB")])
+process.stopTreeMaker.vectorInt.extend([cms.InputTag("prodElectrons", "elesFlagTight"), cms.InputTag("prodElectrons", "elesFlagMedium"), cms.InputTag("prodElectrons", "elesFlagLoose"), cms.InputTag("prodElectrons", "elesFlagVeto")])
 
 my_electron_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff']
 
@@ -573,15 +567,15 @@ for idmod in my_electron_id_modules:
 from RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff import *
 process.load('RecoEgamma.ElectronIdentification.egmGsfElectronIDs_cff')
 
-process.prodElectronsNoIso.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto")
-process.prodElectronsNoIso.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose")
-process.prodElectronsNoIso.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium")
-process.prodElectronsNoIso.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight")
+process.prodElectrons.vetoElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto")
+process.prodElectrons.looseElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose")
+process.prodElectrons.mediumElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium")
+process.prodElectrons.tightElectronID = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight")
 
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","vetoElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","looseElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","mediumElectronID"))
-process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectronsNoIso","tightElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","vetoElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","looseElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","mediumElectronID"))
+process.stopTreeMaker.vectorBool.append(cms.InputTag("prodElectrons","tightElectronID"))
 
 process.stopTreeMaker.vectorTLorentzVector.append(cms.InputTag("prodJets", "jetsLVec"))
 
@@ -830,7 +824,7 @@ process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 process.ak4Stop_Path = cms.Path( process.fullPatMetSequence * 
                                  process.comb_seq * 
                                  process.printDecayPythia8 * process.prodGenInfo * process.prodGoodVertices * 
-                                 process.prodMuonsNoIso * process.prodElectronsNoIso * process.prodIsoTrks * process.prodJetIDEventFilter *
+                                 process.prodIsoTrks * process.prodJetIDEventFilter *
                                  process.prodJetIDEventFilterNoLep * process.METFilters *
                                  process.noBadMuonsFilter * process.badMuonsFilter * process.duplicateMuonsFilter * process.prodJetsNoLep *
                                  process.prodJets * process.prodMET * process.prodEventInfo * process.trig_filter_seq * process.prodSecondaryVertex *

@@ -153,6 +153,7 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
 
   produces<std::vector<pat::Electron> >("");
   produces<std::vector<pat::Electron> >("ele2Clean");  
+  produces<std::vector<pat::Electron> >("ele2Cut");  
 
   produces<std::vector<int> >("elesFlagVeto");
   produces<std::vector<int> >("elesFlagMedium");
@@ -166,6 +167,7 @@ prodElectrons::prodElectrons(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("elesMiniIso");
   produces<std::vector<float> >("elespfActivity");
   produces<int>("nElectrons");
+  produces<int>("nElectronsCut");
  
   produces< std::vector< bool > >("vetoElectronID");
   produces< std::vector< bool > >("looseElectronID");
@@ -237,6 +239,7 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // check which ones to keep
   std::unique_ptr<std::vector<pat::Electron> > prod(new std::vector<pat::Electron>());
   std::unique_ptr<std::vector<pat::Electron> > ele2Clean(new std::vector<pat::Electron>());
+  std::unique_ptr<std::vector<pat::Electron> > ele2Cut(new std::vector<pat::Electron>());
 
   std::unique_ptr<std::vector<TLorentzVector> > elesLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<float> > elesCharge(new std::vector<float>());
@@ -349,7 +352,10 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       elespfActivity->push_back(pfActivity);
     }
     // add eles to clean from jets
-    if( isVetoID && miniIso < maxEleMiniIso_ && ele->pt() > minElePtForElectron2Clean_ ) ele2Clean->push_back(*ele);
+    if( isVetoID && miniIso < maxEleMiniIso_ && ele->pt() > minElePtForElectron2Clean_ 
+	&& fabs(ele->eta()) < maxEleEta_) ele2Clean->push_back(*ele);
+    if( isVetoID && miniIso < maxEleMiniIso_ 
+	&& fabs(ele->eta()) < maxEleEta_) ele2Cut->push_back(*ele); // minElePt_ already applied
 
     Electron_vetoID->push_back(iPassVetoIDOnly_);//passveto);
     Electron_looseID->push_back(iPassLooseIDOnly_);//passloose);(passloose);
@@ -362,12 +368,15 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   bool result = (doEleVeto_ ? (prod->size() == 0) : true);
 
   std::unique_ptr<int> nElectrons (new int);
-
   *nElectrons = prod->size();
+
+  std::unique_ptr<int> nElectronsCut (new int);
+  *nElectronsCut = ele2Cut->size();
 
   // store in the event
   iEvent.put(std::move(prod));
   iEvent.put(std::move(ele2Clean), "ele2Clean");
+  iEvent.put(std::move(ele2Cut), "ele2Cut");
   iEvent.put(std::move(elesFlagVeto), "elesFlagVeto");
   iEvent.put(std::move(elesFlagMedium), "elesFlagMedium");
   iEvent.put(std::move(elesFlagLoose), "elesFlagLoose");
@@ -380,6 +389,7 @@ bool prodElectrons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(std::move(elesMiniIso), "elesMiniIso");
   iEvent.put(std::move(elespfActivity), "elespfActivity");
   iEvent.put(std::move(nElectrons), "nElectrons");
+  iEvent.put(std::move(nElectronsCut), "nElectronsCut");
 
   //iEvent.put(std::move(rho), "rho_HOE");
 

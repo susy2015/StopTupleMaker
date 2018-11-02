@@ -24,6 +24,6 @@ prodElectrons = cms.EDFilter(
   Dod0dz                   = cms.bool(True),
   DoElectronID             = cms.bool(True),
   DoElectronVtxAssociation = cms.bool(True),
-  DoElectronIsolation      = cms.int32(2), # 1 for relIso; 2 for miniIso; 0 for nothing
+  DoElectronIsolation      = cms.int32(0), # 1 for relIso; 2 for miniIso; 0 for nothing (but stores iso variables in ntuples to apply them offline)
   Debug                    = cms.bool(False)
 )

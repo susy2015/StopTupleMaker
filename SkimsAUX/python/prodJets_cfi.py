@@ -21,8 +21,8 @@ prodJets = cms.EDFilter(
   NjettinessAK8Puppi_label = cms.string('NjettinessAK8Puppi'),
   ak8PFJetsPuppi_label = cms.string('ak8PFJetsPuppi'),
 
-  eleLVec = cms.InputTag("prodElectronsNoIso:elesLVec"), 
-  muLVec = cms.InputTag("prodMuonsNoIso:muonsLVec"), 
+  eleLVec = cms.InputTag("prodElectrons:elesLVec"), 
+  muLVec = cms.InputTag("prodMuons:muonsLVec"), 
   trksForIsoVetoLVec = cms.InputTag("prodIsoTrks:trksForIsoVetoLVec"),
   looseisoTrksLVec = cms.InputTag("prodIsoTrks:looseisoTrksLVec"),
 

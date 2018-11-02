@@ -98,6 +98,7 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
 
   produces<std::vector<pat::Muon> >("");
   produces<std::vector<pat::Muon> >("mu2Clean");
+  produces<std::vector<pat::Muon> >("mu2Cut");
   //0: loose;  1: medium;  2: tight 
   produces<std::vector<int> >("muonsIDtype");
   produces<std::vector<int> >("muonsFlagLoose");
@@ -110,6 +111,7 @@ prodMuons::prodMuons(const edm::ParameterSet & iConfig)
   produces<std::vector<float> >("muonsMiniIso");
   produces<std::vector<float> >("muonspfActivity");
   produces<int>("nMuons");
+  produces<int>("nMuonsCut");
   if( specialFix_ ){
 // 0 : good muon wrt the specialFix  1 : badGlobalMuon  2 : cloneGlobalMuon  3 : badGlobalMuon & cloneGlobalMuon
 // 00                               01                 10                   11                    
@@ -151,6 +153,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //check which ones to keep
   std::unique_ptr<std::vector<pat::Muon> > prod(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<pat::Muon> > mu2Clean(new std::vector<pat::Muon>());
+  std::unique_ptr<std::vector<pat::Muon> > mu2Cut(new std::vector<pat::Muon>());
   std::unique_ptr<std::vector<TLorentzVector> > muonsLVec(new std::vector<TLorentzVector>());
   std::unique_ptr<std::vector<float> > muonsCharge(new std::vector<float>());
   std::unique_ptr<std::vector<float> > muonsMtw(new std::vector<float>());
@@ -259,6 +262,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       //add muons to clean from jets 
       if(isLooseID && miniIso < maxMuMiniIso_ && m->pt() > minMuPtForMuon2Clean_) mu2Clean->push_back(*m);
+      if(isLooseID && miniIso < maxMuMiniIso_ ) mu2Cut->push_back(*m); // minMuPt_ && maxMuEta_ already applied
     }
   }
     
@@ -266,12 +270,15 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   bool result = (doMuonVeto_ ? (prod->size() == 0) : true);
 
   std::unique_ptr<int> nMuons (new int);
-
   *nMuons = prod->size();
+
+  std::unique_ptr<int> nMuonsCut (new int);
+  *nMuonsCut = mu2Cut->size();
 
   // store in the event
   iEvent.put(std::move(prod));
   iEvent.put(std::move(mu2Clean), "mu2Clean");
+  iEvent.put(std::move(mu2Cut), "mu2Cut");
   iEvent.put(std::move(muonsIDtype), "muonsIDtype");
   iEvent.put(std::move(muonsFlagLoose), "muonsFlagLoose");
   iEvent.put(std::move(muonsFlagMedium), "muonsFlagMedium");
@@ -283,6 +290,7 @@ bool prodMuons::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.put(std::move(muonsMiniIso), "muonsMiniIso");
   iEvent.put(std::move(muonspfActivity), "muonspfActivity");
   iEvent.put(std::move(nMuons), "nMuons");
+  iEvent.put(std::move(nMuonsCut), "nMuonsCut");
   if( specialFix_ ){
      iEvent.put(std::move(specialFixtype), "specialFixtype");
      iEvent.put(std::move(specialFixMuonsLVec), "specialFixMuonsLVec");
