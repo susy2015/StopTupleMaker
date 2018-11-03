@@ -5,11 +5,14 @@ namespace commonFunctions
 
   double GetMiniIsolation(edm::Handle<pat::PackedCandidateCollection> pfcands,
 				 const reco::Candidate* ptcl, std::string type, 
-				 double rho, bool computeMT2Activity,
+				 double rho, std::vector<double> EAValues, std::vector<double> EAEtaValues,
+			         bool computeMT2Activity,
 				 double r_iso_min, double r_iso_max, double kt_scale,
 				 bool useEAcorr, bool charged_only) {
     
     if (ptcl->pt()<5.) return 99999.;
+
+    if (EAValues.size()-EAEtaValues.size()!=1) std::cout << "Effective area vector size should be checked." << std::endl;
 
     double deadcone_nh(0.), deadcone_ch(0.), deadcone_ph(0.), deadcone_pu(0.);
     if(type=="electron") {
@@ -63,16 +66,18 @@ namespace commonFunctions
       }
     }
     double iso(0.);
+    double EA(0.);
+    double eta(0.);
     if (charged_only){
       iso = iso_ch;
     } else {
       iso = iso_ph + iso_nh;
       if (useEAcorr) {
-	double eta = ptcl->eta();
-	double EA;
-	if(type=="electron") {
-	  EA = GetElectronEA(eta);
-	} else EA = GetMuonEA(eta);
+	// 
+	// Eta
+	eta = getEta(*ptcl);
+	// EA
+	EA = GetEA(eta,EAValues,EAEtaValues);
 	double correction = rho * EA * (r_iso/0.3) * (r_iso/0.3);
 	iso -= correction;
       }
@@ -80,6 +85,19 @@ namespace commonFunctions
       if (iso>0) iso += iso_ch;
       else iso = iso_ch;
     }
+
+    /*
+    std::cout << type << " pt,eta: " << ptcl->pt() << " " << eta
+	      << " chargediso,neutraliso,photoniso,rho,EA_miniiso,computeMT2Activity: "
+	      << iso_ch << " "
+	      << iso_nh << " "
+	      << iso_ph << " "
+	      << rho << " "
+	      << EA << " "
+	      << computeMT2Activity
+	      << std::endl;
+    */
+
     iso = iso/ptcl->pt();
 
     return iso;
@@ -115,6 +133,15 @@ namespace commonFunctions
       }
       double activity = trkiso/track->pt();
       return activity;
+  }
+
+  double getEta(const reco::Candidate& obj) {
+    try{
+      const pat::Electron& electron = dynamic_cast<const pat::Electron&>(obj);
+      return electron.superCluster()->eta();
+    }catch (const std::bad_cast& e){
+      return obj.eta();
+    }
   }
 
 }

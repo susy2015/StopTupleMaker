@@ -25,6 +25,8 @@ git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToo
 #DeepAK8
 git clone ssh://git@gitlab.cern.ch:7999/TreeMaker/NNKit.git -b cmssw-improvements-4
 scram setup /cvmfs/cms.cern.ch/slc6_amd64_gcc700/cms/cmssw/CMSSW_10_3_0_pre4/config/toolbox/slc6_amd64_gcc700/tools/selected/mxnet-predict.xml
+#94x V2 Egamma ID: https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Recipe_for_regular_users_formats
+git cms-merge-topic guitargeek:EgammaID_9_4_X
 #LPC ntuple code
 git clone -b master git@github.com:susy2015/StopTupleMaker.git
 
