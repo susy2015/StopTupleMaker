@@ -56,6 +56,8 @@ namespace commonFunctions
 
   double getEta(const reco::Candidate& obj);
 
+  bool isEndCapEle(const reco::Candidate& obj);
+
 // The following is the old function definition
 //        double getPFIsolation(edm::Handle<pat::PackedCandidateCollection> pfcands,
 //                          const reco::Candidate* ptcl,
