@@ -37,6 +37,7 @@ namespace commonFunctions
 	if (dr < r_iso || dr > 0.4) continue; // activity annulus
       }
       else if (dr > r_iso) continue;
+
       //////////////////  NEUTRALS  /////////////////////////
       if (pfc.charge()==0){
         if (pfc.pt()>ptThresh) {
