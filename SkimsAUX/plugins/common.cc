@@ -16,7 +16,7 @@ namespace commonFunctions
 
     double deadcone_nh(0.), deadcone_ch(0.), deadcone_ph(0.), deadcone_pu(0.);
     if(type=="electron") {
-      if (fabs(ptcl->eta())>1.479) {deadcone_ch = 0.015; deadcone_pu = 0.015; deadcone_ph = 0.08;}
+      if (isEndCapEle(*ptcl)) {deadcone_ch = 0.015; deadcone_pu = 0.015; deadcone_ph = 0.08;}
     } else if(type=="muon") {
       deadcone_ch = 0.0001; deadcone_pu = 0.01; deadcone_ph = 0.01;deadcone_nh = 0.01;  
     } else {
@@ -37,7 +37,7 @@ namespace commonFunctions
 	if (dr < r_iso || dr > 0.4) continue; // activity annulus
       }
       else if (dr > r_iso) continue;
-      
+
       //////////////////  NEUTRALS  /////////////////////////
       if (pfc.charge()==0){
         if (pfc.pt()>ptThresh) {
@@ -141,6 +141,15 @@ namespace commonFunctions
       return electron.superCluster()->eta();
     }catch (const std::bad_cast& e){
       return obj.eta();
+    }
+  }
+
+  bool isEndCapEle(const reco::Candidate& obj) {
+    try{
+      const pat::Electron& electron = dynamic_cast<const pat::Electron&>(obj);
+      return std::abs(electron.superCluster()->eta()) > 1.479;
+    }catch (const std::bad_cast& e){
+      return false;
     }
   }
 
